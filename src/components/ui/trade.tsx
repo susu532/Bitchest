@@ -28,6 +28,10 @@ const tradeMenu = [
     name: 'Liquidity',
     value: routes.liquidity,
   },
+  {
+    name: 'Vote',
+    value: routes.vote,
+  },
 ];
 
 function ActiveNavLink({ href, title, isActive, className }: any) {

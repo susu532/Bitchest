@@ -49,25 +49,7 @@ export const defaultMenuItems = [
     icon: <ProfileIcon />,
     href: routes.profile,
   },
-  {
-    name: 'Vote',
-    icon: <VoteIcon />,
-    href: routes.vote,
-    dropdownItems: [
-      {
-        name: 'Explore',
-        href: routes.vote,
-      },
-      {
-        name: 'Vote with Bitchest',
-        href: routes.proposals,
-      },
-      {
-        name: 'Create proposal',
-        href: routes.createProposal,
-      },
-    ],
-  },
+
   {
     name: 'Authentication',
     icon: <LockIcon className="w-[18px]" />,
@@ -123,25 +105,7 @@ export const MinimalMenuItems = [
         icon: <PoolIcon />,
         href: routes.liquidity,
       },
-      {
-        name: 'Vote',
-        icon: <VoteIcon />,
-        href: routes.vote,
-        dropdownItems: [
-          {
-            name: 'Explore',
-            href: routes.vote,
-          },
-          {
-            name: 'Vote with Bitchest',
-            href: routes.proposals,
-          },
-          {
-            name: 'Create proposal',
-            href: routes.createProposal,
-          },
-        ],
-      },
+
       {
         name: 'Authentication',
         icon: <LockIcon className="w-[18px]" />,
