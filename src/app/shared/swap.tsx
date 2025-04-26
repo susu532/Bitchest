@@ -51,7 +51,7 @@ const SwapPage = () => {
           <TransactionInfo label={'Offered by'} />
           <TransactionInfo label={'Price Slippage'} value={'1%'} />
           <TransactionInfo label={'Network Fee'} />
-          <TransactionInfo label={'Criptic Fee'} />
+          <TransactionInfo label={'Bitchest Fee'} />
         </div>
         <Button
           size="large"

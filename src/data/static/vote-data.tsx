@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-export const cripticVotes = [
+export const BitchestVotes = [
   {
     id: '1',
     title: 'PTIP 50 - Treasury Assets Management #1',
@@ -72,9 +72,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -192,9 +192,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -312,9 +312,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -432,9 +432,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -552,9 +552,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -672,9 +672,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -792,9 +792,9 @@ export const cripticVotes = [
     ],
     description: `
       <h6>Simple Summary</h6>
-      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum criptic until the end of October. Extend prizes and drip for the POOL pool as well.</p>
+      <p>Extend POOL drip for UNI, COMP, Dai, USDC, and SUSHI Ethereum Bitchest until the end of October. Extend prizes and drip for the POOL pool as well.</p>
       <h6>Motivation</h6>
-      <p>The POOL drips for most Ethereum criptic will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
+      <p>The POOL drips for most Ethereum Bitchest will be ending within the next 2 weeks (see details here). This proposal serves to maintain the statusquo of POOL incentives on Ethereum. However, it only extends the status quo for a relatively short amount of additional time. This is becausethe V4 prize pool will be launching in mid October and a larger incentive overhaul will be.</p>
       <h6>Where Can I get Some?</h6>
       <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.</p>
     `,
@@ -845,7 +845,7 @@ export const cripticVotes = [
 
 // getVotesByStatus
 export function getVotesByStatus(status: string) {
-  const votesByStatus = cripticVotes.filter((vote) => vote.status === status);
+  const votesByStatus = BitchestVotes.filter((vote) => vote.status === status);
   return {
     votes: votesByStatus,
     totalVote: votesByStatus.length,

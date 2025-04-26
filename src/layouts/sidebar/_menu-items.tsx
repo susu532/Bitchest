@@ -80,7 +80,7 @@ export const defaultMenuItems = [
         href: routes.vote,
       },
       {
-        name: 'Vote with criptic',
+        name: 'Vote with Bitchest',
         href: routes.proposals,
       },
       {
@@ -187,7 +187,7 @@ export const MinimalMenuItems = [
             href: routes.vote,
           },
           {
-            name: 'Vote with criptic',
+            name: 'Vote with Bitchest',
             href: routes.proposals,
           },
           {

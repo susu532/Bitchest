@@ -7,8 +7,8 @@ import { useSettingsDrawer } from '@/components/settings/settings-context';
 
 export default function SettingsButton() {
   const { opeSettings } = useSettingsDrawer();
-  const [direction] = useLocalStorage<string>('criptic-direction');
-  const [themeColor] = useLocalStorage<string>('criptic-color');
+  const [direction] = useLocalStorage<string>('Bitchest-direction');
+  const [themeColor] = useLocalStorage<string>('Bitchest-color');
   useDirection(direction ? direction : 'ltr');
   useThemeColor(themeColor ? themeColor : '#14161a');
   return (

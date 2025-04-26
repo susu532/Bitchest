@@ -50,10 +50,10 @@ const VotePage = () => {
             <Image alt="Vote Pool" src={votePool} />
           </div>
           <h3 className="mb-2 mt-6 text-sm font-medium uppercase text-gray-800 dark:text-gray-100 sm:text-base 3xl:text-lg">
-            Vote with Criptic
+            Vote with Bitchest
           </h3>
           <p className="leading-loose text-gray-600 dark:text-gray-400">
-            Vote with criptic tokens held{' '}
+            Vote with Bitchest tokens held{' '}
             <br className="hidden xs:inline-block" /> in your wallet or
             delegated <br className="hidden xs:inline-block" /> to you.
           </p>

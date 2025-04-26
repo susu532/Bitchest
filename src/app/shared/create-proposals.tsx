@@ -21,8 +21,8 @@ const actionOptions = [
     value: 'custom_contact',
   },
   {
-    name: 'CRIPTIC Token',
-    value: 'criptic_token',
+    name: 'Bitchest Token',
+    value: 'Bitchest_token',
   },
   {
     name: 'Reserve',
@@ -49,7 +49,7 @@ const reserveOptions = [
   },
 ];
 
-const cripticTokenOptions = [
+const BitchestTokenOptions = [
   {
     name: 'Approve',
     value: 'approve',
@@ -76,7 +76,7 @@ const cripticTokenOptions = [
   },
 ];
 
-function CripticTokenAction({
+function BitchestTokenAction({
   selectedOption,
   onChange,
 }: {
@@ -87,7 +87,7 @@ function CripticTokenAction({
     <>
       <Listbox
         className="w-full sm:w-80"
-        options={cripticTokenOptions}
+        options={BitchestTokenOptions}
         selectedOption={selectedOption}
         onChange={onChange}
       />
@@ -184,8 +184,8 @@ function CripticTokenAction({
 function ActionFields() {
   let [actionType, setActionType] = useState(actionOptions[0]);
   let [reserveAction, setReserveAction] = useState(reserveOptions[0]);
-  let [cripticTokenAction, setCripticTokenAction] = useState(
-    cripticTokenOptions[0],
+  let [BitchestTokenAction, setBitchestTokenAction] = useState(
+    BitchestTokenOptions[0],
   );
   return (
     <div className="">
@@ -218,11 +218,11 @@ function ActionFields() {
               placeholder="Enter contact address 0x1f9840a85..."
             />
           )}
-          {actionType.value === 'criptic_token' && (
+          {actionType.value === 'Bitchest_token' && (
             <div className="rtl:xs:mlr6 rtl:sm:mlr12 mt-4 ltr:xs:ml-6 ltr:sm:ml-12">
-              <CripticTokenAction
-                selectedOption={cripticTokenAction}
-                onChange={setCripticTokenAction}
+              <BitchestTokenAction
+                selectedOption={BitchestTokenAction}
+                onChange={setBitchestTokenAction}
               />
             </div>
           )}
@@ -269,8 +269,8 @@ const CreateProposalPage = () => {
             </h2>
             <p className="leading-[1.8] text-gray-600 dark:text-gray-400">
               In order to submit a proposal you must have at least 10,000
-              CRIPTIC tokens <br className="hidden xl:inline-block" /> delegated
-              to you{' '}
+              Bitchest tokens <br className="hidden xl:inline-block" />{' '}
+              delegated to you{' '}
               <a
                 target="_blank"
                 rel="noopener noreferrer"

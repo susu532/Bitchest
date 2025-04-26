@@ -1,6 +1,3 @@
-# Introduction
-
-Criptic is a Web3 NFT Crypto Dashboard Template built with React, NextJS, TypeScript, and Tailwind CSS.
 
 ## Supported Platforms
 
@@ -78,4 +75,4 @@ quick such as,
 
    [themeforest.net/page/item_support_policy](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[to](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[provide](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[standard](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[support](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[for](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[our](https://themeforest.net/page/item_support_policy)[ ](https://themeforest.net/page/item_support_policy)[items](https://themeforest.net/page/item_support_policy)
 
-**Please follow our official documentation for more details: https://criptic-doc.vercel.app/**
+**Please follow our official documentation for more details: https://Bitchest-doc.vercel.app/**
