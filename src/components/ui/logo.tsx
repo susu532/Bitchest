@@ -30,14 +30,11 @@ export default function Logo({ className }: LogoPropTypes) {
       >
         <span className="relative flex overflow-hidden">
           {isDarkMode && (
-            <Image src={darkLogo} alt="Bitchest" height={24} priority />
+            <Image src={darkLogo} alt="Bitchest" height={60} priority />
           )}
           {!isDarkMode && (
             <Image src={lightLogo} alt="Bitchest" height={60} priority />
           )}
-          <h1 className="text-center text-lg font-medium text-gray-900 dark:text-white sm:text-xl lg:text-2xl">
-            Notifications
-          </h1>
         </span>
       </AnchorLink>
     )
