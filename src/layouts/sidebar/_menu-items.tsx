@@ -28,28 +28,7 @@ export const defaultMenuItems = [
     icon: <TradingBotIcon />,
     href: routes.tradingBot,
   },
-  {
-    name: 'NFTs',
-    icon: <CompassIcon />,
-    href: routes.search,
-    dropdownItems: [
-      {
-        name: 'Explore NFTs',
-        icon: <CompassIcon />,
-        href: routes.search,
-      },
-      {
-        name: 'Create NFT',
-        icon: <PlusCircle />,
-        href: routes.createNft,
-      },
-      {
-        name: 'NFT Details',
-        icon: <DiskIcon />,
-        href: routes.nftDetails,
-      },
-    ],
-  },
+
   {
     name: 'Farm',
     icon: <FarmIcon />,
@@ -130,28 +109,7 @@ export const MinimalMenuItems = [
     icon: <TradingBotIcon />,
     href: routes.tradingBot,
   },
-  {
-    name: 'NFTs',
-    icon: <CompassIcon />,
-    href: routes.search,
-    dropdownItems: [
-      {
-        name: 'Explore NFTs',
-        icon: <CompassIcon />,
-        href: routes.search,
-      },
-      {
-        name: 'Create NFT',
-        icon: <PlusCircle />,
-        href: routes.createNft,
-      },
-      {
-        name: 'NFT Details',
-        icon: <DiskIcon />,
-        href: routes.nftDetails,
-      },
-    ],
-  },
+
   {
     name: 'Farm',
     icon: <FarmIcon />,
