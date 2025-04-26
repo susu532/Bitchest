@@ -99,10 +99,7 @@ export default function WalletConnect({
           </ActiveLink>
         </div>
       ) : (
-        <Button
-          onClick={() => open()}
-          className={cn('shadow-main hover:shadow-large', btnClassName)}
-        >
+        <Button className={cn('shadow-main hover:shadow-large', btnClassName)}>
           CONNECT
         </Button>
       )}
