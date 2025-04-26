@@ -74,20 +74,8 @@ export const defaultMenuItems = [
     href: routes.signIn,
     dropdownItems: [
       {
-        name: 'Sign in',
-        href: routes.signIn,
-      },
-      {
-        name: 'Sign up',
-        href: routes.signUp,
-      },
-      {
         name: 'Reset pin',
         href: routes.resetPin,
-      },
-      {
-        name: 'Forget password',
-        href: routes.forgetPassword,
       },
     ],
   },
@@ -160,20 +148,8 @@ export const MinimalMenuItems = [
         href: routes.signIn,
         dropdownItems: [
           {
-            name: 'Sign in',
-            href: routes.signIn,
-          },
-          {
-            name: 'Sign up',
-            href: routes.signUp,
-          },
-          {
             name: 'Reset pin',
             href: routes.resetPin,
-          },
-          {
-            name: 'Forget password',
-            href: routes.forgetPassword,
           },
         ],
       },
