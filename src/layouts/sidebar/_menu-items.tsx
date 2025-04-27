@@ -19,6 +19,11 @@ export const defaultMenuItems = [
     href: routes.home,
   },
   {
+    name: 'Market',
+
+    href: routes.retro,
+  },
+  {
     name: 'Live Pricing',
     icon: <LivePricing />,
     href: routes.livePricing,
@@ -68,6 +73,11 @@ export const MinimalMenuItems = [
     name: 'Home',
     icon: <HomeIcon />,
     href: routes.home,
+  },
+  {
+    name: 'Market',
+
+    href: routes.retro,
   },
   {
     name: 'Live Pricing',
