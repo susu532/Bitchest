@@ -29,11 +29,12 @@ export default function Logo({ className }: LogoPropTypes) {
         className={cn('flex w-28 outline-none sm:w-80 4xl:w-80', className)}
       >
         <span className="relative flex items-center gap-2 overflow-hidden">
+          <span className="font-extrabold text-3xl">Bitchest</span>
           {isDarkMode && (
-            <Image src={darkLogo} alt="Bitchest" height={100} priority />
+            <Image src={darkLogo} alt="Bitchest" height={120} priority />
           )}
           {!isDarkMode && (
-            <Image src={lightLogo} alt="Bitchest" height={100} priority />
+            <Image src={lightLogo} alt="Bitchest" height={120} priority />
           )}
         </span>
       </AnchorLink>
