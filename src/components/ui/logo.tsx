@@ -26,7 +26,7 @@ export default function Logo({ className }: LogoPropTypes) {
           pathname:
             routes.home + (layout === LAYOUT_OPTIONS.MODERN ? '' : layout),
         }}
-        className={cn('flex w-28 outline-none sm:w-32 4xl:w-36', className)}
+        className={cn('flex w-40 outline-none sm:w-40 4xl:w-40', className)}
       >
         <span className="relative flex items-center gap-2 overflow-hidden">
           {isDarkMode && (
