@@ -29,25 +29,24 @@ export function CoinCard({
   color = '#FDEDD4',
 }: CoinCardProps) {
   return (
-    <div
-      className="relative rounded-lg p-6 xl:p-8"
-      style={{ backgroundColor: color }}
-    >
-      <h4 className="mb-8 text-sm font-medium uppercase tracking-wider text-gray-900">
+    <div className="relative rounded-lg p-6 xl:p-8 border border-bitchest-light-blue bg-bitchest-white shadow-sm">
+      <h4 className="mb-6 text-base font-bold uppercase tracking-tight text-bitchest-blue">
         {name}
       </h4>
       <div className="relative h-20 lg:h-24 xl:h-28 3xl:h-36">
         <Image src={logo} alt={name} height={112} priority />
       </div>
-      <div className="mb-2 mt-8 text-sm font-medium tracking-wider text-gray-900 lg:text-lg 2xl:text-xl 3xl:text-2xl">
+      <div className="mb-2 mt-6 text-xl font-semibold tracking-tight text-bitchest-blue lg:text-2xl 2xl:text-2xl 3xl:text-3xl">
         {balance}
         <span className="uppercase"> {symbol}</span>
       </div>
       <div className="flex items-center justify-between text-xs font-medium 2xl:text-sm">
-        <span className="tracking-wider text-gray-600">{usdBalance} USD</span>
+        <span className="tracking-tight text-bitchest-light-blue">
+          {usdBalance} USD
+        </span>
         <span
           className={`flex items-center  ${
-            isChangePositive ? 'text-green-500' : 'text-red-500'
+            isChangePositive ? 'text-bitchest-green' : 'text-bitchest-red'
           }`}
         >
           <span

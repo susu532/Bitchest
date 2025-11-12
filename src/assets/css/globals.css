@@ -2,30 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* BitChest Minimal Branding
+   Palette: #01FF19, #FF5964, #FFFFFF, #38618C, #35A7FF
+   Typography: Celias (or fallback)
+*/
+:root {
+  --bitchest-green: 1 255 25;
+  --bitchest-red: 255 89 100;
+  --bitchest-white: 255 255 255;
+  --bitchest-blue: 56 97 140;
+  --bitchest-light-blue: 53 167 255;
+}
 @layer base {
-  :root {
-    --color-brand: 17 24 39;
-  }
   html {
-    @apply bg-body font-body;
-    -webkit-tap-highlight-color: transparent;
+    font-family: 'Celias', Inter, Montserrat, 'Segoe UI', Arial, sans-serif;
+    background-color: #FFFFFF;
+    color: #38618C;
+    min-height: 100vh;
   }
-
-  html.dark {
-    @apply bg-dark text-white;
-  }
-
-  html,
   body {
-    @apply antialiased;
+    @apply bg-bitchest-white text-bitchest-blue antialiased;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
   }
-
-  .dynamic-html h6 {
-    @apply font-medium uppercase;
+  a {
+    color: #35A7FF;
+    text-decoration: none;
+    transition: color 0.2s;
   }
-
-  .dynamic-html p {
-    @apply mb-3;
+  a:hover {
+    color: #01FF19;
+    text-decoration: underline;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #38618C;
+    font-weight: 700;
+    margin-bottom: 0.6em;
+  }
+  .btn-primary {
+    background: #01FF19;
+    color: #38618C;
+    border-radius: 6px;
+    padding: 0.5em 1.2em;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover {
+    background: #35A7FF;
+    color: #fff;
   }
 }
 

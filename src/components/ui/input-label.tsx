@@ -19,17 +19,17 @@ function InputLabel({
     <div className={cn('relative mb-3', className)}>
       <span
         className={cn(
-          'block text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white',
+          'block text-sm font-semibold uppercase tracking-tight text-bitchest-blue',
           titleClassName,
         )}
       >
         {title}
         {important && (
-          <sup className="text-red-500 ltr:ml-1.5 rtl:mr-1.5">*</sup>
+          <sup className="text-bitchest-red ltr:ml-1.5 rtl:mr-1.5">*</sup>
         )}
       </span>
       {subTitle && (
-        <span className="mt-1 block text-xs tracking-tighter text-gray-600 dark:text-gray-400 sm:text-sm">
+        <span className="mt-1 block text-xs tracking-tighter text-bitchest-light-blue sm:text-sm">
           {subTitle}
         </span>
       )}

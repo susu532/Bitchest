@@ -28,13 +28,21 @@ const variants: Record<VariantNames, string[]> = {
   transparent: ['bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800'],
 };
 const colors: Record<ColorNames, string[]> = {
-  primary: ['text-brand', 'bg-brand', 'border-brand'],
-  white: ['text-gray-900', 'bg-white', 'border-white'],
-  gray: ['text-gray-900', 'bg-gray-100', 'border-gray-100'],
-  success: ['text-green-500', 'bg-green-500', 'border-green-500'],
-  info: ['text-blue-500', 'bg-blue-500', 'border-blue-500'],
+  primary: ['text-bitchest-blue', 'bg-bitchest-green', 'border-bitchest-green'],
+  white: ['text-bitchest-blue', 'bg-bitchest-white', 'border-bitchest-white'],
+  gray: ['text-bitchest-blue', 'bg-bitchest-white', 'border-bitchest-white'],
+  success: [
+    'text-bitchest-green',
+    'bg-bitchest-green',
+    'border-bitchest-green',
+  ],
+  info: [
+    'text-bitchest-light-blue',
+    'bg-bitchest-light-blue',
+    'border-bitchest-light-blue',
+  ],
   warning: ['text-yellow-500', 'bg-yellow-500', 'border-yellow-500'],
-  danger: ['text-red-500', 'bg-red-500', 'border-red-500'],
+  danger: ['text-bitchest-red', 'bg-bitchest-red', 'border-bitchest-red'],
 };
 const sizes: Record<SizeNames, string[]> = {
   large: ['px-7 sm:px-9 h-11 sm:h-13', 'w-11 h-11 sm:w-13 sm:h-13'],
@@ -126,7 +134,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={buttonRef}
         onClick={clickHandler}
         className={cn(
-          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm',
+          'relative inline-flex shrink-0 items-center justify-center overflow-hidden text-center text-xs font-medium tracking-wider outline-none transition-all sm:text-sm font-body',
           !disabled
             ? buttonColorClassNames
             : 'cursor-not-allowed bg-gray-100 text-gray-400',

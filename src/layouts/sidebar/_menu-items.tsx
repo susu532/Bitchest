@@ -11,6 +11,7 @@ import { CompassIcon } from '@/components/icons/compass';
 import { LivePricing } from '@/components/icons/live-pricing';
 import { LockIcon } from '@/components/icons/lock-icon';
 import { TradingBotIcon } from '@/components/icons/trading-bot-icon';
+import { useRole } from '@/components/role-provider';
 
 export const defaultMenuItems = [
   {
@@ -18,11 +19,7 @@ export const defaultMenuItems = [
     icon: <HomeIcon />,
     href: routes.home,
   },
-  {
-    name: 'Market',
 
-    href: routes.retro,
-  },
   {
     name: 'Live Pricing',
     icon: <LivePricing />,
@@ -53,18 +50,6 @@ export const defaultMenuItems = [
     name: 'Profile',
     icon: <ProfileIcon />,
     href: routes.profile,
-  },
-
-  {
-    name: 'Authentication',
-    icon: <LockIcon className="w-[18px]" />,
-    href: routes.signIn,
-    dropdownItems: [
-      {
-        name: 'Reset pin',
-        href: routes.resetPin,
-      },
-    ],
   },
 ];
 
@@ -130,3 +115,19 @@ export const MinimalMenuItems = [
     ],
   },
 ];
+
+export const adminMenuItems = [
+  { name: 'Profile', icon: <ProfileIcon />, href: '/admin/profile' },
+  { name: 'Users', icon: <HomeIcon />, href: '/admin/users' },
+  { name: 'Crypto Prices', icon: <LivePricing />, href: '/admin/cryptos' },
+];
+export const clientMenuItems = [
+  { name: 'Profile', icon: <ProfileIcon />, href: '/client/profile' },
+  { name: 'Wallet', icon: <DiskIcon />, href: '/client/wallet' },
+  { name: 'Buy/Sell', icon: <ExchangeIcon />, href: '/client/trade' },
+  { name: 'Crypto Prices', icon: <LivePricing />, href: '/client/cryptos' },
+];
+export function useSidebarMenu() {
+  const { role } = useRole();
+  return role === 'admin' ? adminMenuItems : clientMenuItems;
+} // Usage: useSidebarMenu()

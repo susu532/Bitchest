@@ -15,6 +15,7 @@ import 'swiper/css/pagination';
 import '@/assets/css/scrollbar.css';
 import '@/assets/css/globals.css';
 import '@/assets/css/range-slider.css';
+import RoleProvider from '@/components/role-provider';
 
 const fira_code = Fira_Code({
   weight: ['400', '500', '600', '700'],
@@ -45,13 +46,15 @@ export default function RootLayout({
         <QueryClientProvider>
           <ThemeProvider>
             <WagmiConfig>
-              <SettingsButton />
-              <SettingsDrawer />
-              <Suspense fallback={null}>
-                <ModalsContainer />
-                <DrawersContainer />
-              </Suspense>
-              {children}
+              <RoleProvider>
+                <SettingsButton />
+                <SettingsDrawer />
+                <Suspense fallback={null}>
+                  <ModalsContainer />
+                  <DrawersContainer />
+                </Suspense>
+                {children}
+              </RoleProvider>
             </WagmiConfig>
           </ThemeProvider>
         </QueryClientProvider>

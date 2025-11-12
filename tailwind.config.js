@@ -23,6 +23,11 @@ module.exports = {
         dark: '#0D1321',
         'light-dark': '#171e2e',
         'sidebar-body': '#F8FAFC',
+        'bitchest-green': '#01FF19', // BitChest Brand Colors
+        'bitchest-red': '#FF5964',
+        'bitchest-white': '#FFFFFF',
+        'bitchest-blue': '#38618C',
+        'bitchest-light-blue': '#35A7FF',
       },
       spacing: {
         13: '3.375rem',
@@ -38,7 +43,14 @@ module.exports = {
         'calc-358': 'calc(100% - 358px)',
       },
       fontFamily: {
-        body: ['Fira Code', 'monospace'],
+        body: [
+          'Celias',
+          'Inter',
+          'Montserrat',
+          'Segoe UI',
+          'Arial',
+          'sans-serif',
+        ],
       },
       fontSize: {
         '13px': ['13px', '18px'],

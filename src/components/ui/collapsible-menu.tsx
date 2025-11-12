@@ -45,10 +45,10 @@ export function MenuItem({
         <>
           <div
             className={cn(
-              'relative flex h-12 cursor-pointer items-center justify-between whitespace-nowrap  rounded-lg px-4 text-sm transition-all',
+              'relative flex h-12 cursor-pointer items-center justify-between whitespace-nowrap rounded-lg px-4 text-sm font-semibold transition-colors',
               isChildrenActive
-                ? 'text-white'
-                : 'text-gray-500 hover:text-brand dark:hover:text-white',
+                ? 'text-bitchest-green bg-bitchest-green/10'
+                : 'text-bitchest-blue hover:text-bitchest-light-blue focus:text-bitchest-green',
             )}
             onClick={() => setIsOpen(!isOpen)}
           >
@@ -87,8 +87,8 @@ export function MenuItem({
                 <li className="first:pt-2" key={index}>
                   <ActiveLink
                     href={item.href}
-                    className="flex items-center rounded-lg p-3 text-sm text-gray-500 transition-all before:h-1 before:w-1 before:rounded-full before:bg-gray-500 hover:text-brand ltr:pl-6 before:ltr:mr-5 rtl:pr-6 before:rtl:ml-5 dark:hover:text-white"
-                    activeClassName="!text-brand dark:!text-white dark:before:!bg-white before:!bg-brand before:!w-2 before:!h-2 before:-ml-0.5 before:ltr:!mr-[18px] before:rtl:!ml-[18px] !font-medium"
+                    className="flex items-center rounded-lg p-3 text-sm font-semibold text-bitchest-blue transition-colors hover:text-bitchest-green focus:text-bitchest-light-blue ltr:pl-6 before:ltr:mr-5 rtl:pr-6 before:rtl:ml-5"
+                    activeClassName="!text-bitchest-green bg-bitchest-green/10"
                   >
                     {item.name}
                   </ActiveLink>
@@ -101,12 +101,12 @@ export function MenuItem({
         <ActiveLink
           href={href}
           className={cn(
-            'relative flex h-12 items-center whitespace-nowrap rounded-lg px-4 text-sm text-gray-500 transition-all hover:text-brand dark:hover:text-white',
+            'relative flex h-12 items-center whitespace-nowrap rounded-lg px-4 text-sm font-semibold text-bitchest-blue transition-colors hover:text-bitchest-light-blue focus:text-bitchest-green',
             {
-              'bg-brand': isActive,
+              'bg-bitchest-green/10 text-bitchest-green': isActive,
             },
           )}
-          activeClassName="!text-white"
+          activeClassName="!text-bitchest-green bg-bitchest-green/10"
         >
           <span
             className={cn(

@@ -16,6 +16,7 @@ import WalletConnect from '@/components/nft/wallet-connect';
 import {
   MinimalMenuItems,
   defaultMenuItems,
+  useSidebarMenu,
 } from '@/layouts/sidebar/_menu-items';
 import { LAYOUT_OPTIONS } from '@/lib/constants';
 import { ChevronRight } from '@/components/icons/chevron-right';
@@ -47,82 +48,21 @@ const minimalMenuItems = MinimalMenuItems.map((item) => ({
 }));
 
 export function MenuItems() {
+  const menuItems = useSidebarMenu();
   return (
-    <div className="flex items-center xl:px-9 2xl:px-14 3xl:px-16">
-      <ul className="relative flex items-center gap-4 2xl:gap-6">
-        {minimalMenuItems.map((item, index) => (
-          <Fragment key={'layout' + item.name + index}>
-            {item.dropdownItems ? (
-              <>
-                <li className="group/parent relative">
-                  <a
-                    href="#"
-                    className="flex items-center text-sm font-medium uppercase text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-                  >
-                    {item.name}
-                    <span className="z-[1] transition-transform duration-200 ltr:ml-3 rtl:mr-3">
-                      <ChevronDown />
-                    </span>
-                  </a>
-                  <ul className="invisible absolute right-0 top-[130%] mt-2 w-64 rounded-lg bg-white p-3 opacity-0 shadow-large transition-all group-hover/parent:visible group-hover/parent:top-full group-hover/parent:opacity-100 ltr:right-0 rtl:left-0 dark:bg-gray-800">
-                    {item.dropdownItems.map((dropDownItem, index) => (
-                      <li
-                        className="group relative"
-                        key={dropDownItem.name + index}
-                      >
-                        {dropDownItem.dropdownItems ? (
-                          <>
-                            <a
-                              href="#"
-                              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium uppercase text-gray-600 transition hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-white"
-                            >
-                              {dropDownItem.name}
-                              <span className="z-[1] -mt-1 transition-transform duration-200 ltr:ml-3 rtl:mr-3">
-                                <ChevronRight className="h-3.5 w-3.5" />
-                              </span>
-                            </a>
-                            <ul className="invisible absolute left-[107%] right-0 top-[130%] w-64 rounded-lg bg-white p-3 opacity-0 shadow-large transition-all group-hover:visible group-hover/parent:top-0 group-hover:opacity-100 ltr:right-0 rtl:left-0 dark:bg-gray-800">
-                              {dropDownItem.dropdownItems.map(
-                                (subMenu: any, index: string) => (
-                                  <li key={subMenu.name + index}>
-                                    <ActiveLink
-                                      href={subMenu.href}
-                                      className="block rounded-lg px-3 py-2 text-sm font-medium uppercase !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
-                                      activeClassName="!bg-gray-100 dark:!bg-gray-700 my-1 last:mb-0 first:mt-0 !text-gray-900 dark:!text-white"
-                                    >
-                                      {subMenu.name}
-                                    </ActiveLink>
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          </>
-                        ) : (
-                          <ActiveLink
-                            href={dropDownItem.href}
-                            className="block rounded-lg px-3 py-2 text-sm font-medium uppercase !text-gray-600 transition hover:bg-gray-50 hover:text-gray-900 dark:!text-white dark:hover:bg-gray-700/50"
-                            activeClassName="!bg-gray-100 dark:!bg-gray-700 my-1 last:mb-0 first:mt-0 !text-gray-900 dark:!text-white"
-                          >
-                            {dropDownItem.name}
-                          </ActiveLink>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              </>
-            ) : (
-              <li>
-                <ActiveLink
-                  href={item.href}
-                  className="mx-2 text-[13px] font-medium uppercase text-gray-600 transition first:ml-0 last:mr-0 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white 2xl:mx-3 2xl:text-sm 3xl:mx-4"
-                  activeClassName="!text-gray-900 dark:!text-white"
-                >
-                  {item.name}
-                </ActiveLink>
-              </li>
-            )}
-          </Fragment>
+    <div className="flex items-center xl:px-6 2xl:px-10 3xl:px-16">
+      <ul className="relative flex items-center gap-5 2xl:gap-8">
+        {menuItems.map((item, index) => (
+          <li key={'layout' + item.name + index}>
+            <ActiveLink
+              href={item.href}
+              className="mx-2 text-[13px] font-semibold uppercase text-bitchest-blue transition first:ml-0 last:mr-0 hover:text-bitchest-green focus:text-bitchest-light-blue 2xl:mx-3 2xl:text-sm 3xl:mx-4"
+              activeClassName="!text-gray-900 dark:!text-white"
+            >
+              {item.icon}
+              <span className="ml-2">{item.name}</span>
+            </ActiveLink>
+          </li>
         ))}
       </ul>
     </div>

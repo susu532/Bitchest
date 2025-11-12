@@ -53,7 +53,7 @@ export function RetroHeader({ className }: { className?: string }) {
     <nav
       className={cn(
         'sticky top-0 z-30 h-16 w-full backdrop-blur transition-all duration-300 ltr:right-0 rtl:left-0 sm:h-20 3xl:h-24',
-        isMounted && windowScroll.y > 17
+        typeof window !== 'undefined' && isMounted && windowScroll.y > 17
           ? 'bg-white/80 shadow-card dark:bg-dark/80'
           : '',
         className,
@@ -95,7 +95,9 @@ export function ClassicHeader({ className }: { className?: string }) {
     <nav
       className={cn(
         'sticky top-0 z-30 h-16 w-full backdrop-blur transition-all duration-300 ltr:right-0 rtl:left-0 sm:h-20 3xl:h-24',
-        ((isMounted && windowScroll.y) as number) > 2
+        typeof window !== 'undefined' &&
+          isMounted &&
+          (windowScroll.y as number) > 2
           ? 'bg-white/80 dark:bg-dark/80 shadow-card'
           : '',
         className,
@@ -137,7 +139,9 @@ export default function Header({ className }: { className?: string }) {
     <nav
       className={cn(
         'sticky top-0 z-30 h-16 w-full backdrop-blur transition-shadow duration-300 ltr:right-0 rtl:left-0 sm:h-20 3xl:h-24',
-        ((isMounted && windowScroll.y) as number) > 2
+        typeof window !== 'undefined' &&
+          isMounted &&
+          (windowScroll.y as number) > 2
           ? 'bg-white/80 shadow-card dark:bg-dark/80'
           : '',
         className,
