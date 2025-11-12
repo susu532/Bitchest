@@ -103,7 +103,7 @@ export default function MarketOverviewPanel({ cryptoAssets }: MarketOverviewPane
         </header>
 
         <div className="market-grid">
-          {assetList.map((asset) => {
+          {assetList.map((asset, index) => {
             const change = renderChange(asset);
             const isActive = selectedAsset && asset.id === selectedAsset.id;
             const currentPrice = asset.history.at(-1)?.value ?? 0;
@@ -113,6 +113,7 @@ export default function MarketOverviewPanel({ cryptoAssets }: MarketOverviewPane
                 type="button"
                 className={`market-card ${isActive ? 'market-card--active' : ''}`}
                 onClick={() => setSelectedAssetId(asset.id)}
+                style={{ animationDelay: `${0.1 + index * 0.05}s` }}
               >
                 <div className="market-card__header">
                   <img src={asset.icon} alt={`${asset.name} icon`} className="market-card__icon" />

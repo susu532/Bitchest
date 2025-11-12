@@ -38,12 +38,13 @@ export default function DashboardLayout({
         </div>
 
         <nav className="dashboard__nav">
-          {navItems.map((item) => (
+          {navItems.map((item, index) => (
             <NavLink
               key={item.to}
               to={item.to}
               end
               className={({ isActive }) => clsx('dashboard__nav-link', { active: isActive })}
+              style={{ animationDelay: `${0.1 + index * 0.1}s` }}
             >
               <span className="dashboard__nav-label">{item.label}</span>
               {item.description ? <span className="dashboard__nav-description">{item.description}</span> : null}

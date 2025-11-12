@@ -132,7 +132,7 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
 
   return (
     <div className="panel">
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.1s' }}>
         <header className="panel__header">
           <div>
             <h2>Your wallet</h2>
@@ -186,8 +186,8 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
         </table>
       </section>
 
-      <section className="panel__section panel__section--split">
-        <div className="trade-card">
+      <section className="panel__section panel__section--split" style={{ animationDelay: '0.2s' }}>
+        <div className="trade-card" style={{ animationDelay: '0.3s' }}>
           <h3>Buy cryptocurrency</h3>
           <form className="form form--stacked" onSubmit={handleBuy}>
             <label className="form__label">
@@ -228,7 +228,7 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
           </form>
         </div>
 
-        <div className="trade-card">
+        <div className="trade-card" style={{ animationDelay: '0.4s' }}>
           <h3>Sell cryptocurrency</h3>
           <form className="form form--stacked" onSubmit={handleSell}>
             <label className="form__label">
@@ -273,7 +273,7 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
         </div>
       </section>
 
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.5s' }}>
         {tradeError ? <p className="form__error">{tradeError}</p> : null}
         {tradeMessage ? <p className="form__success">{tradeMessage}</p> : null}
         <header className="panel__header">

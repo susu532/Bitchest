@@ -69,7 +69,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
 
   return (
     <div className="panel">
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.1s' }}>
         <header className="panel__header">
           <div>
             <h2>Personal information</h2>
@@ -111,7 +111,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
         </form>
       </section>
 
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.2s' }}>
         <header className="panel__header">
           <div>
             <h3>Security</h3>

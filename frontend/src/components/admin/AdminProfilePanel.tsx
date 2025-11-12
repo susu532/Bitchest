@@ -61,7 +61,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
 
   return (
     <div className="panel">
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.1s' }}>
         <header>
           <h2>Your profile</h2>
           <p>Manage your administrator details. These details are visible to other staff members.</p>
@@ -108,7 +108,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
         </form>
       </section>
 
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.2s' }}>
         <header>
           <h2>Security</h2>
           <p>Update your password regularly to keep BitChest secure.</p>

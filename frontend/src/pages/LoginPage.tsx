@@ -48,7 +48,7 @@ export default function LoginPage() {
 
   return (
     <div className="page page--centered login-page">
-      <div className="login-card">
+      <div className="login-card" style={{ animationDelay: '0.1s' }}>
         <div className="login-card__brand">
           <img src="/assets/bitchest_logo.png" alt="BitChest logo" className="login-card__logo" />
           <div>

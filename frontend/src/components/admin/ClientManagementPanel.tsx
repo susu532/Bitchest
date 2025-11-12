@@ -99,7 +99,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
 
   return (
     <div className="panel">
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.1s' }}>
         <header className="panel__header">
           <div>
             <h2>Clients</h2>
@@ -158,7 +158,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
         ) : null}
       </section>
 
-      <section className="panel__section">
+      <section className="panel__section" style={{ animationDelay: '0.2s' }}>
         <table className="table">
           <thead>
             <tr>
@@ -215,7 +215,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       </section>
 
       {editingUser ? (
-        <section className="panel__section">
+        <section className="panel__section" style={{ animationDelay: '0.3s' }}>
           <header>
             <h3>Edit client</h3>
           </header>
