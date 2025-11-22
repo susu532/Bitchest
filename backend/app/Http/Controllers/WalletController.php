@@ -35,6 +35,8 @@ class WalletController extends Controller
             ], 400);
         }
 
+        $previousBalance = $account->balance_eur;
+
         // Create transaction
         $transaction = WalletTransaction::create([
             'user_id' => $user->id,
@@ -48,6 +50,10 @@ class WalletController extends Controller
         // Deduct balance
         $account->balance_eur -= $totalCost;
         $account->save();
+
+        // Broadcast events
+        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency purchase'));
+        broadcast(new TransactionCompleted($user->id, 'buy', $request->cryptoId, $request->quantity, $request->pricePerUnit));
 
         return response()->json([
             'success' => true,
@@ -94,6 +100,8 @@ class WalletController extends Controller
             ], 400);
         }
 
+        $previousBalance = $account->balance_eur;
+
         // Create transaction
         $transaction = WalletTransaction::create([
             'user_id' => $user->id,
@@ -108,6 +116,10 @@ class WalletController extends Controller
         $totalProceeds = $request->quantity * $request->pricePerUnit;
         $account->balance_eur += $totalProceeds;
         $account->save();
+
+        // Broadcast events
+        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency sale'));
+        broadcast(new TransactionCompleted($user->id, 'sell', $request->cryptoId, $request->quantity, $request->pricePerUnit));
 
         return response()->json([
             'success' => true,
