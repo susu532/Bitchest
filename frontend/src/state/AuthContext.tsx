@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 import type { User } from './types';
 import { useAppServices, useAppState } from './AppStateProvider';
-import { api } from '../utils/api';
 
 type AuthContextValue = {
   user: User | null;
@@ -26,31 +25,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    // Try to restore session by asking backend for /me if cookie session exists
-    async function restore() {
-      try {
-        const res = await api.getCurrentUser();
-        if (res && res.user) {
-          const user = res.user;
-          // Backend returns: id, first_name, last_name, email, role, balance_eur
-          // Store the user ID for session restoration
-          setCurrentUserId(String(user.id));
-          window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
-          return;
-        }
-      } catch (error) {
-        console.warn('Unable to restore BitChest session from API', error);
-      }
-
-      // fallback to local session
+    try {
       const stored = window.localStorage.getItem(SESSION_KEY);
       if (stored) {
         const parsed = JSON.parse(stored) as { userId: string };
         setCurrentUserId(parsed.userId);
       }
+    } catch (error) {
+      console.warn('Unable to restore BitChest session', error);
     }
-
-    restore();
   }, []);
 
   const user = useMemo(
@@ -60,28 +43,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login: AuthContextValue['login'] = useCallback(
     async ({ email, password }) => {
-      try {
-        const payload = await api.login(email, password);
-        if (payload && payload.user) {
-          const user = payload.user;
-          // Backend returns: id, first_name, last_name, email, role, balance_eur
-          // Map to frontend User type - we'll look this up from state when needed
-          setCurrentUserId(String(user.id));
-          window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
-          return { success: true };
-        }
+      const normalizedEmail = email.trim().toLowerCase();
+      const found = state.users.find((candidate) => candidate.email === normalizedEmail);
 
-        return { success: false, message: 'Login failed' };
-      } catch (error) {
-        return { success: false, message: error instanceof Error ? error.message : 'Network error' };
+      if (!found) {
+        return { success: false, message: 'Account not found' };
       }
+
+      if (found.password !== password) {
+        return { success: false, message: 'Invalid credentials' };
+      }
+
+      setCurrentUserId(found.id);
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: found.id }));
+
+      return { success: true };
     },
     [state.users],
   );
 
   const logout = useCallback(() => {
-    // call backend to destroy session cookie
-    api.logout().catch(() => {});
     setCurrentUserId(null);
     window.localStorage.removeItem(SESSION_KEY);
   }, []);

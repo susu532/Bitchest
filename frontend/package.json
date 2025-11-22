@@ -4,15 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "start": "webpack serve --config webpack.config.js --mode development --open",
+    "dev": "npm run start",
+    "build": "webpack --config webpack.config.js --mode production",
+    "preview": "npx serve dist -s"
   },
   "devDependencies": {
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.1",
     "typescript": "~5.9.3",
-    "vite": "^7.2.2"
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.9.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.8.0",
+    "style-loader": "^3.4.0",
+    "ts-loader": "^9.4.3",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "chart.js": "^4.5.1",

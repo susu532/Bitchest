@@ -38,7 +38,6 @@ export type CryptoAsset = {
   name: string;
   symbol: string;
   icon: string;
-  backendId?: number | string;
   history: CryptoPricePoint[];
 };
 
@@ -79,6 +78,5 @@ export type AppAction =
   | { type: 'create-client'; payload: { user: User; account: ClientAccount } }
   | { type: 'delete-user'; payload: DeleteUserPayload }
   | { type: 'update-client-password'; payload: UpdateClientPasswordPayload }
-  | { type: 'record-transaction'; payload: RecordTransactionPayload }
-  | { type: 'set-crypto-assets'; payload: Record<string, CryptoAsset> };
+  | { type: 'record-transaction'; payload: RecordTransactionPayload };
 
