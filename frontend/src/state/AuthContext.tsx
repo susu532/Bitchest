@@ -33,20 +33,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (res && res.user) {
           const user = res.user;
           // Backend returns: id, first_name, last_name, email, role, balance_eur
-          // Need to map to frontend User type
-          const frontendUser: User = {
-            id: String(user.id),
-            firstName: user.first_name,
-            lastName: user.last_name,
-            email: user.email,
-            role: user.role,
-            password: '', // Don't expose password
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-          
-          // Update app state with the backend user
-          // For now, we'll just set the current user ID
+          // Store the user ID for session restoration
           setCurrentUserId(String(user.id));
           window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
           return;
