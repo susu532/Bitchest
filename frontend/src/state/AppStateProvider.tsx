@@ -12,6 +12,7 @@ import type {
   User,
 } from './types';
 import { INITIAL_STATE } from './initialData';
+import { api } from '../utils/api';
 
 const STORAGE_KEY = 'bitchest-app-state';
 
@@ -122,8 +123,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
     default:
       return state;
   }
-
-  // 'set-crypto-assets' handled by reducer dynamic dispatch: keep existing logic simple
 }
 
 function generateTempPassword(): string {

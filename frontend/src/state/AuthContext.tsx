@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 import type { User } from './types';
 import { useAppServices, useAppState } from './AppStateProvider';
+import { api } from '../utils/api';
 
 type AuthContextValue = {
   user: User | null;
@@ -28,26 +29,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Try to restore session by asking backend for /me if cookie session exists
     async function restore() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/me`, {
-          credentials: 'include',
-        });
-        if (res.ok) {
-          const user = await res.json();
-          if (user && user.id) {
-            setCurrentUserId(String(user.id));
-            window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
-            return;
-          }
-        }
-
-        // fallback to local session
-        const stored = window.localStorage.getItem(SESSION_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored) as { userId: string };
-          setCurrentUserId(parsed.userId);
+        const res = await api.getCurrentUser();
+        if (res && res.user) {
+          const user = res.user;
+          // Backend returns: id, first_name, last_name, email, role, balance_eur
+          // Need to map to frontend User type
+          const frontendUser: User = {
+            id: String(user.id),
+            firstName: user.first_name,
+            lastName: user.last_name,
+            email: user.email,
+            role: user.role,
+            password: '', // Don't expose password
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          
+          // Update app state with the backend user
+          // For now, we'll just set the current user ID
+          setCurrentUserId(String(user.id));
+          window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
+          return;
         }
       } catch (error) {
         console.warn('Unable to restore BitChest session from API', error);
+      }
+
+      // fallback to local session
+      const stored = window.localStorage.getItem(SESSION_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored) as { userId: string };
+        setCurrentUserId(parsed.userId);
       }
     }
 
@@ -61,37 +73,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login: AuthContextValue['login'] = useCallback(
     async ({ email, password }) => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
-      });
+      try {
+        const payload = await api.login(email, password);
+        if (payload && payload.user) {
+          const user = payload.user;
+          // Backend returns: id, first_name, last_name, email, role, balance_eur
+          // Map to frontend User type - we'll look this up from state when needed
+          setCurrentUserId(String(user.id));
+          window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
+          return { success: true };
+        }
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        return { success: false, message: data.message ?? 'Login failed' };
+        return { success: false, message: 'Login failed' };
+      } catch (error) {
+        return { success: false, message: error instanceof Error ? error.message : 'Network error' };
       }
-
-      const payload = await res.json();
-      if (payload.user && payload.user.id) {
-        setCurrentUserId(String(payload.user.id));
-        window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(payload.user.id) }));
-        return { success: true };
-      }
-
-      return { success: false, message: 'Login failed' };
-    } catch (error) {
-      return { success: false, message: 'Network error' };
-    }
     },
     [state.users],
   );
 
   const logout = useCallback(() => {
     // call backend to destroy session cookie
-    fetch(`${import.meta.env.VITE_API_BASE}/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
+    api.logout().catch(() => {});
     setCurrentUserId(null);
     window.localStorage.removeItem(SESSION_KEY);
   }, []);
