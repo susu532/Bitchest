@@ -7,7 +7,7 @@ echo ====================
 
 REM Start backend in a new window
 echo Starting Laravel backend on http://localhost:8000...
-start "Bitchest Backend" cmd /k "cd /d %~dp0backend && php -S localhost:8000 -t public"
+start "Bitchest Backend" cmd /k "cd /d %~dp0backend && php artisan serve --host=127.0.0.1 --port=8000"
 timeout /t 2
 
 REM Start frontend in a new window
