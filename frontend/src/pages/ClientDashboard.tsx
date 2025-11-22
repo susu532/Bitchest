@@ -65,7 +65,7 @@ export default function ClientDashboard() {
         />
         <Route
           path="wallet"
-          element={<ClientWalletPanel account={account} cryptoAssets={state.cryptoAssets} user={user} />}
+          element={<ClientWalletPanel account={account} cryptoAssets={state.cryptoAssets} />}
         />
         <Route path="market" element={<MarketOverviewPanel cryptoAssets={state.cryptoAssets} />} />
         <Route path="profile" element={<ClientProfilePanel user={user} />} />

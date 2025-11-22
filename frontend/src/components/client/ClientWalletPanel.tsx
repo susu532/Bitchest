@@ -2,20 +2,18 @@ import { useMemo, useState } from 'react';
 
 import type { FormEvent } from 'react';
 
-import { nanoid } from 'nanoid';
-
-import type { ClientAccount, CryptoAsset, User } from '../../state/types';
+import type { ClientAccount, CryptoAsset } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
+import { api } from '../../utils/api';
 import { enrichHoldingsWithPrices, summarizeHoldings } from '../../utils/wallet';
 
 type ClientWalletPanelProps = {
   account: ClientAccount;
   cryptoAssets: Record<string, CryptoAsset>;
-  user: User;
 };
 
-export default function ClientWalletPanel({ account, cryptoAssets, user }: ClientWalletPanelProps) {
-  const { recordTransaction } = useAppServices();
+export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalletPanelProps) {
+  const { fetchClientAccount } = useAppServices();
 
   const assetKeys = Object.keys(cryptoAssets);
   const defaultCryptoId = assetKeys[0] ?? '';
@@ -33,7 +31,7 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
 
   const cryptoOptions = Object.values(cryptoAssets);
 
-  const handleBuy = (event: FormEvent) => {
+  const handleBuy = async (event: FormEvent) => {
     event.preventDefault();
     setTradeError(null);
     setTradeMessage(null);
@@ -62,26 +60,24 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
       return;
     }
 
-    recordTransaction({
-      userId: user.id,
-      transaction: {
-        id: nanoid(),
-        cryptoId: buyForm.cryptoId,
-        quantity: Number(buyForm.quantity),
-        pricePerUnit: currentPrice,
-        timestamp: new Date().toISOString(),
-        type: 'buy',
-      },
-      balanceAdjustment: -totalCost,
-    });
-
-    setTradeMessage(
-      `Purchase completed. You bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`,
-    );
-    setBuyForm((previous) => ({ ...previous, quantity: 0 }));
+    try {
+      const response: any = await api.buyCryptocurrency(buyForm.cryptoId, buyForm.quantity, currentPrice);
+      if (response.success) {
+        setTradeMessage(
+          `Purchase completed. You bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`,
+        );
+        setBuyForm((previous) => ({ ...previous, quantity: 0 }));
+        // Refresh account data
+        await fetchClientAccount();
+      } else {
+        setTradeError(response.message || 'Purchase failed');
+      }
+    } catch (error: any) {
+      setTradeError(error.message || 'Purchase failed');
+    }
   };
 
-  const handleSell = (event: FormEvent) => {
+  const handleSell = async (event: FormEvent) => {
     event.preventDefault();
     setTradeError(null);
     setTradeMessage(null);
@@ -111,23 +107,21 @@ export default function ClientWalletPanel({ account, cryptoAssets, user }: Clien
     const currentPrice = asset.history.at(-1)?.value ?? 0;
     const proceeds = Number((currentPrice * sellForm.quantity).toFixed(2));
 
-    recordTransaction({
-      userId: user.id,
-      transaction: {
-        id: nanoid(),
-        cryptoId: sellForm.cryptoId,
-        quantity: Number(sellForm.quantity),
-        pricePerUnit: currentPrice,
-        timestamp: new Date().toISOString(),
-        type: 'sell',
-      },
-      balanceAdjustment: proceeds,
-    });
-
-    setTradeMessage(
-      `Sale completed. You sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`,
-    );
-    setSellForm((previous) => ({ ...previous, quantity: 0 }));
+    try {
+      const response: any = await api.sellCryptocurrency(sellForm.cryptoId, sellForm.quantity, currentPrice);
+      if (response.success) {
+        setTradeMessage(
+          `Sale completed. You sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`,
+        );
+        setSellForm((previous) => ({ ...previous, quantity: 0 }));
+        // Refresh account data
+        await fetchClientAccount();
+      } else {
+        setTradeError(response.message || 'Sale failed');
+      }
+    } catch (error: any) {
+      setTradeError(error.message || 'Sale failed');
+    }
   };
 
   return (

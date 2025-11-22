@@ -20,35 +20,34 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
 
   const [profileFeedback, setProfileFeedback] = useState<string | null>(null);
 
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordFeedback, setPasswordFeedback] = useState<string | null>(null);
 
-  const handleProfileSubmit = (event: FormEvent) => {
+  const handleProfileSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    updateUser({
-      userId: user.id,
-      data: {
-        firstName,
-        lastName,
-        email: email.toLowerCase(),
-      },
-    });
-    setProfileFeedback('Profile updated successfully.');
-    setTimeout(() => setProfileFeedback(null), 4_000);
+    try {
+      await updateUser({
+        userId: user.id,
+        data: {
+          firstName,
+          lastName,
+          email: email.toLowerCase(),
+        },
+      });
+      setProfileFeedback('Profile updated successfully.');
+      setTimeout(() => setProfileFeedback(null), 4_000);
+    } catch (error: any) {
+      setProfileFeedback(null);
+      console.error('Failed to update profile:', error);
+    }
   };
 
   const handlePasswordSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setPasswordError(null);
     setPasswordFeedback(null);
-
-    if (currentPassword !== user.password) {
-      setPasswordError('Current password is incorrect.');
-      return;
-    }
 
     if (newPassword.length < 8) {
       setPasswordError('Password must contain at least 8 characters.');
@@ -60,11 +59,14 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
       return;
     }
 
-    await changePassword(newPassword);
-    setPasswordFeedback('Password updated successfully.');
-    setCurrentPassword('');
-    setNewPassword('');
-    setPasswordConfirmation('');
+    try {
+      await changePassword(newPassword);
+      setPasswordFeedback('Password updated successfully.');
+      setNewPassword('');
+      setPasswordConfirmation('');
+    } catch (error: any) {
+      setPasswordError(error.message || 'Failed to change password');
+    }
   };
 
   return (
@@ -120,16 +122,6 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
         </header>
 
         <form className="form form--stacked" onSubmit={handlePasswordSubmit}>
-          <label className="form__label">
-            Current password
-            <input
-              type="password"
-              className="form__input"
-              value={currentPassword}
-              onChange={(event) => setCurrentPassword(event.target.value)}
-              required
-            />
-          </label>
           <label className="form__label">
             New password
             <input

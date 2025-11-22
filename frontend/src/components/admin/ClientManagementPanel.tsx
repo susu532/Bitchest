@@ -35,7 +35,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     [users],
   );
 
-  const handleCreate = (event: FormEvent) => {
+  const handleCreate = async (event: FormEvent) => {
     event.preventDefault();
     setCreationError(null);
     const exists = users.some((user) => user.email.toLowerCase() === creationData.email.toLowerCase());
@@ -43,33 +43,42 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       setCreationError('A user with this email already exists. Choose another email address.');
       return;
     }
-    const { tempPassword } = createClient(creationData);
-    setCreationFeedback(
-      `Client created successfully. Temporary password: ${tempPassword} (share securely with the client).`,
-    );
-    setCreationError(null);
-    setCreationData({ firstName: '', lastName: '', email: '' });
-    setIsCreating(false);
+    try {
+      const result = await createClient(creationData);
+      setCreationFeedback(
+        `Client created successfully. Temporary password: ${result.tempPassword} (share securely with the client).`,
+      );
+      setCreationError(null);
+      setCreationData({ firstName: '', lastName: '', email: '' });
+      setIsCreating(false);
+    } catch (error: any) {
+      setCreationError(error.message || 'Failed to create client');
+    }
   };
 
-  const handleEdit = (event: FormEvent) => {
+  const handleEdit = async (event: FormEvent) => {
     event.preventDefault();
     if (!editingUser) {
       return;
     }
-    updateUser({
-      userId: editingUser.id,
-      data: {
-        firstName: editingUser.firstName,
-        lastName: editingUser.lastName,
-        email: editingUser.email.toLowerCase(),
-      },
-    });
-    setEditFeedback('Client updated successfully.');
-    setEditingUser(null);
+    try {
+      await updateUser({
+        userId: editingUser.id,
+        data: {
+          firstName: editingUser.firstName,
+          lastName: editingUser.lastName,
+          email: editingUser.email.toLowerCase(),
+        },
+      });
+      setEditFeedback('Client updated successfully.');
+      setEditingUser(null);
+    } catch (error: any) {
+      setEditFeedback(null);
+      console.error('Failed to update client:', error);
+    }
   };
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = async (userId: string) => {
     const target = users.find((user) => user.id === userId);
     if (!target) {
       return;
@@ -80,7 +89,11 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     );
 
     if (confirmation) {
-      deleteUser(userId);
+      try {
+        await deleteUser(userId);
+      } catch (error: any) {
+        console.error('Failed to delete user:', error);
+      }
     }
   };
 

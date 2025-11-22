@@ -19,23 +19,26 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
   const [email, setEmail] = useState(admin.email);
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
 
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const handleProfileSubmit = (event: FormEvent) => {
+  const handleProfileSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    updateUser({
-      userId: admin.id,
-      data: {
-        firstName,
-        lastName,
-        email: email.toLowerCase(),
-      },
-    });
-    setProfileMessage('Profile updated successfully.');
-    setTimeout(() => setProfileMessage(null), 4_000);
+    try {
+      await updateUser({
+        userId: admin.id,
+        data: {
+          firstName,
+          lastName,
+          email: email.toLowerCase(),
+        },
+      });
+      setProfileMessage('Profile updated successfully.');
+      setTimeout(() => setProfileMessage(null), 4_000);
+    } catch (error: any) {
+      console.error('Failed to update profile:', error);
+    }
   };
 
   const handlePasswordSubmit = async (event: FormEvent) => {
@@ -43,20 +46,18 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
     setPasswordError(null);
     setPasswordMessage(null);
 
-    if (currentPassword !== admin.password) {
-      setPasswordError('Current password is incorrect.');
-      return;
-    }
-
     if (newPassword.length < 8) {
       setPasswordError('New password must contain at least 8 characters.');
       return;
     }
 
-    await changePassword(newPassword);
-    setPasswordMessage('Password updated. The change is effective immediately.');
-    setCurrentPassword('');
-    setNewPassword('');
+    try {
+      await changePassword(newPassword);
+      setPasswordMessage('Password updated. The change is effective immediately.');
+      setNewPassword('');
+    } catch (error: any) {
+      setPasswordError(error.message || 'Failed to change password');
+    }
   };
 
   return (
@@ -115,17 +116,6 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
         </header>
 
         <form className="form form--stacked" onSubmit={handlePasswordSubmit}>
-          <label className="form__label">
-            Current password
-            <input
-              type="password"
-              className="form__input"
-              value={currentPassword}
-              onChange={(event) => setCurrentPassword(event.target.value)}
-              required
-            />
-          </label>
-
           <label className="form__label">
             New password
             <input
