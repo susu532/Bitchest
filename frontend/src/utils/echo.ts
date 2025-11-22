@@ -6,9 +6,6 @@ declare global {
     Echo: any;
     Pusher: typeof Pusher;
   }
-  interface ImportMeta {
-    env: Record<string, string>;
-  }
 }
 
 // Pusher fallback configuration (using Reverb which uses Pusher protocol)
@@ -22,17 +19,19 @@ export const echoService = {
       return this.echo;
     }
 
+    // Configuration for Reverb WebSocket server
+    // Adjust these values if running on different host/port
     this.echo = new Echo({
-      broadcaster: 'pusher',
-      key: import.meta.env.VITE_REVERB_APP_KEY || '7kfpzm9vblwo9jdjebla',
-      wsHost: import.meta.env.VITE_REVERB_HOST || 'localhost',
-      wsPort: parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
-      wssPort: parseInt(import.meta.env.VITE_REVERB_PORT || '8080'),
+      broadcaster: 'pusher' as const,
+      key: '7kfpzm9vblwo9jdjebla', // REVERB_APP_KEY from .env
+      wsHost: 'localhost', // REVERB_HOST
+      wsPort: 8080, // REVERB_PORT
+      wssPort: 8080,
       cluster: 'mt1',
       forceTLS: false,
       encrypted: false,
       disableStats: true,
-    });
+    } as any);
 
     return this.echo;
   },
