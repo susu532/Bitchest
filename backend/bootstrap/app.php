@@ -20,15 +20,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->statefulApi();
         
-        // Disable CSRF for API routes (they're protected by auth)
+        // Disable CSRF for API routes - use exact path matching
         $middleware->validateCsrfTokens(except: [
-            '/auth/*',
-            '/api/*',
-            '/cryptocurrencies/*',
-            '/clients/*',
-            '/users/*',
-            '/wallet/*',
-            '/user/*',
+            'auth/login',
+            'auth/logout',
+            'auth/change-password',
+            'auth/me',
+            'user/profile',
+            'users',
+            'users/*',
+            'clients',
+            'clients/*',
+            'cryptocurrencies',
+            'cryptocurrencies/*',
+            'wallet/buy',
+            'wallet/sell',
+            'wallet/summary',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
