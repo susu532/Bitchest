@@ -85,13 +85,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   const changePassword = useCallback(
-    async (newPassword: string) => {
+    async (currentPassword: string, newPassword: string) => {
       if (!user) {
         throw new Error('No active user');
       }
 
       try {
-        const response: any = await api.changePassword(newPassword);
+        const response: any = await api.changePassword(currentPassword, newPassword);
         if (!response.success) {
           throw new Error(response.message || 'Failed to change password');
         }

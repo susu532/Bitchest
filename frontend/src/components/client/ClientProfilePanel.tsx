@@ -21,6 +21,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
   const [profileFeedback, setProfileFeedback] = useState<string | null>(null);
 
   const [newPassword, setNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordFeedback, setPasswordFeedback] = useState<string | null>(null);
@@ -49,8 +50,13 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     setPasswordError(null);
     setPasswordFeedback(null);
 
+    if (!currentPassword) {
+      setPasswordError('Please enter your current password.');
+      return;
+    }
+
     if (newPassword.length < 8) {
-      setPasswordError('Password must contain at least 8 characters.');
+      setPasswordError('New password must contain at least 8 characters.');
       return;
     }
 
@@ -60,8 +66,9 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     }
 
     try {
-      await changePassword(newPassword);
+      await changePassword(currentPassword, newPassword);
       setPasswordFeedback('Password updated successfully.');
+      setCurrentPassword('');
       setNewPassword('');
       setPasswordConfirmation('');
     } catch (error: any) {
@@ -122,6 +129,17 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
         </header>
 
         <form className="form form--stacked" onSubmit={handlePasswordSubmit}>
+          <label className="form__label">
+            Current password
+            <input
+              type="password"
+              className="form__input"
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+              required
+              minLength={6}
+            />
+          </label>
           <label className="form__label">
             New password
             <input

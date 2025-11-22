@@ -90,10 +90,20 @@ class AuthController extends Controller
         }
 
         $request->validate([
-            'newPassword' => 'required|string|min:6',
+            'currentPassword' => 'required|string',
+            'newPassword' => 'required|string|min:6|different:currentPassword',
         ]);
 
         $user = auth()->user();
+
+        // Verify current password
+        if (!Hash::check($request->currentPassword, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Current password is incorrect',
+            ], 401);
+        }
+
         $user->password = Hash::make($request->newPassword);
         $user->save();
 
