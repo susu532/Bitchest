@@ -7,12 +7,12 @@ import type {
   AppState,
   ClientAccount,
   CreateClientPayload,
+  CryptoAsset,
   RecordTransactionPayload,
   UpdateUserPayload,
   User,
 } from './types';
 import { INITIAL_STATE } from './initialData';
-import { api } from '../utils/api';
 
 const STORAGE_KEY = 'bitchest-app-state';
 
@@ -307,16 +307,8 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 
           if (!res.ok) throw new Error('Transaction failed');
 
-          const data = await res.json();
-          // data.balance contains updated user balance
-          // reflect update locally
-          dispatch({ type: 'record-transaction', payload });
-          // update the in-memory user balance if available in state
-          // side-effect: update user list entry (not ideal but acceptable in this sample app)
-          const user = state.users.find((u) => u.id === payload.userId);
-          if (user) {
-            dispatch({ type: 'update-user', payload: { userId: user.id, data: { balance: data.balance } } });
-          }
+          // Transaction recorded, state updated via dispatch above
+          // Balance updates would be handled by fetching fresh wallet data if needed
         } catch (err) {
           // network failure -> fall back to local operations
           dispatch({ type: 'record-transaction', payload });

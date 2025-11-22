@@ -79,6 +79,6 @@ export type AppAction =
   | { type: 'create-client'; payload: { user: User; account: ClientAccount } }
   | { type: 'delete-user'; payload: DeleteUserPayload }
   | { type: 'update-client-password'; payload: UpdateClientPasswordPayload }
-  | { type: 'record-transaction'; payload: RecordTransactionPayload };
+  | { type: 'record-transaction'; payload: RecordTransactionPayload }
   | { type: 'set-crypto-assets'; payload: Record<string, CryptoAsset> };
 
