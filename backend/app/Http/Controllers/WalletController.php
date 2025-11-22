@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\WalletTransaction;
 use App\Models\ClientAccount;
 use App\Models\CryptoPrice;
+use App\Events\UserBalanceChanged;
+use App\Events\TransactionCompleted;
 use Illuminate\Http\Request;
 
 class WalletController extends Controller
