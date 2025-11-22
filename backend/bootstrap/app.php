@@ -12,12 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Add CORS middleware first - this runs before everything else
+        $middleware->use([
+            \App\Http\Middleware\CorsMiddleware::class,
+        ]);
+        
         $middleware->trustProxies(at: '*');
         $middleware->statefulApi();
-        
-        $middleware->use([
-            \Illuminate\Http\Middleware\HandleCors::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
