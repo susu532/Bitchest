@@ -12,8 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // CORS configuration for API
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+        // Add custom CORS middleware first
+        $middleware->prepend(\App\Http\Middleware\CorsMiddleware::class);
         
         $middleware->alias([
             'admin' => \App\Http\Middleware\CheckAdmin::class,
