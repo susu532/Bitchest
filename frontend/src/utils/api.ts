@@ -30,17 +30,28 @@ class ApiService {
       ...options,
     };
 
-    const response = await fetch(url, defaultOptions);
+    console.log(`[API] ${defaultOptions.method} ${url}`, defaultOptions);
+    
+    try {
+      const response = await fetch(url, defaultOptions);
+      
+      console.log(`[API] Response status: ${response.status}`, {
+        headers: Object.fromEntries(response.headers),
+      });
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({
-        success: false,
-        message: `HTTP ${response.status}`,
-      }));
-      throw new Error(error.message || `HTTP ${response.status}`);
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({
+          success: false,
+          message: `HTTP ${response.status}`,
+        }));
+        throw new Error(error.message || `HTTP ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error: any) {
+      console.error(`[API] Error on ${endpoint}:`, error);
+      throw error;
     }
-
-    return response.json();
   }
 
   // Authentication endpoints
