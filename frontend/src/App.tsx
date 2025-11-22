@@ -1,7 +1,10 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import { AppStateProvider } from './state/AppStateProvider';
 import { AuthProvider, useAuth } from './state/AuthContext';
+import { useNotifications, NotificationContainer } from './components/common/Notifications';
+import { echoService } from './utils/echo';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ClientDashboard from './pages/ClientDashboard';
@@ -31,23 +34,55 @@ function RequireAuth({ allowedRoles }: RequireAuthProps) {
 }
 
 function AppRoutes() {
-  const { isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
+  const { notifications, addNotification, removeNotification } = useNotifications();
+
+  useEffect(() => {
+    if (user?.id) {
+      // Subscribe to user-specific events
+      echoService.subscribeToUserEvents(
+        user.id,
+        (data) => {
+          addNotification(
+            `Balance Changed: ${data.reason}`,
+            'info',
+            `New balance: €${data.newBalance.toFixed(2)} (${data.balanceChange > 0 ? '+' : ''}€${data.balanceChange.toFixed(2)})`,
+          );
+        },
+        (data) => {
+          addNotification(
+            `${data.type === 'buy' ? 'Purchase' : 'Sale'} Completed`,
+            'success',
+            `${data.message}`,
+          );
+        },
+      );
+
+      return () => {
+        echoService.unsubscribe(`user.${user.id}`);
+      };
+    }
+  }, [user?.id, addNotification]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<LoginPage />} />
-      <Route element={<RequireAuth allowedRoles={['admin']} />}>
-        <Route path="/admin/*" element={<AdminDashboard />} />
-      </Route>
-      <Route element={<RequireAuth allowedRoles={['client']} />}>
-        <Route path="/client/*" element={<ClientDashboard />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route element={<RequireAuth allowedRoles={['admin']} />}>
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Route>
+        <Route element={<RequireAuth allowedRoles={['client']} />}>
+          <Route path="/client/*" element={<ClientDashboard />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      <NotificationContainer notifications={notifications} onRemove={removeNotification} />
+    </>
   );
 }
 
