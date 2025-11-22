@@ -20,9 +20,9 @@ class CorsMiddleware
             'http://192.168.1.231:3000',
         ];
 
-        // Check if origin is allowed
-        $is_origin_allowed = in_array($origin, $allowed_origins);
-        $response_origin = $is_origin_allowed ? $origin : 'http://localhost:3000';
+        // If no origin is provided or it's in allowed list, allow it
+        $is_origin_allowed = empty($origin) || in_array($origin, $allowed_origins);
+        $response_origin = ($is_origin_allowed && !empty($origin)) ? $origin : 'http://localhost:3000';
 
         // Handle preflight requests BEFORE authentication
         if ($request->getMethod() === 'OPTIONS') {
