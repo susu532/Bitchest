@@ -25,15 +25,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(SESSION_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as { userId: string };
-        setCurrentUserId(parsed.userId);
+    // Try to restore session by asking backend for /me if cookie session exists
+    async function restore() {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/me`, {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const user = await res.json();
+          if (user && user.id) {
+            setCurrentUserId(String(user.id));
+            window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(user.id) }));
+            return;
+          }
+        }
+
+        // fallback to local session
+        const stored = window.localStorage.getItem(SESSION_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored) as { userId: string };
+          setCurrentUserId(parsed.userId);
+        }
+      } catch (error) {
+        console.warn('Unable to restore BitChest session from API', error);
       }
-    } catch (error) {
-      console.warn('Unable to restore BitChest session', error);
     }
+
+    restore();
   }, []);
 
   const user = useMemo(
@@ -43,26 +61,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login: AuthContextValue['login'] = useCallback(
     async ({ email, password }) => {
-      const normalizedEmail = email.trim().toLowerCase();
-      const found = state.users.find((candidate) => candidate.email === normalizedEmail);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
 
-      if (!found) {
-        return { success: false, message: 'Account not found' };
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        return { success: false, message: data.message ?? 'Login failed' };
       }
 
-      if (found.password !== password) {
-        return { success: false, message: 'Invalid credentials' };
+      const payload = await res.json();
+      if (payload.user && payload.user.id) {
+        setCurrentUserId(String(payload.user.id));
+        window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: String(payload.user.id) }));
+        return { success: true };
       }
 
-      setCurrentUserId(found.id);
-      window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: found.id }));
-
-      return { success: true };
+      return { success: false, message: 'Login failed' };
+    } catch (error) {
+      return { success: false, message: 'Network error' };
+    }
     },
     [state.users],
   );
 
   const logout = useCallback(() => {
+    // call backend to destroy session cookie
+    fetch(`${import.meta.env.VITE_API_BASE}/logout`, { method: 'POST', credentials: 'include' }).catch(() => {});
     setCurrentUserId(null);
     window.localStorage.removeItem(SESSION_KEY);
   }, []);

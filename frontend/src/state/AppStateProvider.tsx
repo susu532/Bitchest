@@ -116,9 +116,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
         clientAccounts: { ...state.clientAccounts, [userId]: updatedAccount },
       };
     }
+    case 'set-crypto-assets': {
+      return { ...state, cryptoAssets: action.payload };
+    }
     default:
       return state;
   }
+
+  // 'set-crypto-assets' handled by reducer dynamic dispatch: keep existing logic simple
 }
 
 function generateTempPassword(): string {
@@ -146,6 +151,54 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   useEffect(() => {
     persistState(state);
   }, [state]);
+
+  // Try to fetch cryptos from backend and merge with local assets (to obtain icons / ids)
+  useEffect(() => {
+    const apiBase = import.meta.env.VITE_API_BASE;
+    async function loadBackendCryptos() {
+      try {
+        const res = await fetch(`${apiBase}/cryptos`, { credentials: 'include' });
+        if (!res.ok) return;
+
+        const list = await res.json();
+        // list items: { id, symbol, name, price }
+        const mapped: Record<string, CryptoAsset> = {} as Record<string, CryptoAsset>;
+        // use constants to keep icons and stable ids
+        const { CRYPTOCURRENCIES } = await import('../constants/cryptocurrencies');
+
+        await Promise.all(
+          list.map(async (c: any) => {
+            const local = CRYPTOCURRENCIES.find((lc) => lc.symbol === c.symbol);
+            const assetId = local?.id ?? String(c.id);
+            const icon = local?.icon ?? '/assets/placeholder.png';
+
+            // fetch history
+            const hRes = await fetch(`${apiBase}/cryptos/${c.id}/history`, { credentials: 'include' });
+            const historyRaw = hRes.ok ? await hRes.json() : [];
+            const history = historyRaw.map((r: any) => ({ date: new Date(r.date).toISOString(), value: Number(r.price) }));
+
+            mapped[assetId] = {
+              id: assetId,
+              name: c.name,
+              symbol: c.symbol,
+              icon,
+              // numeric id in backend DB
+              backendId: c.id,
+              history,
+            } as CryptoAsset;
+          }),
+        );
+
+        // replace crypto assets in state, keeping existing ones if backend unavailable
+        dispatch({ type: 'set-crypto-assets', payload: { ...(state.cryptoAssets ?? {}), ...mapped } });
+      } catch (err) {
+        // ignore failures; keep local generated data
+      }
+    }
+
+    loadBackendCryptos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const createClient = useCallback(
     (payload: CreateClientPayload) => {
@@ -177,28 +230,99 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 
   const updateUser = useCallback(
     (payload: UpdateUserPayload) => {
-      dispatch({ type: 'update-user', payload });
+      const apiBase = import.meta.env.VITE_API_BASE;
+      (async () => {
+        try {
+          await fetch(`${apiBase}/admin/users/${payload.userId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload.data),
+          });
+        } catch (err) {
+          // ignore network failure and fall through to local update
+        } finally {
+          dispatch({ type: 'update-user', payload });
+        }
+      })();
     },
     [dispatch],
   );
 
   const updateClientPassword = useCallback(
     (userId: string, password: string) => {
-      dispatch({ type: 'update-client-password', payload: { userId, newPassword: password } });
+      const apiBase = import.meta.env.VITE_API_BASE;
+      (async () => {
+        try {
+          await fetch(`${apiBase}/me/password`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ current_password: password, new_password: password, new_password_confirmation: password }),
+          });
+        } catch (err) {
+          // ignore network error; local update still applied
+        } finally {
+          dispatch({ type: 'update-client-password', payload: { userId, newPassword: password } });
+        }
+      })();
     },
     [dispatch],
   );
 
   const deleteUser = useCallback(
     (userId: string) => {
-      dispatch({ type: 'delete-user', payload: { userId } });
+      const apiBase = import.meta.env.VITE_API_BASE;
+      (async () => {
+        try {
+          await fetch(`${apiBase}/admin/users/${userId}`, { method: 'DELETE', credentials: 'include' });
+        } catch (err) {
+          // ignore
+        } finally {
+          dispatch({ type: 'delete-user', payload: { userId } });
+        }
+      })();
     },
     [dispatch],
   );
 
   const recordTransaction = useCallback(
     (payload: RecordTransactionPayload) => {
-      dispatch({ type: 'record-transaction', payload });
+      const apiBase = import.meta.env.VITE_API_BASE;
+      (async () => {
+        try {
+          // call appropriate endpoint
+          const type = payload.transaction.type;
+          const cryptoId = payload.transaction.cryptoId;
+          const asset = state.cryptoAssets[cryptoId];
+          const backendCryptoId = asset?.backendId ?? cryptoId;
+          const quantity = payload.transaction.quantity;
+
+          const endpoint = type === 'buy' ? 'wallet/buy' : 'wallet/sell';
+          const res = await fetch(`${apiBase}/${endpoint}`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cryptocurrency_id: backendCryptoId, quantity }),
+          });
+
+          if (!res.ok) throw new Error('Transaction failed');
+
+          const data = await res.json();
+          // data.balance contains updated user balance
+          // reflect update locally
+          dispatch({ type: 'record-transaction', payload });
+          // update the in-memory user balance if available in state
+          // side-effect: update user list entry (not ideal but acceptable in this sample app)
+          const user = state.users.find((u) => u.id === payload.userId);
+          if (user) {
+            dispatch({ type: 'update-user', payload: { userId: user.id, data: { balance: data.balance } } });
+          }
+        } catch (err) {
+          // network failure -> fall back to local operations
+          dispatch({ type: 'record-transaction', payload });
+        }
+      })();
     },
     [dispatch],
   );
