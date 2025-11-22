@@ -51,9 +51,9 @@ class WalletController extends Controller
         $account->balance_eur -= $totalCost;
         $account->save();
 
-        // Broadcast events
-        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency purchase'));
-        broadcast(new TransactionCompleted($user->id, 'buy', $request->cryptoId, $request->quantity, $request->pricePerUnit));
+        // Broadcast events (synchronous - no queue needed)
+        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency purchase'))->now();
+        broadcast(new TransactionCompleted($user->id, 'buy', $request->cryptoId, $request->quantity, $request->pricePerUnit))->now();
 
         return response()->json([
             'success' => true,
@@ -117,9 +117,9 @@ class WalletController extends Controller
         $account->balance_eur += $totalProceeds;
         $account->save();
 
-        // Broadcast events
-        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency sale'));
-        broadcast(new TransactionCompleted($user->id, 'sell', $request->cryptoId, $request->quantity, $request->pricePerUnit));
+        // Broadcast events (synchronous - no queue needed)
+        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency sale'))->now();
+        broadcast(new TransactionCompleted($user->id, 'sell', $request->cryptoId, $request->quantity, $request->pricePerUnit))->now();
 
         return response()->json([
             'success' => true,

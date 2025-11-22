@@ -13,6 +13,7 @@ window.Pusher = Pusher;
 
 export const echoService = {
   echo: null as any,
+  isConnected: false,
 
   initialize(): any {
     if (this.echo) {
@@ -32,6 +33,22 @@ export const echoService = {
       encrypted: false,
       disableStats: true,
     } as any);
+
+    // Add error and connection handlers
+    this.echo.connector.socket.addEventListener('connect', () => {
+      console.log('[Echo] WebSocket connected');
+      this.isConnected = true;
+    });
+
+    this.echo.connector.socket.addEventListener('disconnect', () => {
+      console.warn('[Echo] WebSocket disconnected');
+      this.isConnected = false;
+    });
+
+    this.echo.connector.socket.addEventListener('error', (error: any) => {
+      console.error('[Echo] WebSocket error:', error);
+      this.isConnected = false;
+    });
 
     return this.echo;
   },
@@ -80,11 +97,17 @@ export const echoService = {
     return this.initialize();
   },
 
+  // Check connection status
+  isWebSocketConnected(): boolean {
+    return this.isConnected;
+  },
+
   // Disconnect
   disconnect() {
     if (this.echo) {
       this.echo.disconnect();
       this.echo = null;
+      this.isConnected = false;
     }
   },
 };
