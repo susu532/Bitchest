@@ -209,15 +209,12 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   );
 
   const updateClientPassword = useCallback(
-    async (userId: string, newPassword: string) => {
-      // Note: This function assumes the current password verification happens at the caller level
-      // For security, the backend should require the current password
-      // For now, we'll pass empty string as currentPassword (should be updated to require current password in UI)
-      const response: any = await api.changePassword('', newPassword);
+    async (userId: string, password: string) => {
+      const response: any = await api.changePassword(password);
       if (!response.success) {
         throw new Error(response.message || 'Failed to change password');
       }
-      dispatch({ type: 'update-client-password', payload: { userId, newPassword } });
+      dispatch({ type: 'update-client-password', payload: { userId, newPassword: password } });
     },
     [],
   );
