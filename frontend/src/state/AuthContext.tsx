@@ -1,70 +1,87 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { User } from './types';
-import { useAppServices, useAppState } from './AppStateProvider';
+import { api } from '../utils/api';
 
 type AuthContextValue = {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (credentials: { email: string; password: string }) => Promise<{ success: boolean; message?: string }>;
-  logout: () => void;
+  logout: () => Promise<void>;
   changePassword: (newPassword: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-const SESSION_KEY = 'bitchest-active-user';
 
 type AuthProviderProps = {
   children: React.ReactNode;
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const state = useAppState();
-  const { updateClientPassword } = useAppServices();
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Check if user is already logged in when component mounts
   useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(SESSION_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as { userId: string };
-        setCurrentUserId(parsed.userId);
+    const checkAuth = async () => {
+      try {
+        const response: any = await api.getCurrentUser();
+        if (response.success && response.user) {
+          setUser({
+            id: response.user.id,
+            firstName: response.user.firstName,
+            lastName: response.user.lastName,
+            email: response.user.email,
+            role: response.user.role,
+            password: '',
+            createdAt: response.user.createdAt,
+            updatedAt: response.user.updatedAt,
+          });
+        }
+      } catch (error) {
+        console.warn('Unable to restore session', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.warn('Unable to restore BitChest session', error);
-    }
-  }, []);
+    };
 
-  const user = useMemo(
-    () => state.users.find((candidate) => candidate.id === currentUserId) ?? null,
-    [currentUserId, state.users],
-  );
+    checkAuth();
+  }, []);
 
   const login: AuthContextValue['login'] = useCallback(
     async ({ email, password }) => {
-      const normalizedEmail = email.trim().toLowerCase();
-      const found = state.users.find((candidate) => candidate.email === normalizedEmail);
-
-      if (!found) {
-        return { success: false, message: 'Account not found' };
+      try {
+        const response: any = await api.login(email, password);
+        if (response.success && response.user) {
+          setUser({
+            id: response.user.id,
+            firstName: response.user.firstName,
+            lastName: response.user.lastName,
+            email: response.user.email,
+            role: response.user.role,
+            password: '',
+            createdAt: response.user.createdAt,
+            updatedAt: response.user.updatedAt,
+          });
+          return { success: true };
+        }
+        return { success: false, message: response.message || 'Login failed' };
+      } catch (error: any) {
+        return { success: false, message: error.message || 'Login failed' };
       }
-
-      if (found.password !== password) {
-        return { success: false, message: 'Invalid credentials' };
-      }
-
-      setCurrentUserId(found.id);
-      window.localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: found.id }));
-
-      return { success: true };
     },
-    [state.users],
+    [],
   );
 
-  const logout = useCallback(() => {
-    setCurrentUserId(null);
-    window.localStorage.removeItem(SESSION_KEY);
+  const logout = useCallback(async () => {
+    try {
+      await api.logout();
+    } catch (error) {
+      console.warn('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   const changePassword = useCallback(
@@ -73,20 +90,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('No active user');
       }
 
-      updateClientPassword(user.id, newPassword);
+      try {
+        const response: any = await api.changePassword(newPassword);
+        if (!response.success) {
+          throw new Error(response.message || 'Failed to change password');
+        }
+      } catch (error) {
+        throw error;
+      }
     },
-    [updateClientPassword, user],
+    [user],
   );
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isAuthenticated: Boolean(user),
+      isLoading,
       login,
       logout,
       changePassword,
     }),
-    [changePassword, login, logout, user],
+    [changePassword, isLoading, login, logout, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

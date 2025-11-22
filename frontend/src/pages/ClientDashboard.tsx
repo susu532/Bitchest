@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 import ClientOverviewPanel from '../components/client/ClientOverviewPanel';
@@ -6,11 +7,20 @@ import ClientWalletPanel from '../components/client/ClientWalletPanel';
 import MarketOverviewPanel from '../components/common/MarketOverviewPanel';
 import ClientProfilePanel from '../components/client/ClientProfilePanel';
 import { useAuth } from '../state/AuthContext';
-import { useAppState } from '../state/AppStateProvider';
+import { useAppState, useAppServices } from '../state/AppStateProvider';
 
 export default function ClientDashboard() {
   const { user, logout } = useAuth();
   const state = useAppState();
+  const { fetchCryptoAssets, fetchClientAccount } = useAppServices();
+
+  useEffect(() => {
+    // Fetch data when dashboard loads
+    fetchCryptoAssets();
+    if (user?.id) {
+      fetchClientAccount();
+    }
+  }, [fetchCryptoAssets, fetchClientAccount, user?.id]);
 
   if (!user) {
     return <Navigate to="/" replace />;

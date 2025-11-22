@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { FormEvent } from 'react';
 
 import { useAuth } from '../state/AuthContext';
-import { useAppState } from '../state/AppStateProvider';
 
 type LocationState = {
   from?: { pathname: string };
@@ -13,8 +12,7 @@ type LocationState = {
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
-  const state = useAppState();
+  const { login, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -34,16 +32,18 @@ export default function LoginPage() {
       return;
     }
 
+    // Navigate based on user role after login
     const target = (location.state as LocationState | null)?.from?.pathname;
-    const user = state.users.find((candidate) => candidate.email === email.toLowerCase());
 
-    if (target) {
-      navigate(target, { replace: true });
-    } else if (user?.role === 'admin') {
-      navigate('/admin', { replace: true });
-    } else {
-      navigate('/client', { replace: true });
-    }
+    setTimeout(() => {
+      if (target) {
+        navigate(target, { replace: true });
+      } else if (user?.role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/client', { replace: true });
+      }
+    }, 100);
   };
 
   return (
@@ -106,4 +106,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

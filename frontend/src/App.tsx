@@ -12,7 +12,11 @@ type RequireAuthProps = {
 
 function RequireAuth({ allowedRoles }: RequireAuthProps) {
   const location = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/" state={{ from: location }} replace />;
@@ -27,6 +31,12 @@ function RequireAuth({ allowedRoles }: RequireAuthProps) {
 }
 
 function AppRoutes() {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />

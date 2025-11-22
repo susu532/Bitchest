@@ -1,15 +1,23 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import DashboardLayout from '../components/layout/DashboardLayout';
 import AdminProfilePanel from '../components/admin/AdminProfilePanel';
 import ClientManagementPanel from '../components/admin/ClientManagementPanel';
 import MarketOverviewPanel from '../components/common/MarketOverviewPanel';
 import { useAuth } from '../state/AuthContext';
-import { useAppState } from '../state/AppStateProvider';
+import { useAppState, useAppServices } from '../state/AppStateProvider';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const state = useAppState();
+  const { fetchCryptoAssets, fetchUsers } = useAppServices();
+
+  useEffect(() => {
+    // Fetch data when dashboard loads
+    fetchCryptoAssets();
+    fetchUsers();
+  }, [fetchCryptoAssets, fetchUsers]);
 
   if (!user) {
     return <Navigate to="/" replace />;

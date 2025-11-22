@@ -1,7 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from 'react';
 
-import { nanoid } from 'nanoid';
-
 import type {
   AppAction,
   AppState,
@@ -12,6 +10,7 @@ import type {
   User,
 } from './types';
 import { INITIAL_STATE } from './initialData';
+import { api } from '../utils/api';
 
 const STORAGE_KEY = 'bitchest-app-state';
 
@@ -21,11 +20,14 @@ type AppStateContextValue = {
 };
 
 type AppServicesContextValue = {
-  createClient: (payload: CreateClientPayload) => { tempPassword: string; user: User };
-  updateUser: (payload: UpdateUserPayload) => void;
-  updateClientPassword: (userId: string, password: string) => void;
-  deleteUser: (userId: string) => void;
-  recordTransaction: (payload: RecordTransactionPayload) => void;
+  createClient: (payload: CreateClientPayload) => Promise<{ tempPassword: string; user: User }>;
+  updateUser: (payload: UpdateUserPayload) => Promise<void>;
+  updateClientPassword: (userId: string, password: string) => Promise<void>;
+  deleteUser: (userId: string) => Promise<void>;
+  recordTransaction: (payload: RecordTransactionPayload) => Promise<void>;
+  fetchCryptoAssets: () => Promise<void>;
+  fetchUsers: () => Promise<void>;
+  fetchClientAccount: () => Promise<void>;
 };
 
 const AppStateContext = createContext<AppStateContextValue | undefined>(undefined);
@@ -116,14 +118,31 @@ function appReducer(state: AppState, action: AppAction): AppState {
         clientAccounts: { ...state.clientAccounts, [userId]: updatedAccount },
       };
     }
+    case 'set-crypto-assets': {
+      return {
+        ...state,
+        cryptoAssets: action.payload,
+      };
+    }
+    case 'set-users': {
+      return {
+        ...state,
+        users: action.payload,
+      };
+    }
+    case 'set-client-account': {
+      const { userId, account } = action.payload;
+      return {
+        ...state,
+        clientAccounts: {
+          ...state.clientAccounts,
+          [userId]: account,
+        },
+      };
+    }
     default:
       return state;
   }
-}
-
-function generateTempPassword(): string {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-  return Array.from({ length: 10 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
 }
 
 type AppStateProviderProps = {
@@ -148,18 +167,21 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   }, [state]);
 
   const createClient = useCallback(
-    (payload: CreateClientPayload) => {
-      const now = new Date().toISOString();
-      const tempPassword = generateTempPassword();
+    async (payload: CreateClientPayload) => {
+      const response: any = await api.createClient(payload.firstName, payload.lastName, payload.email);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to create client');
+      }
+
       const user: User = {
-        id: nanoid(),
-        firstName: payload.firstName,
-        lastName: payload.lastName,
-        email: payload.email.toLowerCase(),
+        id: response.user.id,
+        firstName: response.user.firstName,
+        lastName: response.user.lastName,
+        email: response.user.email,
         role: 'client',
-        password: tempPassword,
-        createdAt: now,
-        updatedAt: now,
+        password: '',
+        createdAt: response.user.createdAt,
+        updatedAt: response.user.updatedAt,
       };
 
       const account: ClientAccount = {
@@ -170,42 +192,125 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 
       dispatch({ type: 'create-client', payload: { user, account } });
 
-      return { tempPassword, user };
+      return { tempPassword: response.temporaryPassword, user };
     },
-    [dispatch],
+    [],
   );
 
   const updateUser = useCallback(
-    (payload: UpdateUserPayload) => {
+    async (payload: UpdateUserPayload) => {
+      const response: any = await api.updateProfile(payload.data);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to update profile');
+      }
       dispatch({ type: 'update-user', payload });
     },
-    [dispatch],
+    [],
   );
 
   const updateClientPassword = useCallback(
-    (userId: string, password: string) => {
+    async (userId: string, password: string) => {
+      const response: any = await api.changePassword(password);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to change password');
+      }
       dispatch({ type: 'update-client-password', payload: { userId, newPassword: password } });
     },
-    [dispatch],
+    [],
   );
 
   const deleteUser = useCallback(
-    (userId: string) => {
+    async (userId: string) => {
+      const response: any = await api.deleteClient(userId);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to delete user');
+      }
       dispatch({ type: 'delete-user', payload: { userId } });
     },
-    [dispatch],
+    [],
   );
 
   const recordTransaction = useCallback(
-    (payload: RecordTransactionPayload) => {
+    async (payload: RecordTransactionPayload) => {
       dispatch({ type: 'record-transaction', payload });
     },
-    [dispatch],
+    [],
   );
 
+  const fetchCryptoAssets = useCallback(async () => {
+    try {
+      const response: any = await api.getCryptocurrencies();
+      if (response.success) {
+        dispatch({ type: 'set-crypto-assets', payload: response.cryptoAssets });
+      }
+    } catch (error) {
+      console.warn('Failed to fetch cryptocurrencies:', error);
+    }
+  }, []);
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      const response: any = await api.getAllUsers();
+      if (response.success) {
+        dispatch({
+          type: 'set-users',
+          payload: response.users.map((u: any) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            email: u.email,
+            role: u.role,
+            password: '',
+            createdAt: u.createdAt,
+            updatedAt: u.updatedAt,
+          })),
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to fetch users:', error);
+    }
+  }, []);
+
+  const fetchClientAccount = useCallback(async () => {
+    try {
+      const response: any = await api.getClientAccount();
+      if (response.success) {
+        dispatch({
+          type: 'set-client-account',
+          payload: {
+            userId: response.account.userId,
+            account: {
+              userId: response.account.userId,
+              balanceEUR: response.account.balanceEUR,
+              transactions: response.account.transactions.map((t: any) => ({
+                id: t.id,
+                cryptoId: t.cryptoId,
+                quantity: t.quantity,
+                pricePerUnit: t.pricePerUnit,
+                type: t.type,
+                timestamp: t.timestamp,
+              })),
+            },
+          },
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to fetch client account:', error);
+    }
+  }, []);
+
   const servicesValue = useMemo(
-    () => ({ createClient, updateUser, updateClientPassword, deleteUser, recordTransaction }),
-    [createClient, updateClientPassword, deleteUser, recordTransaction, updateUser],
+    () => ({
+      createClient,
+      updateUser,
+      updateClientPassword,
+      deleteUser,
+      recordTransaction,
+      fetchCryptoAssets,
+      fetchUsers,
+      fetchClientAccount,
+    }),
+    [createClient, updateClientPassword, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
   );
 
   return (
