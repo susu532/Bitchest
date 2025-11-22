@@ -22,7 +22,6 @@ type AppStateContextValue = {
 type AppServicesContextValue = {
   createClient: (payload: CreateClientPayload) => Promise<{ tempPassword: string; user: User }>;
   updateUser: (payload: UpdateUserPayload) => Promise<void>;
-  updateClientPassword: (userId: string, password: string) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
   recordTransaction: (payload: RecordTransactionPayload) => Promise<void>;
   fetchCryptoAssets: () => Promise<void>;
@@ -208,17 +207,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     [],
   );
 
-  const updateClientPassword = useCallback(
-    async (userId: string, password: string) => {
-      const response: any = await api.changePassword(password);
-      if (!response.success) {
-        throw new Error(response.message || 'Failed to change password');
-      }
-      dispatch({ type: 'update-client-password', payload: { userId, newPassword: password } });
-    },
-    [],
-  );
-
   const deleteUser = useCallback(
     async (userId: string) => {
       const response: any = await api.deleteClient(userId);
@@ -303,14 +291,13 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     () => ({
       createClient,
       updateUser,
-      updateClientPassword,
       deleteUser,
       recordTransaction,
       fetchCryptoAssets,
       fetchUsers,
       fetchClientAccount,
     }),
-    [createClient, updateClientPassword, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
+    [createClient, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
   );
 
   return (
