@@ -20,6 +20,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
 
   const [newPassword, setNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
@@ -46,14 +47,20 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
     setPasswordError(null);
     setPasswordMessage(null);
 
+    if (!currentPassword) {
+      setPasswordError('Please enter your current password.');
+      return;
+    }
+
     if (newPassword.length < 8) {
       setPasswordError('New password must contain at least 8 characters.');
       return;
     }
 
     try {
-      await changePassword(newPassword);
+      await changePassword(currentPassword, newPassword);
       setPasswordMessage('Password updated. The change is effective immediately.');
+      setCurrentPassword('');
       setNewPassword('');
     } catch (error: any) {
       setPasswordError(error.message || 'Failed to change password');
@@ -116,6 +123,18 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
         </header>
 
         <form className="form form--stacked" onSubmit={handlePasswordSubmit}>
+          <label className="form__label">
+            Current password
+            <input
+              type="password"
+              className="form__input"
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+              required
+              minLength={6}
+            />
+          </label>
+
           <label className="form__label">
             New password
             <input

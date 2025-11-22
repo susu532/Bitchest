@@ -9,7 +9,7 @@ type AuthContextValue = {
   isLoading: boolean;
   login: (credentials: { email: string; password: string }) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
-  changePassword: (newPassword: string) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
