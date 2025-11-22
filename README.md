@@ -116,17 +116,22 @@ VITE_API_BASE=http://localhost:8000/api
 
 ## Running the Application
 
-### Option 1: Start Both Servers (Linux/Mac)
+### Option 1: Start Both Servers (Windows)
+```bash
+start.bat
+```
+
+### Option 2: Start Both Servers (Linux/Mac)
 ```bash
 bash start.sh
 ```
 
-### Option 2: Start Manually
+### Option 3: Start Manually
 
 **Terminal 1 - Backend:**
 ```bash
 cd backend
-php -S localhost:8000 -t public
+php artisan serve
 ```
 
 **Terminal 2 - Frontend:**
