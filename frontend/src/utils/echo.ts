@@ -54,7 +54,7 @@ export const echoService = {
   },
 
   // Subscribe to user-specific events (balance changes, transactions)
-  subscribeToUserEvents(userId: number, balanceCallback?: (data: any) => void, transactionCallback?: (data: any) => void) {
+  subscribeToUserEvents(userId: number | string, balanceCallback?: (data: any) => void, transactionCallback?: (data: any) => void) {
     const echo = this.initialize();
 
     echo.private(`user.${userId}`).listen('balance-changed', (data: any) => {
