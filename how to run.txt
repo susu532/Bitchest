@@ -1,0 +1,16 @@
+
+**
+cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php -S localhost:8000 -t "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend\public"
+
+
+**
+ cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\frontend"; npm run dev
+
+
+**
+php artisan reverb:start
+
+
+***
+cd backend
+php artisan crypto:update-prices --interval=5
