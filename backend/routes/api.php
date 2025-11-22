@@ -11,6 +11,17 @@ use App\Http\Controllers\CryptoPriceController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// Handle CORS preflight requests
+Route::options('/{any}', function () {
+    return response()
+        ->noContent()
+        ->header('Access-Control-Allow-Origin', request()->header('Origin') ?? '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
+        ->header('Access-Control-Allow-Credentials', 'true')
+        ->header('Access-Control-Max-Age', '86400');
+})->where('any', '.*');
+
 // Public auth routes
 Route::post('/login', [LoginController::class, 'login']);
 

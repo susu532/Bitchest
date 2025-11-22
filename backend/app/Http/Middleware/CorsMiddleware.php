@@ -15,25 +15,29 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $origin = $request->header('Origin') ?? '*';
+        
         // Handle preflight requests
         if ($request->getMethod() === "OPTIONS") {
             return response()
                 ->noContent()
-                ->header('Access-Control-Allow-Origin', $request->header('Origin') ?? '*')
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+                ->header('Access-Control-Allow-Origin', $origin)
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
+                ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
                 ->header('Access-Control-Allow-Credentials', 'true')
-                ->header('Access-Control-Max-Age', '86400');
+                ->header('Access-Control-Max-Age', '86400')
+                ->header('Vary', 'Origin');
         }
 
         $response = $next($request);
 
-        // Add CORS headers to response
-        $response->header('Access-Control-Allow-Origin', $request->header('Origin') ?? '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-            ->header('Access-Control-Allow-Credentials', 'true');
-
-        return $response;
+        // Add CORS headers to all responses
+        return $response
+            ->header('Access-Control-Allow-Origin', $origin)
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
+            ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With')
+            ->header('Access-Control-Allow-Credentials', 'true')
+            ->header('Access-Control-Max-Age', '86400')
+            ->header('Vary', 'Origin');
     }
 }
