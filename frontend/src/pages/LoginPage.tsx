@@ -97,9 +97,7 @@ export default function LoginPage() {
             <li>
               <strong>Admin</strong>: admin@bitchest.example / admin123
             </li>
-            <li>
-              <strong>Client</strong>: bruno@bitchest.example / bruno123
-            </li>
+           
           </ul>
         </div>
       </div>
