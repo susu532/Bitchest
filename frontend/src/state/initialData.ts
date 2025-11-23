@@ -71,7 +71,7 @@ const initialUsers: User[] = [
 const clientAccounts: Record<string, ClientAccount> = {
   [CLIENT_ID]: {
     userId: CLIENT_ID,
-    balanceEUR: 1_250,
+    balanceEUR: 500,
     transactions: seedClientTransactions(),
   },
 };

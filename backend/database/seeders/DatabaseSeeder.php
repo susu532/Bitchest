@@ -35,10 +35,10 @@ class DatabaseSeeder extends Seeder
             'role' => 'client',
         ]);
 
-        // Create client account with 1250 EUR balance
+        // Create client account with 500 EUR balance
         ClientAccount::create([
             'user_id' => $client->id,
-            'balance_eur' => 1250,
+            'balance_eur' => 500,
         ]);
 
         // Seed cryptocurrencies and price data
