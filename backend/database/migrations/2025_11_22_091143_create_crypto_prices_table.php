@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('crypto_id');
             $table->foreign('crypto_id')->references('id')->on('cryptocurrencies')->onDelete('cascade');
             $table->date('price_date');
-            $table->decimal('price', 18, 2);
+            $table->decimal('price', 18, 2)->unsigned();
             $table->timestamps();
             $table->unique(['crypto_id', 'price_date']);
         });
