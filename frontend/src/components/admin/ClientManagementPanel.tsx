@@ -213,26 +213,27 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       </section>
 
       <section className="panel__section" style={{ animationDelay: '0.2s' }}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Wallet value</th>
-              <th>Joined</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {clients.length === 0 ? (
+        <div className="table-wrapper">
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={5} className="table__empty">
-                  No clients yet. Create your first client to get started.
-                </td>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Wallet value</th>
+                <th>Joined</th>
+                <th />
               </tr>
-            ) : (
-              clients.map((client) => (
-                <tr key={client.id}>
+            </thead>
+            <tbody>
+              {clients.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="table__empty">
+                    No clients yet. Create your first client to get started.
+                  </td>
+                </tr>
+              ) : (
+                clients.map((client) => (
+                  <tr key={client.id}>
                   <td>
                     <span className="table__primary-text">{`${client.firstName} ${client.lastName}`}</span>
                     <span className="table__secondary-text">ID: {client.id}</span>
@@ -266,6 +267,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
             )}
           </tbody>
         </table>
+        </div>
       </section>
 
       {editingUser ? (
