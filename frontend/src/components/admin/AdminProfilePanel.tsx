@@ -13,7 +13,7 @@ type AdminProfilePanelProps = {
 
 export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
   const { updateUser } = useAppServices();
-  const { changePassword } = useAuth();
+  const { changePassword, updateUser: updateAuthUser } = useAuth();
 
   const [firstName, setFirstName] = useState(admin.firstName);
   const [lastName, setLastName] = useState(admin.lastName);
@@ -44,6 +44,12 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
           lastName,
           email: email.toLowerCase(),
         },
+      });
+      // Update AuthContext immediately so the user sees changes in real-time
+      updateAuthUser({
+        firstName,
+        lastName,
+        email: email.toLowerCase(),
       });
       setProfileMessage('Profile updated successfully.');
       setTimeout(() => setProfileMessage(null), 4_000);

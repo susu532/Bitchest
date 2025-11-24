@@ -10,6 +10,7 @@ type AuthContextValue = {
   login: (credentials: { email: string; password: string }) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  updateUser: (userData: Partial<User>) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -102,6 +103,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [user],
   );
 
+  const updateUserData = useCallback((userData: Partial<User>) => {
+    setUser((prevUser) => {
+      if (!prevUser) {
+        return null;
+      }
+      return {
+        ...prevUser,
+        ...userData,
+      };
+    });
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -110,8 +123,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       logout,
       changePassword,
+      updateUser: updateUserData,
     }),
-    [changePassword, isLoading, login, logout, user],
+    [changePassword, isLoading, login, logout, user, updateUserData],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
