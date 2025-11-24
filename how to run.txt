@@ -13,4 +13,4 @@ cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan reverb:start
 
 ***
 
-cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan crypto:update-prices --interval=5
+cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan crypto:update-prices --interval=5 
