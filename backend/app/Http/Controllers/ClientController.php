@@ -17,9 +17,17 @@ class ClientController extends Controller
         }
 
         $request->validate([
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'firstName' => 'required|string|min:2|max:50',
+            'lastName' => 'required|string|min:2|max:50',
+            'email' => 'required|email:rfc,dns|unique:users|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+        ], [
+            'email.email' => 'The email address must be a valid email.',
+            'email.unique' => 'This email address is already in use.',
+            'email.regex' => 'The email address format is invalid.',
+            'firstName.min' => 'First name must be at least 2 characters.',
+            'firstName.max' => 'First name cannot exceed 50 characters.',
+            'lastName.min' => 'Last name must be at least 2 characters.',
+            'lastName.max' => 'Last name cannot exceed 50 characters.',
         ]);
 
         // Generate temporary password
@@ -88,9 +96,17 @@ class ClientController extends Controller
         }
 
         $request->validate([
-            'firstName' => 'sometimes|string',
-            'lastName' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
+            'firstName' => 'sometimes|string|min:2|max:50',
+            'lastName' => 'sometimes|string|min:2|max:50',
+            'email' => 'sometimes|email:rfc,dns|unique:users,email,' . $user->id . '|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+        ], [
+            'email.email' => 'The email address must be a valid email.',
+            'email.unique' => 'This email address is already in use by another user.',
+            'email.regex' => 'The email address format is invalid.',
+            'firstName.min' => 'First name must be at least 2 characters.',
+            'firstName.max' => 'First name cannot exceed 50 characters.',
+            'lastName.min' => 'Last name must be at least 2 characters.',
+            'lastName.max' => 'Last name cannot exceed 50 characters.',
         ]);
 
         if ($request->has('firstName')) {

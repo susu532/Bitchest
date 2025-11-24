@@ -13,9 +13,8 @@ class CryptoSeeder extends Seeder
     private const MODULUS = 2147483647;
     private const MULTIPLIER = 48271;
 
-    /**
-     * Run the database seeds.
-     */
+   
+
     public function run(): void
     {
         $cryptocurrencies = [
@@ -158,3 +157,7 @@ class CryptoSeeder extends Seeder
         return $positive ? $deltaPercent : -$deltaPercent;
     }
 }
+
+#Génère des devis sur 30 jours
+#Utilise des fonctions pour la génération initiale et quotidienne des prix
+#Garantit l'absence de prix négatifs
