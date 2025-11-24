@@ -748,12 +748,14 @@ img {
   position: relative;
   z-index: 1;
   overflow-x: auto;
+  table-layout: auto;
 }
 
 .table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
   -webkit-overflow-scrolling: touch;
+  min-width: 0;
 }
 
 .table th,
@@ -769,6 +771,7 @@ img {
   transition: all 0.3s ease;
   position: relative;
   display: table-row;
+  height: auto;
 }
 
 .table tbody tr::before {
