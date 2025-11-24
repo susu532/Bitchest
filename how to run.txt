@@ -4,7 +4,7 @@ cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php -S localhost:8000 -t 
 
 
 **
- cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\frontend"; npm run dev
+cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\frontend"; npm run dev
 
 
 **
