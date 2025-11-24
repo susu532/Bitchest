@@ -174,6 +174,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
           ...state.cryptoAssets,
           [cryptoId]: {
             ...asset,
+            currentPrice: price,
             history: filteredHistory,
           },
         },

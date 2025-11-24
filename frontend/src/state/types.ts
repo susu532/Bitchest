@@ -38,6 +38,7 @@ export type CryptoAsset = {
   name: string;
   symbol: string;
   icon: string;
+  currentPrice: number;
   history: CryptoPricePoint[];
 };
 

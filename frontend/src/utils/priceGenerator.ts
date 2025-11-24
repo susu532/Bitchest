@@ -72,11 +72,13 @@ export function generateCryptoAssets(): Record<string, CryptoAsset> {
 
   CRYPTOCURRENCIES.forEach((crypto, index) => {
     const history = buildHistory(crypto.name, baseSeed + index * 97);
+    const currentPrice = history.length > 0 ? history[history.length - 1].value : 0;
     assets[crypto.id] = {
       id: crypto.id,
       name: crypto.name,
       symbol: crypto.symbol,
       icon: crypto.icon,
+      currentPrice,
       history,
     };
   });
