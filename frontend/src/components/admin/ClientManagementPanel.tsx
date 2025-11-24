@@ -26,7 +26,6 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
   const [isCreating, setIsCreating] = useState(false);
   const [creationData, setCreationData] = useState({ firstName: '', lastName: '', email: '' });
   const [creationFeedback, setCreationFeedback] = useState<string | null>(null);
-  const [creationError, setCreationError] = useState<string | null>(null);
   const [creationErrors, setCreationErrors] = useState<Record<string, string>>({});
 
   const [editingUser, setEditingUser] = useState<EditableUser | null>(null);
@@ -40,7 +39,6 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
 
   const handleCreate = async (event: FormEvent) => {
     event.preventDefault();
-    setCreationError(null);
     setCreationErrors({});
 
     const validation = validateUserForm(
@@ -164,7 +162,9 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
         </header>
 
         {creationFeedback ? <p className="form__success">{creationFeedback}</p> : null}
-        {creationError ? <p className="form__error">{creationError}</p> : null}
+        {Object.entries(creationErrors).map(([key, error]) => (
+          <p key={key} className="form__error">{error}</p>
+        ))}
 
         {isCreating ? (
           <form className="form form--three-column" onSubmit={handleCreate}>
@@ -177,6 +177,8 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                   setCreationData((previous) => ({ ...previous, firstName: event.target.value }))
                 }
                 required
+                minLength={2}
+                maxLength={50}
               />
             </label>
             <label className="form__label">
@@ -186,6 +188,8 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                 value={creationData.lastName}
                 onChange={(event) => setCreationData((previous) => ({ ...previous, lastName: event.target.value }))}
                 required
+                minLength={2}
+                maxLength={50}
               />
             </label>
             <label className="form__label form__label--full">
@@ -196,6 +200,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                 value={creationData.email}
                 onChange={(event) => setCreationData((previous) => ({ ...previous, email: event.target.value }))}
                 required
+                maxLength={255}
               />
             </label>
             <div className="form__actions form__label--full">
@@ -270,6 +275,9 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
           </header>
 
           {editFeedback ? <p className="form__success">{editFeedback}</p> : null}
+          {Object.entries(editErrors).map(([key, error]) => (
+            <p key={key} className="form__error">{error}</p>
+          ))}
 
           <form className="form form--three-column" onSubmit={handleEdit}>
             <label className="form__label">
@@ -283,6 +291,8 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                   )
                 }
                 required
+                minLength={2}
+                maxLength={50}
               />
             </label>
             <label className="form__label">
@@ -296,6 +306,8 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                   )
                 }
                 required
+                minLength={2}
+                maxLength={50}
               />
             </label>
             <label className="form__label form__label--full">
@@ -310,6 +322,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
                   )
                 }
                 required
+                maxLength={255}
               />
             </label>
 
