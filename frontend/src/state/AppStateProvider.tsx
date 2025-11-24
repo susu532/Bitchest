@@ -11,6 +11,7 @@ import type {
 } from './types';
 import { INITIAL_STATE } from './initialData';
 import { api } from '../utils/api';
+import { echoService } from '../utils/echo';
 
 const STORAGE_KEY = 'bitchest-app-state';
 
@@ -139,6 +140,45 @@ function appReducer(state: AppState, action: AppAction): AppState {
         },
       };
     }
+    case 'update-crypto-price': {
+      const { cryptoId, price } = action.payload;
+      const asset = state.cryptoAssets[cryptoId];
+      if (!asset) {
+        return state;
+      }
+
+      const lastPoint = asset.history[asset.history.length - 1];
+      const newHistory = [...asset.history];
+
+      // If today's price already exists, update it; otherwise add new point
+      if (lastPoint && lastPoint.date.split('T')[0] === new Date().toISOString().split('T')[0]) {
+        newHistory[newHistory.length - 1] = {
+          date: lastPoint.date,
+          value: price,
+        };
+      } else {
+        newHistory.push({
+          date: new Date().toISOString(),
+          value: price,
+        });
+      }
+
+      // Keep only last 30 days
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const filteredHistory = newHistory.filter((point) => new Date(point.date) >= thirtyDaysAgo);
+
+      return {
+        ...state,
+        cryptoAssets: {
+          ...state.cryptoAssets,
+          [cryptoId]: {
+            ...asset,
+            history: filteredHistory,
+          },
+        },
+      };
+    }
     default:
       return state;
   }
@@ -164,6 +204,23 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   useEffect(() => {
     persistState(state);
   }, [state]);
+
+  // Subscribe to live cryptocurrency price updates
+  useEffect(() => {
+    echoService.subscribeToprices((data: any) => {
+      dispatch({
+        type: 'update-crypto-price',
+        payload: {
+          cryptoId: data.cryptoId,
+          price: data.price,
+        },
+      });
+    });
+
+    return () => {
+      echoService.unsubscribe('crypto-prices');
+    };
+  }, []);
 
   const createClient = useCallback(
     async (payload: CreateClientPayload) => {

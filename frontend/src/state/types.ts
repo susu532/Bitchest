@@ -81,5 +81,6 @@ export type AppAction =
   | { type: 'record-transaction'; payload: RecordTransactionPayload }
   | { type: 'set-crypto-assets'; payload: Record<string, CryptoAsset> }
   | { type: 'set-users'; payload: User[] }
-  | { type: 'set-client-account'; payload: { userId: string; account: ClientAccount } };
+  | { type: 'set-client-account'; payload: { userId: string; account: ClientAccount } }
+  | { type: 'update-crypto-price'; payload: { cryptoId: string; price: number } };
 

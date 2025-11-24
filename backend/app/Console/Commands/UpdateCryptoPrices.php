@@ -20,8 +20,16 @@ class UpdateCryptoPrices extends Command
     {
         $interval = (int) $this->option('interval');
 
-        $this->info('Starting cryptocurrency price updates (interval: ' . $interval . ' seconds)...');
+        $this->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->info('🚀 BitChest Cryptocurrency Price Updater');
+        $this->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->info('');
+        $this->info('📊 Update Interval: ' . $interval . ' seconds');
+        $this->info('🔄 Broadcasting to: crypto-prices channel');
+        $this->info('');
         $this->info('Press Ctrl+C to stop');
+        $this->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->newLine();
 
         // Initialize price cache with current prices
         $cryptos = Cryptocurrency::all();
@@ -29,27 +37,36 @@ class UpdateCryptoPrices extends Command
             $latestPrice = CryptoPrice::where('crypto_id', $crypto->id)
                 ->orderBy('price_date', 'desc')
                 ->first();
-            $this->priceCache[$crypto->id] = $latestPrice ? $latestPrice->price : 0;
+            $this->priceCache[$crypto->id] = $latestPrice ? (float) $latestPrice->price : 100;
         }
 
         $runCount = 0;
+        $totalBroadcasts = 0;
+
         while (true) {
             $runCount++;
-            $this->info("\n[" . now()->format('Y-m-d H:i:s') . "] Price Update #{$runCount}");
+            $timestamp = now()->format('Y-m-d H:i:s');
+
+            $this->info("┌─ Update Cycle #{$runCount} [{$timestamp}]");
 
             foreach ($cryptos as $crypto) {
                 $currentPrice = $this->priceCache[$crypto->id];
                 $previousPrice = $currentPrice;
 
-                // Generate random price variation (±1% to ±5%)
-                $variation = (rand(-5, 5) / 100); // -5% to +5%
+                // Generate realistic price variation (±0.5% to ±2%)
+                $variation = (rand(-20, 20) / 1000); // -2% to +2%
                 $newPrice = $currentPrice * (1 + $variation);
                 $newPrice = round($newPrice, 2);
+
+                // Ensure price doesn't go below minimum threshold
+                if ($newPrice < 5) {
+                    $newPrice = 5.00;
+                }
 
                 // Update cache
                 $this->priceCache[$crypto->id] = $newPrice;
 
-                // Create new price record in database
+                // Create or update price record in database
                 $today = Carbon::now()->format('Y-m-d');
                 CryptoPrice::updateOrCreate(
                     [
@@ -72,18 +89,23 @@ class UpdateCryptoPrices extends Command
                 $change = $newPrice - $previousPrice;
                 $changePercent = $previousPrice > 0 ? (($change / $previousPrice) * 100) : 0;
 
-                $this->info(sprintf(
-                    "  %s: €%.2f (was €%.2f, %+.2f%% %s)",
-                    strtoupper($crypto->id),
-                    $newPrice,
-                    $previousPrice,
-                    $changePercent,
-                    $change >= 0 ? '📈' : '📉'
-                ));
+                // Format output with colors
+                $direction = $change >= 0 ? '📈' : '📉';
+                $cryptoName = strtoupper(str_pad($crypto->symbol, 6));
+                $priceStr = sprintf('€%.2f', $newPrice);
+                $changeStr = sprintf('%+.4f%%', $changePercent);
+
+                $this->line("│  $direction $cryptoName → $priceStr ($changeStr)");
+
+                $totalBroadcasts++;
             }
 
-            $this->info("Waiting {$interval} seconds until next update...");
+            $this->info("└─ Waiting $interval seconds...");
+            $this->newLine();
+
             sleep($interval);
         }
+
+        return Command::SUCCESS;
     }
 }
