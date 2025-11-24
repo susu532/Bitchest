@@ -748,14 +748,12 @@ img {
   position: relative;
   z-index: 1;
   overflow-x: auto;
-  table-layout: auto;
 }
 
 .table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
   -webkit-overflow-scrolling: touch;
-  min-width: 0;
 }
 
 .table th,
@@ -764,14 +762,15 @@ img {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
-  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table tbody tr {
   transition: all 0.3s ease;
   position: relative;
   display: table-row;
-  height: auto;
 }
 
 .table tbody tr::before {
@@ -819,14 +818,6 @@ img {
   gap: 0.75rem;
   flex-wrap: wrap;
   white-space: normal;
-  min-width: 0;
-}
-
-.table td:nth-child(2),
-.table td:nth-child(3),
-.table td:nth-child(4) {
-  word-break: break-word;
-  white-space: normal;
 }
 
 .table__asset {
@@ -850,9 +841,6 @@ img {
 .table__primary-text {
   display: block;
   font-weight: 600;
-  margin-bottom: 0.25rem;
-  word-break: break-word;
-}
 }
 
 .table__secondary-text {
@@ -1244,7 +1232,6 @@ img {
   .table td {
     padding: 0.75rem 0.85rem;
     font-size: 0.95rem;
-    vertical-align: middle;
   }
 
   .table__primary-text {
@@ -1309,7 +1296,6 @@ img {
   .table td {
     padding: 0.5rem 0.65rem;
     font-size: 0.85rem;
-    vertical-align: middle;
   }
 
   .table__actions {
