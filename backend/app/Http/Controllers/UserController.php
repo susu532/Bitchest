@@ -18,11 +18,10 @@ class UserController extends Controller
         $request->validate([
             'firstName' => 'sometimes|string|min:2|max:50',
             'lastName' => 'sometimes|string|min:2|max:50',
-            'email' => 'sometimes|email:rfc,dns|unique:users,email,' . $user->id . '|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+            'email' => 'sometimes|email|unique:users,email,' . $user->id . '|max:255',
         ], [
             'email.email' => 'The email address must be a valid email.',
             'email.unique' => 'This email address is already in use.',
-            'email.regex' => 'The email address format is invalid.',
             'firstName.min' => 'First name must be at least 2 characters.',
             'firstName.max' => 'First name cannot exceed 50 characters.',
             'lastName.min' => 'Last name must be at least 2 characters.',

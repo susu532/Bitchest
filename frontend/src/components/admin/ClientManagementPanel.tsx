@@ -217,6 +217,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
           <table className="table">
             <thead>
               <tr>
+                <th></th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Wallet value</th>
