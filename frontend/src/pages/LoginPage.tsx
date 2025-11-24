@@ -91,15 +91,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="login-card__hint">
-          <p>Prototype access:</p>
-          <ul>
-            <li>
-              <strong>Admin</strong>: admin@bitchest.example / admin123
-            </li>
-           
-          </ul>
-        </div>
+        
       </div>
     </div>
   );
