@@ -19,16 +19,24 @@ class CryptocurrencyController extends Controller
         return response()->json([
             'success' => true,
             'cryptoAssets' => $cryptos->mapWithKeys(function ($crypto) {
+                $prices = $crypto->prices->map(fn($p) => [
+                    'date' => $p->price_date->toIso8601String(),
+                    'value' => (float) $p->price,
+                ])->toArray();
+                
+                $currentPrice = 0;
+                if (!empty($prices)) {
+                    $currentPrice = $prices[array_key_last($prices)]['value'];
+                }
+                
                 return [
                     $crypto->id => [
                         'id' => $crypto->id,
                         'name' => $crypto->name,
                         'symbol' => $crypto->symbol,
                         'icon' => $crypto->icon,
-                        'history' => $crypto->prices->map(fn($p) => [
-                            'date' => $p->price_date->toIso8601String(),
-                            'value' => (float) $p->price,
-                        ])->toArray(),
+                        'currentPrice' => $currentPrice,
+                        'history' => $prices,
                     ]
                 ];
             })->toArray(),
@@ -42,6 +50,16 @@ class CryptocurrencyController extends Controller
         }
 
         $crypto = Cryptocurrency::with('prices')->findOrFail($cryptoId);
+        
+        $prices = $crypto->prices->map(fn($p) => [
+            'date' => $p->price_date->toIso8601String(),
+            'value' => (float) $p->price,
+        ])->toArray();
+        
+        $currentPrice = 0;
+        if (!empty($prices)) {
+            $currentPrice = $prices[array_key_last($prices)]['value'];
+        }
 
         return response()->json([
             'success' => true,
@@ -50,10 +68,8 @@ class CryptocurrencyController extends Controller
                 'name' => $crypto->name,
                 'symbol' => $crypto->symbol,
                 'icon' => $crypto->icon,
-                'history' => $crypto->prices->map(fn($p) => [
-                    'date' => $p->price_date->toIso8601String(),
-                    'value' => (float) $p->price,
-                ])->toArray(),
+                'currentPrice' => $currentPrice,
+                'history' => $prices,
             ]
         ]);
     }
