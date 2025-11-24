@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import type { User } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
 import { useAuth } from '../../state/AuthContext';
+import { validateUserForm, validatePasswordChange } from '../../utils/validation';
 
 type AdminProfilePanelProps = {
   admin: User;
@@ -18,14 +19,23 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
   const [lastName, setLastName] = useState(admin.lastName);
   const [email, setEmail] = useState(admin.email);
   const [profileMessage, setProfileMessage] = useState<string | null>(null);
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
 
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
 
   const handleProfileSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setProfileErrors({});
+
+    const validation = validateUserForm(firstName, lastName, email);
+    if (!validation.valid) {
+      setProfileErrors(validation.errors);
+      return;
+    }
+
     try {
       await updateUser({
         userId: admin.id,
@@ -39,21 +49,18 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
       setTimeout(() => setProfileMessage(null), 4_000);
     } catch (error: any) {
       console.error('Failed to update profile:', error);
+      setProfileErrors({ submit: error.message || 'Failed to update profile.' });
     }
   };
 
   const handlePasswordSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setPasswordError(null);
     setPasswordMessage(null);
+    setPasswordErrors({});
 
-    if (!currentPassword) {
-      setPasswordError('Please enter your current password.');
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      setPasswordError('New password must contain at least 8 characters.');
+    const validation = validatePasswordChange(currentPassword, newPassword);
+    if (!validation.valid) {
+      setPasswordErrors(validation.errors);
       return;
     }
 
@@ -63,7 +70,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
       setCurrentPassword('');
       setNewPassword('');
     } catch (error: any) {
-      setPasswordError(error.message || 'Failed to change password');
+      setPasswordErrors({ submit: error.message || 'Failed to change password' });
     }
   };
 
@@ -83,6 +90,8 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
               required
+              minLength={2}
+              maxLength={50}
             />
           </label>
 
@@ -93,6 +102,8 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
               value={lastName}
               onChange={(event) => setLastName(event.target.value)}
               required
+              minLength={2}
+              maxLength={50}
             />
           </label>
 
@@ -104,8 +115,14 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
+              maxLength={255}
             />
           </label>
+
+          {profileErrors.firstName ? <p className="form__error form__label--full">{profileErrors.firstName}</p> : null}
+          {profileErrors.lastName ? <p className="form__error form__label--full">{profileErrors.lastName}</p> : null}
+          {profileErrors.email ? <p className="form__error form__label--full">{profileErrors.email}</p> : null}
+          {profileErrors.submit ? <p className="form__error form__label--full">{profileErrors.submit}</p> : null}
 
           <div className="form__actions form__label--full">
             <button type="submit" className="button button--primary">
@@ -147,7 +164,9 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
             />
           </label>
 
-          {passwordError ? <p className="form__error">{passwordError}</p> : null}
+          {passwordErrors.newPassword ? <p className="form__error">{passwordErrors.newPassword}</p> : null}
+          {passwordErrors.currentPassword ? <p className="form__error">{passwordErrors.currentPassword}</p> : null}
+          {passwordErrors.submit ? <p className="form__error">{passwordErrors.submit}</p> : null}
           {passwordMessage ? <p className="form__success">{passwordMessage}</p> : null}
 
           <button type="submit" className="button button--secondary">

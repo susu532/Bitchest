@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import type { User } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
 import { useAuth } from '../../state/AuthContext';
+import { validateUserForm, validatePasswordChange } from '../../utils/validation';
 
 type ClientProfilePanelProps = {
   user: User;
@@ -19,15 +20,24 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
   const [email, setEmail] = useState(user.email);
 
   const [profileFeedback, setProfileFeedback] = useState<string | null>(null);
+  const [profileErrors, setProfileErrors] = useState<Record<string, string>>({});
 
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
   const [passwordFeedback, setPasswordFeedback] = useState<string | null>(null);
 
   const handleProfileSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setProfileErrors({});
+
+    const validation = validateUserForm(firstName, lastName, email);
+    if (!validation.valid) {
+      setProfileErrors(validation.errors);
+      return;
+    }
+
     try {
       await updateUser({
         userId: user.id,
@@ -40,28 +50,18 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
       setProfileFeedback('Profile updated successfully.');
       setTimeout(() => setProfileFeedback(null), 4_000);
     } catch (error: any) {
-      setProfileFeedback(null);
-      console.error('Failed to update profile:', error);
+      setProfileErrors({ submit: error.message || 'Failed to update profile.' });
     }
   };
 
   const handlePasswordSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setPasswordError(null);
+    setPasswordErrors({});
     setPasswordFeedback(null);
 
-    if (!currentPassword) {
-      setPasswordError('Please enter your current password.');
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      setPasswordError('New password must contain at least 8 characters.');
-      return;
-    }
-
-    if (newPassword !== passwordConfirmation) {
-      setPasswordError('Confirmation does not match the new password.');
+    const validation = validatePasswordChange(currentPassword, newPassword, passwordConfirmation);
+    if (!validation.valid) {
+      setPasswordErrors(validation.errors);
       return;
     }
 
@@ -72,7 +72,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
       setNewPassword('');
       setPasswordConfirmation('');
     } catch (error: any) {
-      setPasswordError(error.message || 'Failed to change password');
+      setPasswordErrors({ submit: error.message || 'Failed to change password' });
     }
   };
 
@@ -94,11 +94,20 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
               required
+              minLength={2}
+              maxLength={50}
             />
           </label>
           <label className="form__label">
             Last name
-            <input className="form__input" value={lastName} onChange={(event) => setLastName(event.target.value)} required />
+            <input
+              className="form__input"
+              value={lastName}
+              onChange={(event) => setLastName(event.target.value)}
+              required
+              minLength={2}
+              maxLength={50}
+            />
           </label>
           <label className="form__label form__label--full">
             Email
@@ -108,8 +117,14 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
+              maxLength={255}
             />
           </label>
+
+          {profileErrors.firstName ? <p className="form__error form__label--full">{profileErrors.firstName}</p> : null}
+          {profileErrors.lastName ? <p className="form__error form__label--full">{profileErrors.lastName}</p> : null}
+          {profileErrors.email ? <p className="form__error form__label--full">{profileErrors.email}</p> : null}
+          {profileErrors.submit ? <p className="form__error form__label--full">{profileErrors.submit}</p> : null}
 
           <div className="form__actions form__label--full">
             <button type="submit" className="button button--primary">
@@ -149,6 +164,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
               onChange={(event) => setNewPassword(event.target.value)}
               required
               minLength={8}
+              placeholder="Min 8 chars: uppercase, lowercase, number, special char (@$!%*?&)"
             />
           </label>
           <label className="form__label">
@@ -162,7 +178,10 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
               minLength={8}
             />
           </label>
-          {passwordError ? <p className="form__error">{passwordError}</p> : null}
+          {passwordErrors.currentPassword ? <p className="form__error">{passwordErrors.currentPassword}</p> : null}
+          {passwordErrors.newPassword ? <p className="form__error">{passwordErrors.newPassword}</p> : null}
+          {passwordErrors.passwordConfirmation ? <p className="form__error">{passwordErrors.passwordConfirmation}</p> : null}
+          {passwordErrors.submit ? <p className="form__error">{passwordErrors.submit}</p> : null}
           {passwordFeedback ? <p className="form__success">{passwordFeedback}</p> : null}
           <button type="submit" className="button button--secondary">
             Update password

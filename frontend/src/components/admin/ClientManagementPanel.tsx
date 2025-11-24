@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import { useAppServices, useAppState } from '../../state/AppStateProvider';
 import type { User } from '../../state/types';
 import { summarizeHoldings, enrichHoldingsWithPrices } from '../../utils/wallet';
+import { validateUserForm } from '../../utils/validation';
 
 type ClientManagementPanelProps = {
   adminId: string;
@@ -26,9 +27,11 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
   const [creationData, setCreationData] = useState({ firstName: '', lastName: '', email: '' });
   const [creationFeedback, setCreationFeedback] = useState<string | null>(null);
   const [creationError, setCreationError] = useState<string | null>(null);
+  const [creationErrors, setCreationErrors] = useState<Record<string, string>>({});
 
   const [editingUser, setEditingUser] = useState<EditableUser | null>(null);
   const [editFeedback, setEditFeedback] = useState<string | null>(null);
+  const [editErrors, setEditErrors] = useState<Record<string, string>>({});
 
   const clients = useMemo(
     () => users.filter((user) => user.role === 'client'),
@@ -38,9 +41,21 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
   const handleCreate = async (event: FormEvent) => {
     event.preventDefault();
     setCreationError(null);
+    setCreationErrors({});
+
+    const validation = validateUserForm(
+      creationData.firstName,
+      creationData.lastName,
+      creationData.email,
+    );
+    if (!validation.valid) {
+      setCreationErrors(validation.errors);
+      return;
+    }
+
     const exists = users.some((user) => user.email.toLowerCase() === creationData.email.toLowerCase());
     if (exists) {
-      setCreationError('A user with this email already exists. Choose another email address.');
+      setCreationErrors({ email: 'A user with this email already exists. Choose another email address.' });
       return;
     }
     try {
@@ -48,11 +63,11 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       setCreationFeedback(
         `Client created successfully. Temporary password: ${result.tempPassword} (share securely with the client).`,
       );
-      setCreationError(null);
+      setCreationErrors({});
       setCreationData({ firstName: '', lastName: '', email: '' });
       setIsCreating(false);
     } catch (error: any) {
-      setCreationError(error.message || 'Failed to create client');
+      setCreationErrors({ submit: error.message || 'Failed to create client' });
     }
   };
 
@@ -61,6 +76,26 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     if (!editingUser) {
       return;
     }
+    setEditErrors({});
+
+    const validation = validateUserForm(
+      editingUser.firstName,
+      editingUser.lastName,
+      editingUser.email,
+    );
+    if (!validation.valid) {
+      setEditErrors(validation.errors);
+      return;
+    }
+
+    const exists = users.some(
+      (user) => user.email.toLowerCase() === editingUser.email.toLowerCase() && user.id !== editingUser.id,
+    );
+    if (exists) {
+      setEditErrors({ email: 'This email is already used by another client.' });
+      return;
+    }
+
     try {
       await updateUser({
         userId: editingUser.id,
@@ -72,8 +107,9 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       });
       setEditFeedback('Client updated successfully.');
       setEditingUser(null);
+      setEditErrors({});
     } catch (error: any) {
-      setEditFeedback(null);
+      setEditErrors({ submit: error.message || 'Failed to update client' });
       console.error('Failed to update client:', error);
     }
   };
