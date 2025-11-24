@@ -11,7 +11,6 @@ import type {
 } from './types';
 import { INITIAL_STATE } from './initialData';
 import { api } from '../utils/api';
-import { echoService } from '../utils/echo';
 
 const STORAGE_KEY = 'bitchest-app-state';
 
@@ -206,22 +205,38 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     persistState(state);
   }, [state]);
 
-  // Subscribe to live cryptocurrency price updates
+  // Poll for cryptocurrency price updates every 5 seconds
   useEffect(() => {
-    echoService.subscribeToprices((data: any) => {
-      dispatch({
-        type: 'update-crypto-price',
-        payload: {
-          cryptoId: data.cryptoId,
-          price: data.price,
-        },
-      });
-    });
-
-    return () => {
-      echoService.unsubscribe('crypto-prices');
+    const pollPrices = async () => {
+      try {
+        const response: any = await api.getCryptocurrencies();
+        if (response.success) {
+          // Update each crypto asset with new prices
+          Object.entries(response.cryptoAssets).forEach(([cryptoId, asset]: [string, any]) => {
+            const currentStateAsset = state.cryptoAssets[cryptoId];
+            // Only dispatch if price actually changed
+            if (currentStateAsset && currentStateAsset.currentPrice !== asset.currentPrice) {
+              dispatch({
+                type: 'update-crypto-price',
+                payload: {
+                  cryptoId,
+                  price: asset.currentPrice,
+                },
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.warn('[Price Poll] Failed to fetch prices:', error);
+      }
     };
-  }, []);
+
+    // Poll immediately and then every 5 seconds
+    pollPrices();
+    const interval = setInterval(pollPrices, 5000);
+
+    return () => clearInterval(interval);
+  }, [state.cryptoAssets]);
 
   const createClient = useCallback(
     async (payload: CreateClientPayload) => {

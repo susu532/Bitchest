@@ -6,6 +6,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\WalletController;
+use Illuminate\Broadcasting\BroadcastController;
+
+// Broadcasting authentication route
+Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
 
 // Authentication routes
 Route::post('/auth/login', [AuthController::class, 'login']);
