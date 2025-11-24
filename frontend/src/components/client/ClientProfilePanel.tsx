@@ -12,7 +12,7 @@ type ClientProfilePanelProps = {
 };
 
 export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
-  const { updateUser } = useAppServices();
+  const { updateCurrentUserProfile } = useAppServices();
   const { changePassword, updateUser: updateAuthUser } = useAuth();
 
   const [firstName, setFirstName] = useState(user.firstName);
@@ -39,13 +39,10 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     }
 
     try {
-      await updateUser({
-        userId: user.id,
-        data: {
-          firstName,
-          lastName,
-          email: email.toLowerCase(),
-        },
+      await updateCurrentUserProfile({
+        firstName,
+        lastName,
+        email: email.toLowerCase(),
       });
       // Update AuthContext immediately so the user sees changes in real-time
       updateAuthUser({
