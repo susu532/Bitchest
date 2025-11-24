@@ -21,6 +21,7 @@ type AppStateContextValue = {
 
 type AppServicesContextValue = {
   createClient: (payload: CreateClientPayload) => Promise<{ tempPassword: string; user: User }>;
+  updateCurrentUserProfile: (data: Partial<Omit<User, 'id' | 'role' | 'createdAt' | 'password'>>) => Promise<User>;
   updateUser: (payload: UpdateUserPayload) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
   recordTransaction: (payload: RecordTransactionPayload) => Promise<void>;
@@ -269,11 +270,24 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     [],
   );
 
-  const updateUser = useCallback(
-    async (payload: UpdateUserPayload) => {
-      const response: any = await api.updateProfile(payload.data);
+  const updateCurrentUserProfile = useCallback(
+    async (data: Partial<Omit<User, 'id' | 'role' | 'createdAt' | 'password'>>) => {
+      const response: any = await api.updateProfile(data);
       if (!response.success) {
         throw new Error(response.message || 'Failed to update profile');
+      }
+      // For current user updates, we need to update all users that match the current user
+      // This will be handled by fetchUsers or auth context
+      return response.user;
+    },
+    [],
+  );
+
+  const updateUser = useCallback(
+    async (payload: UpdateUserPayload) => {
+      const response: any = await api.updateClient(payload.userId, payload.data);
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to update user');
       }
       dispatch({ type: 'update-user', payload });
     },
@@ -363,6 +377,7 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   const servicesValue = useMemo(
     () => ({
       createClient,
+      updateCurrentUserProfile,
       updateUser,
       deleteUser,
       recordTransaction,
@@ -370,7 +385,7 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
       fetchUsers,
       fetchClientAccount,
     }),
-    [createClient, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
+    [createClient, updateCurrentUserProfile, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
   );
 
   return (
