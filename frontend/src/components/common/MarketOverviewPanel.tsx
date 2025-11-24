@@ -14,7 +14,7 @@ import 'chartjs-adapter-date-fns';
 import { Line } from 'react-chartjs-2';
 
 import type { CryptoAsset } from '../../state/types';
-import RealTimePriceTicker from './RealTimePriceTicker';
+
 import type { ChartOptions, TooltipItem } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale);
@@ -95,7 +95,7 @@ export default function MarketOverviewPanel({ cryptoAssets }: MarketOverviewPane
 
   return (
     <div className="panel panel--market">
-      <RealTimePriceTicker cryptoAssets={cryptoAssets} />
+      
 
       <section className="panel__section">
         <header className="panel__header">
