@@ -21,3 +21,5 @@ Broadcast::channel('crypto-prices', function ($user) {
 Broadcast::channel('crypto-price.{cryptoId}', function ($user, $cryptoId) {
     return true;
 });
+
+#Défini les canaux WebSocket pour les événements en temps réel
