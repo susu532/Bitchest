@@ -2,15 +2,10 @@
 
 namespace App\Models;
 
-// Importe MustVerifyEmail pour les modèles qui nécessitent la vérification d'email (optionnel)
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 // Importe HasFactory pour permettre à ce modèle d'utiliser la factory UserFactory
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // Importe la classe Authenticatable - classe de base pour les modèles d'authentification Laravel
 use Illuminate\Foundation\Auth\User as Authenticatable;
-// Importe Notifiable pour permettre à ce modèle d'envoyer des notifications
-use Illuminate\Notifications\Notifiable;
 
 /**
  * Modèle User
@@ -25,8 +20,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     // HasFactory: permet d'utiliser la factory UserFactory pour créer des instances de test
-    // Notifiable: permet à ce modèle d'envoyer des notifications via Illuminate\Notifications
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * Les attributs assignables en masse (mass assignable).

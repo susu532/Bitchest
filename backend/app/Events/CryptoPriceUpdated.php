@@ -6,10 +6,6 @@ namespace App\Events;
 use Illuminate\Broadcasting\Channel;
 // Importe InteractsWithSockets pour gérer les interactions WebSocket
 use Illuminate\Broadcasting\InteractsWithSockets;
-// Importe PresenceChannel pour les canaux avec détection de présence (optionnel ici)
-use Illuminate\Broadcasting\PresenceChannel;
-// Importe PrivateChannel pour les canaux privés (optionnel ici)
-use Illuminate\Broadcasting\PrivateChannel;
 // Importe l'interface pour les événements diffusables via WebSocket
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 // Importe Dispatchable pour déclencher cet événement
