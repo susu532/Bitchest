@@ -136,6 +136,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
         <table className="table">
           <thead>
             <tr>
+              <th></th>
               <th>Asset</th>
               <th>Quantity</th>
               <th>Average price</th>
@@ -279,6 +280,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
         <table className="table table--compact">
           <thead>
             <tr>
+              <th></th>
               <th>Date</th>
               <th>Type</th>
               <th>Asset</th>
