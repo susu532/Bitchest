@@ -1,35 +1,52 @@
+// Importe les composants de routage pour gérer la navigation interne du dashboard
 import { Navigate, Route, Routes } from 'react-router-dom';
+// Importe le hook useEffect pour charger les données au montage
 import { useEffect } from 'react';
 
+// Importe le layout principal du dashboard (structure commune avec sidebar)
 import DashboardLayout from '../components/layout/DashboardLayout';
+// Importe les différents panneaux (pages) du dashboard client
 import ClientOverviewPanel from '../components/client/ClientOverviewPanel';
 import ClientWalletPanel from '../components/client/ClientWalletPanel';
 import MarketOverviewPanel from '../components/common/MarketOverviewPanel';
 import ClientProfilePanel from '../components/client/ClientProfilePanel';
+
+// Importe les hooks pour accéder à l'authentification et à l'état global
 import { useAuth } from '../state/AuthContext';
 import { useAppState, useAppServices } from '../state/AppStateProvider';
 
+// Composant principal du Dashboard Client
+// Gère le chargement des données initiales et le routage des sous-pages
 export default function ClientDashboard() {
+  // Récupère l'utilisateur connecté et la fonction de déconnexion
   const { user, logout } = useAuth();
+  // Récupère l'état global (comptes, cryptos)
   const state = useAppState();
+  // Récupère les services pour charger les données
   const { fetchCryptoAssets, fetchClientAccount } = useAppServices();
 
+  // Effet pour charger les données nécessaires au démarrage du dashboard
   useEffect(() => {
-    // Fetch data when dashboard loads
+    // Charge la liste des cryptomonnaies et leurs prix
     fetchCryptoAssets();
+    // Si l'utilisateur est connecté, charge son compte (solde, transactions)
     if (user?.id) {
       fetchClientAccount();
     }
   }, [fetchCryptoAssets, fetchClientAccount, user?.id]);
 
+  // Sécurité: Si pas d'utilisateur, redirige vers la page de connexion
   if (!user) {
     return <Navigate to="/" replace />;
   }
 
+  // Récupère le compte spécifique de l'utilisateur connecté depuis l'état global
   const account = state.clientAccounts[user.id];
 
+  // Si le compte n'est pas encore chargé (ou n'existe pas)
   if (!account) {
     return (
+      // Affiche le layout avec un message d'erreur/attente
       <DashboardLayout
         title="Client area"
         subtitle="Manage your BitChest wallet and monitor the market"
@@ -42,6 +59,7 @@ export default function ClientDashboard() {
     );
   }
 
+  // Définit les éléments de navigation de la barre latérale
   const navItems = [
     { label: 'Overview', to: '/client/overview', description: 'Portfolio snapshot at a glance' },
     { label: 'Wallet', to: '/client/wallet', description: 'Transactions, holdings, and trading' },
@@ -49,6 +67,7 @@ export default function ClientDashboard() {
     { label: 'Profile', to: '/client/profile', description: 'Personal information and security' },
   ];
 
+  // Rendu du layout principal avec les routes imbriquées
   return (
     <DashboardLayout
       title="Client area"
@@ -57,17 +76,27 @@ export default function ClientDashboard() {
       user={user}
       onLogout={logout}
     >
+      {/* Configuration des routes internes du dashboard client */}
       <Routes>
+        {/* Redirection par défaut vers l'aperçu (Overview) */}
         <Route index element={<Navigate to="/client/overview" replace />} />
+
+        {/* Route Aperçu: Affiche le résumé du portefeuille et des marchés */}
         <Route
           path="overview"
           element={<ClientOverviewPanel account={account} cryptoAssets={state.cryptoAssets} user={user} />}
         />
+
+        {/* Route Portefeuille: Affiche les détails des avoirs et permet d'acheter/vendre */}
         <Route
           path="wallet"
           element={<ClientWalletPanel account={account} cryptoAssets={state.cryptoAssets} />}
         />
+
+        {/* Route Marchés: Affiche la liste complète des cryptos et graphiques */}
         <Route path="market" element={<MarketOverviewPanel cryptoAssets={state.cryptoAssets} />} />
+
+        {/* Route Profil: Permet de modifier les infos personnelles et mot de passe */}
         <Route path="profile" element={<ClientProfilePanel user={user} />} />
       </Routes>
     </DashboardLayout>

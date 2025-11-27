@@ -1,17 +1,25 @@
+// Importe les hooks React pour la gestion d'état et la mémorisation
 import { useMemo, useState } from 'react';
 
+// Importe le type pour les événements de formulaire
 import type { FormEvent } from 'react';
 
+// Importe les hooks pour accéder aux services et à l'état global
 import { useAppServices, useAppState } from '../../state/AppStateProvider';
+// Importe le type User
 import type { User } from '../../state/types';
+// Importe les utilitaires pour calculer les avoirs du portefeuille
 import { summarizeHoldings, enrichHoldingsWithPrices } from '../../utils/wallet';
+// Importe la fonction de validation du formulaire utilisateur
 import { validateUserForm } from '../../utils/validation';
 
+// Props du composant: ID de l'admin actuel et liste de tous les utilisateurs
 type ClientManagementPanelProps = {
   adminId: string;
   users: User[];
 };
 
+// Type local pour l'édition d'un utilisateur (champs modifiables)
 type EditableUser = {
   id: string;
   firstName: string;
@@ -19,63 +27,93 @@ type EditableUser = {
   email: string;
 };
 
+// Composant de gestion des clients (Admin)
+// Permet de créer, lister, modifier et supprimer des comptes clients
 export default function ClientManagementPanel({ users, adminId }: ClientManagementPanelProps) {
+  // Récupère les comptes clients et les actifs crypto depuis l'état global
   const { clientAccounts, cryptoAssets } = useAppState();
+  // Récupère les services pour les opérations CRUD sur les clients
   const { createClient, updateUser, deleteUser } = useAppServices();
 
+  // --- État pour la création de client ---
+  // Affiche/masque le formulaire de création
   const [isCreating, setIsCreating] = useState(false);
+  // Données du formulaire de création
   const [creationData, setCreationData] = useState({ firstName: '', lastName: '', email: '' });
+  // Message de succès après création
   const [creationFeedback, setCreationFeedback] = useState<string | null>(null);
+  // Erreurs de validation du formulaire de création
   const [creationErrors, setCreationErrors] = useState<Record<string, string>>({});
 
+  // --- État pour l'édition de client ---
+  // Utilisateur en cours d'édition (null si aucun)
   const [editingUser, setEditingUser] = useState<EditableUser | null>(null);
+  // Message de succès après édition
   const [editFeedback, setEditFeedback] = useState<string | null>(null);
+  // Erreurs de validation du formulaire d'édition
   const [editErrors, setEditErrors] = useState<Record<string, string>>({});
 
+  // Filtre la liste des utilisateurs pour ne garder que les clients (pas les admins)
+  // Mémorisé pour éviter de recalculer à chaque rendu
   const clients = useMemo(
     () => users.filter((user) => user.role === 'client'),
     [users],
   );
 
+  // Gestionnaire de création de client
   const handleCreate = async (event: FormEvent) => {
+    // Empêche le rechargement de la page
     event.preventDefault();
+    // Réinitialise les erreurs
     setCreationErrors({});
 
+    // Valide les données du formulaire
     const validation = validateUserForm(
       creationData.firstName,
       creationData.lastName,
       creationData.email,
     );
+    // Si invalide, affiche les erreurs et arrête
     if (!validation.valid) {
       setCreationErrors(validation.errors);
       return;
     }
 
+    // Vérifie si l'email existe déjà localement (avant d'appeler l'API)
     const exists = users.some((user) => user.email.toLowerCase() === creationData.email.toLowerCase());
     if (exists) {
       setCreationErrors({ email: 'A user with this email already exists. Choose another email address.' });
       return;
     }
+
     try {
+      // Appelle le service pour créer le client
       const result = await createClient(creationData);
+      // Affiche le message de succès avec le mot de passe temporaire
       setCreationFeedback(
         `Client created successfully. Temporary password: ${result.tempPassword} (share securely with the client).`,
       );
+      // Réinitialise le formulaire
       setCreationErrors({});
       setCreationData({ firstName: '', lastName: '', email: '' });
+      // Ferme le formulaire
       setIsCreating(false);
     } catch (error: any) {
+      // Affiche l'erreur retournée par l'API
       setCreationErrors({ submit: error.message || 'Failed to create client' });
     }
   };
 
+  // Gestionnaire de mise à jour de client
   const handleEdit = async (event: FormEvent) => {
     event.preventDefault();
+    // Si aucun utilisateur n'est en cours d'édition, ne fait rien
     if (!editingUser) {
       return;
     }
     setEditErrors({});
 
+    // Valide les données du formulaire
     const validation = validateUserForm(
       editingUser.firstName,
       editingUser.lastName,
@@ -86,6 +124,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       return;
     }
 
+    // Vérifie l'unicité de l'email (en excluant l'utilisateur actuel)
     const exists = users.some(
       (user) => user.email.toLowerCase() === editingUser.email.toLowerCase() && user.id !== editingUser.id,
     );
@@ -95,6 +134,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     }
 
     try {
+      // Appelle le service pour mettre à jour le client
       await updateUser({
         userId: editingUser.id,
         data: {
@@ -103,6 +143,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
           email: editingUser.email.toLowerCase(),
         },
       });
+      // Affiche le succès et ferme le mode édition
       setEditFeedback('Client updated successfully.');
       setEditingUser(null);
       setEditErrors({});
@@ -112,18 +153,22 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     }
   };
 
+  // Gestionnaire de suppression de client
   const handleDelete = async (userId: string) => {
+    // Trouve l'utilisateur à supprimer
     const target = users.find((user) => user.id === userId);
     if (!target) {
       return;
     }
 
+    // Demande confirmation avant suppression (action destructive)
     const confirmation = window.confirm(
       `Are you sure you want to remove ${target.firstName} ${target.lastName}? This action will delete their wallet information.`,
     );
 
     if (confirmation) {
       try {
+        // Appelle le service pour supprimer le client
         await deleteUser(userId);
       } catch (error: any) {
         console.error('Failed to delete user:', error);
@@ -131,27 +176,37 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     }
   };
 
+  // Calcule et formate le solde total d'un client (EUR + valeur crypto)
   const renderClientBalance = (client: User) => {
+    // Récupère le compte du client
     const account = clientAccounts[client.id];
     if (!account) {
       return '€0.00';
     }
 
+    // Résume les avoirs crypto (quantité nette par crypto)
     const holdings = summarizeHoldings(account.transactions);
+    // Enrichit avec les prix actuels pour avoir la valeur en EUR
     const enriched = enrichHoldingsWithPrices(holdings, cryptoAssets);
+    // Calcule la valeur totale des cryptos
     const totalValue = enriched.reduce((acc, holding) => acc + holding.currentValue, 0);
+    // Ajoute le solde EUR disponible
     const total = totalValue + account.balanceEUR;
+    // Formate en devise EUR
     return `€${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
+  // Rendu du panneau de gestion
   return (
     <div className="panel">
+      {/* Section En-tête et Bouton Nouveau Client */}
       <section className="panel__section" style={{ animationDelay: '0.1s' }}>
         <header className="panel__header">
           <div>
             <h2>Clients</h2>
             <p>Manage all BitChest client accounts. Passwords are never displayed to maintain confidentiality.</p>
           </div>
+          {/* Bouton pour basculer l'affichage du formulaire de création */}
           <button
             type="button"
             className="button button--primary"
@@ -161,11 +216,13 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
           </button>
         </header>
 
+        {/* Feedback et Erreurs globaux */}
         {creationFeedback ? <p className="form__success">{creationFeedback}</p> : null}
         {Object.entries(creationErrors).map(([key, error]) => (
           <p key={key} className="form__error">{error}</p>
         ))}
 
+        {/* Formulaire de Création (affiché conditionnellement) */}
         {isCreating ? (
           <form className="form form--three-column" onSubmit={handleCreate}>
             <label className="form__label">
@@ -212,6 +269,7 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
         ) : null}
       </section>
 
+      {/* Section Liste des Clients */}
       <section className="panel__section" style={{ animationDelay: '0.2s' }}>
         <div className="table-wrapper">
           <table className="table">
@@ -235,42 +293,46 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
               ) : (
                 clients.map((client) => (
                   <tr key={client.id}>
-                  <td>
-                    <span className="table__primary-text">{`${client.firstName} ${client.lastName}`}</span>
-                    <span className="table__secondary-text">ID: {client.id}</span>
-                  </td>
-                  <td>{client.email}</td>
-                  <td>{renderClientBalance(client)}</td>
-                  <td>{new Date(client.createdAt).toLocaleDateString()}</td>
-                  <td className="table__actions">
-                    <button
-                      type="button"
-                      className="button button--ghost"
-                      onClick={() =>
-                        setEditingUser({
-                          id: client.id,
-                          firstName: client.firstName,
-                          lastName: client.lastName,
-                          email: client.email,
-                        })
-                      }
-                    >
-                      Edit
-                    </button>
-                    {client.id !== adminId ? (
-                      <button type="button" className="button button--danger" onClick={() => handleDelete(client.id)}>
-                        Delete
+                    <td>
+                      <span className="table__primary-text">{`${client.firstName} ${client.lastName}`}</span>
+                      <span className="table__secondary-text">ID: {client.id}</span>
+                    </td>
+                    <td>{client.email}</td>
+                    {/* Affiche la valeur totale du portefeuille */}
+                    <td>{renderClientBalance(client)}</td>
+                    <td>{new Date(client.createdAt).toLocaleDateString()}</td>
+                    <td className="table__actions">
+                      {/* Bouton Éditer */}
+                      <button
+                        type="button"
+                        className="button button--ghost"
+                        onClick={() =>
+                          setEditingUser({
+                            id: client.id,
+                            firstName: client.firstName,
+                            lastName: client.lastName,
+                            email: client.email,
+                          })
+                        }
+                      >
+                        Edit
                       </button>
-                    ) : null}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                      {/* Bouton Supprimer (sauf pour soi-même, bien que ce soit une liste de clients) */}
+                      {client.id !== adminId ? (
+                        <button type="button" className="button button--danger" onClick={() => handleDelete(client.id)}>
+                          Delete
+                        </button>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
 
+      {/* Section Édition (affichée quand un utilisateur est sélectionné) */}
       {editingUser ? (
         <section className="panel__section" style={{ animationDelay: '0.3s' }}>
           <header>
