@@ -12,6 +12,8 @@ import type { User } from '../../state/types';
 import { summarizeHoldings, enrichHoldingsWithPrices } from '../../utils/wallet';
 // Importe la fonction de validation du formulaire utilisateur
 import { validateUserForm } from '../../utils/validation';
+// Importe le composant de modal de confirmation moderne
+import ConfirmationModal from './ConfirmationModal';
 
 // Props du composant: ID de l'admin actuel et liste de tous les utilisateurs
 type ClientManagementPanelProps = {
@@ -52,6 +54,12 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
   const [editFeedback, setEditFeedback] = useState<string | null>(null);
   // Erreurs de validation du formulaire d'édition
   const [editErrors, setEditErrors] = useState<Record<string, string>>({});
+
+  // --- État pour la modal de suppression ---
+  // Contrôle l'affichage de la modal de confirmation de suppression
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // Stocke l'utilisateur à supprimer pour la modal
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   // Filtre la liste des utilisateurs pour ne garder que les clients (pas les admins)
   // Mémorisé pour éviter de recalculer à chaque rendu
@@ -153,27 +161,43 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     }
   };
 
-  // Gestionnaire de suppression de client
-  const handleDelete = async (userId: string) => {
+  // Gestionnaire de suppression de client - ouvre la modal de confirmation
+  const handleDelete = (userId: string) => {
     // Trouve l'utilisateur à supprimer
     const target = users.find((user) => user.id === userId);
     if (!target) {
       return;
     }
 
-    // Demande confirmation avant suppression (action destructive)
-    const confirmation = window.confirm(
-      `Are you sure you want to remove ${target.firstName} ${target.lastName}? This action will delete their wallet information.`,
-    );
+    // Stocke l'utilisateur et ouvre la modal de confirmation
+    setUserToDelete(target);
+    setIsDeleteModalOpen(true);
+  };
 
-    if (confirmation) {
-      try {
-        // Appelle le service pour supprimer le client
-        await deleteUser(userId);
-      } catch (error: any) {
-        console.error('Failed to delete user:', error);
-      }
+  // Confirme et exécute la suppression après validation dans la modal
+  const confirmDelete = async () => {
+    if (!userToDelete) {
+      return;
     }
+
+    try {
+      // Appelle le service pour supprimer le client
+      await deleteUser(userToDelete.id);
+      // Ferme la modal et réinitialise
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    } catch (error: any) {
+      console.error('Failed to delete user:', error);
+      // Ferme la modal même en cas d'erreur
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    }
+  };
+
+  // Annule la suppression et ferme la modal
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setUserToDelete(null);
   };
 
   // Calcule et formate le solde total d'un client (EUR + valeur crypto)
@@ -402,6 +426,18 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
           </form>
         </section>
       ) : null}
+
+      {/* Modal de confirmation de suppression */}
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Client"
+        message={userToDelete ? `Are you sure you want to remove ${userToDelete.firstName} ${userToDelete.lastName}? This action will permanently delete their account and wallet information.` : ''}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        isDangerous={true}
+      />
     </div>
   );
 }
