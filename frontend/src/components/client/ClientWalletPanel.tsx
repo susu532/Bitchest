@@ -6,6 +6,7 @@ import type { ClientAccount, CryptoAsset } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
 import { api } from '../../utils/api';
 import { enrichHoldingsWithPrices, summarizeHoldings } from '../../utils/wallet';
+import { useNotifications } from '../common/Notifications';
 
 type ClientWalletPanelProps = {
   account: ClientAccount;
@@ -14,6 +15,7 @@ type ClientWalletPanelProps = {
 
 export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalletPanelProps) {
   const { fetchClientAccount } = useAppServices();
+  const { addNotification } = useNotifications();
 
   const assetKeys = Object.keys(cryptoAssets);
   const defaultCryptoId = assetKeys[0] ?? '';
@@ -73,7 +75,10 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
         setTradeError(response.message || 'Purchase failed');
       }
     } catch (error: any) {
-      setTradeError(error.message || 'Purchase failed');
+      const errorMsg = error.message || 'Purchase failed';
+      setTradeError(errorMsg);
+      // Show critical error in notification system for better visibility
+      addNotification('Purchase Failed', 'error', errorMsg, 8000);
     }
   };
 
@@ -120,7 +125,10 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
         setTradeError(response.message || 'Sale failed');
       }
     } catch (error: any) {
-      setTradeError(error.message || 'Sale failed');
+      const errorMsg = error.message || 'Sale failed';
+      setTradeError(errorMsg);
+      // Show critical error in notification system for better visibility
+      addNotification('Sale Failed', 'error', errorMsg, 8000);
     }
   };
 

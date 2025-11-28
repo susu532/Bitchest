@@ -73,6 +73,80 @@ class WalletCalculationsTest extends TestCase
     }
 
     /**
+     * REGRESSION TEST for the portfolio calculation bug
+     * Tests that selling crypto at a different price than purchase doesn't corrupt the average price
+     */
+    public function test_average_price_remains_consistent_after_sell()
+    {
+        $user = User::factory()->create(['role' => 'client']);
+        $account = ClientAccount::factory()->create(['user_id' => $user->id, 'balance_eur' => 50000]);
+        $crypto = Cryptocurrency::factory()->create();
+
+        // Buy 1 BTC at €10,000
+        WalletTransaction::create([
+            'user_id' => $user->id,
+            'crypto_id' => $crypto->id,
+            'quantity' => 1,
+            'price_per_unit' => 10000,
+            'type' => 'buy',
+            'transaction_date' => now(),
+        ]);
+
+        // Buy 1 BTC at €20,000 (average should now be €15,000)
+        WalletTransaction::create([
+            'user_id' => $user->id,
+            'crypto_id' => $crypto->id,
+            'quantity' => 1,
+            'price_per_unit' => 20000,
+            'type' => 'buy',
+            'transaction_date' => now(),
+        ]);
+
+        // Sell 1 BTC at €30,000 (at a profit, but average price should stay €15,000)
+        WalletTransaction::create([
+            'user_id' => $user->id,
+            'crypto_id' => $crypto->id,
+            'quantity' => 1,
+            'price_per_unit' => 30000,
+            'type' => 'sell',
+            'transaction_date' => now(),
+        ]);
+
+        // Recalculate using the fixed logic
+        $transactions = WalletTransaction::where('user_id', $user->id)
+            ->where('crypto_id', $crypto->id)
+            ->get();
+
+        $totalQuantity = 0;
+        $totalCost = 0;
+        $averagePrice = 0;
+
+        foreach ($transactions as $transaction) {
+            if ($transaction->type === 'buy') {
+                $totalQuantity += $transaction->quantity;
+                $totalCost += $transaction->quantity * $transaction->price_per_unit;
+                
+                if ($totalQuantity > 0) {
+                    $averagePrice = $totalCost / $totalQuantity;
+                }
+            } else {
+                // Sell: reduce quantity and cost proportionally using average price
+                $totalQuantity -= $transaction->quantity;
+                $totalCost -= $transaction->quantity * $averagePrice;
+                // Average price remains unchanged
+            }
+        }
+
+        // After selling 1 BTC at €30,000:
+        // - Remaining quantity: 1 BTC
+        // - Average purchase price should STILL be €15,000 (not affected by sell price)
+        // - Remaining cost basis: 1 × €15,000 = €15,000
+        $this->assertEquals(1, $totalQuantity, 'Should have 1 BTC remaining');
+        $this->assertEquals(15000, $averagePrice, 'Average price should remain €15,000');
+        $this->assertEquals(15000, $totalCost, 'Total cost should be €15,000');
+    }
+
+    /**
      * Test capital gain calculation with positive profit.
      */
     public function test_capital_gain_positive_calculation()

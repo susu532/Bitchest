@@ -3,116 +3,53 @@
 // Espace de noms pour les contrôleurs HTTP
 namespace App\Http\Controllers;
 
-// Importe le modèle WalletTransaction pour gérer les transactions d'achat/vente
-use App\Models\WalletTransaction;
-// Importe le modèle ClientAccount pour gérer les soldes des clients
+// Importe le service Wallet qui contient la logique métier
+use App\Services\WalletService;
+// Importe les FormRequests pour la validation
+use App\Http\Requests\BuyCryptoRequest;
+use App\Http\Requests\SellCryptoRequest;
+// Importe le modèle ClientAccount pour récupérer les informations du compte
 use App\Models\ClientAccount;
-// Importe le modèle CryptoPrice pour accéder aux prix des cryptos
-use App\Models\CryptoPrice;
-// Importe l'événement UserBalanceChanged pour notifier les changements de solde
-use App\Events\UserBalanceChanged;
-// Importe l'événement TransactionCompleted pour notifier les transactions complétées
-use App\Events\TransactionCompleted;
-// Importe la classe Request pour gérer les requêtes HTTP
+// Importe la classe Request pour les endpoints qui n'ont pas de FormRequest
 use Illuminate\Http\Request;
-// Importe les exceptions personnalisées pour une meilleure gestion des erreurs
-use App\Exceptions\InsufficientBalanceException;
-use App\Exceptions\InsufficientCryptoHoldingsException;
-use App\Exceptions\InvalidTransactionException;
 
-// Classe contrôleur pour gérer le portefeuille (wallet) - achats, ventes, résumé
+// Classe contrôleur pour gérer le portefeuille (wallet)
 class WalletController extends Controller
 {
+    /**
+     * Instance du service Wallet
+     */
+    protected WalletService $walletService;
+    
+    /**
+     * Constructeur - injecte le service Wallet
+     */
+    public function __construct(WalletService $walletService)
+    {
+        $this->walletService = $walletService;
+    }
     /**
      * Permet à un client d'acheter de la cryptomonnaie
      * Endpoint: POST /wallet/buy
      * Authentification: Client uniquement
-     * Paramètres requis: cryptoId, quantity, pricePerUnit
+     * Utilise BuyCryptoRequest pour la validation
      */
-    public function buyCryptocurrency(Request $request)
+    public function buyCryptocurrency(BuyCryptoRequest $request)
     {
-        // Vérifie que l'utilisateur est authentifié ET a le rôle de 'client'
-        if (!auth()->check() || auth()->user()->role !== 'client') {
-            // Retourne erreur 403 si ce n'est pas un client
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-        }
-
-        // Valide les paramètres de la requête
-        $request->validate([
-            // cryptoId: obligatoire, chaîne, doit exister dans la table cryptocurrencies
-            'cryptoId' => 'required|string|exists:cryptocurrencies,id',
-            // quantity: obligatoire, nombre, minimum 0.00000001 (8 décimales)
-            'quantity' => 'required|numeric|min:0.00000001',
-            // pricePerUnit: obligatoire, nombre, minimum 0.01 (2 décimales)
-            'pricePerUnit' => 'required|numeric|min:0.01',
-        ]);
-
-        // Récupère l'utilisateur authentifié (le client)
-        $user = auth()->user();
-        // Récupère le compte client associé à cet utilisateur
-        $account = ClientAccount::where('user_id', $user->id)->first();
-
-        // Calcule le coût total de l'achat (quantité × prix par unité)
-        $totalCost = $request->quantity * $request->pricePerUnit;
-
-        // Vérifie que le solde EUR du client est suffisant pour l'achat
-        if ($account->balance_eur < $totalCost) {
-            // Lance une exception personnalisée avec des détails sur le solde
-            throw new InsufficientBalanceException($totalCost, $account->balance_eur);
-        }
-
-        // Enregistre le solde AVANT la transaction pour calculer le changement
-        $previousBalance = $account->balance_eur;
-
-        // Crée un enregistrement de transaction d'achat dans la base de données
-        $transaction = WalletTransaction::create([
-            // ID du client effectuant l'achat
-            'user_id' => $user->id,
-            // ID de la cryptomonnaie achetée
-            'crypto_id' => $request->cryptoId,
-            // Quantité de cryptomonnaie achetée
-            'quantity' => $request->quantity,
-            // Prix payé par unité
-            'price_per_unit' => $request->pricePerUnit,
-            // Type de transaction (buy ou sell)
-            'type' => 'buy',
-            // Timestamp de la transaction
-            'transaction_date' => now(),
-        ]);
-
-        // Déduit le coût total du solde EUR du client
-        $account->balance_eur -= $totalCost;
-        // Sauvegarde le nouveau solde dans la base de données
-        $account->save();
-
-        // Diffuse l'événement UserBalanceChanged pour notifier les clients connectés
-        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency purchase'));
-        // Diffuse l'événement TransactionCompleted pour notifier de la transaction
-        broadcast(new TransactionCompleted($user->id, 'buy', $request->cryptoId, $request->quantity, $request->pricePerUnit));
-
-        // Retourne la réponse JSON avec les détails de la transaction (HTTP 201 = Created)
+        // La validation et l'autorisation sont gérées par BuyCryptoRequest
+        // La logique métier est déléguée au WalletService
+        $result = $this->walletService->buyCryptocurrency(
+            auth()->id(),
+            $request->cryptoId,
+            $request->quantity,
+            $request->pricePerUnit
+        );
+        
         return response()->json([
-            // Flag de succès
             'success' => true,
-            // Message de confirmation
             'message' => 'Purchase successful',
-            // Détails de la transaction créée
-            'transaction' => [
-                // ID unique de la transaction
-                'id' => (string) $transaction->id,
-                // ID de la cryptomonnaie achetée
-                'cryptoId' => $transaction->crypto_id,
-                // Quantité achetée
-                'quantity' => (float) $transaction->quantity,
-                // Prix par unité
-                'pricePerUnit' => (float) $transaction->price_per_unit,
-                // Type de transaction (buy)
-                'type' => $transaction->type,
-                // Timestamp en format ISO 8601
-                'timestamp' => $transaction->transaction_date->toIso8601String(),
-            ],
-            // Nouveau solde EUR après l'achat
-            'newBalance' => (float) $account->balance_eur,
+            'transaction' => $result['transaction'],
+            'newBalance' => $result['newBalance'],
         ], 201);
     }
 
@@ -120,107 +57,24 @@ class WalletController extends Controller
      * Permet à un client de vendre de la cryptomonnaie
      * Endpoint: POST /wallet/sell
      * Authentification: Client uniquement
-     * Paramètres requis: cryptoId, quantity, pricePerUnit
+     * Utilise SellCryptoRequest pour la validation
      */
-    public function sellCryptocurrency(Request $request)
+    public function sellCryptocurrency(SellCryptoRequest $request)
     {
-        // Vérifie que l'utilisateur est authentifié ET a le rôle de 'client'
-        if (!auth()->check() || auth()->user()->role !== 'client') {
-            // Retourne erreur 403 si ce n'est pas un client
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-        }
-
-        // Valide les paramètres de la requête
-        $request->validate([
-            // cryptoId: obligatoire, chaîne, doit exister dans la table cryptocurrencies
-            'cryptoId' => 'required|string|exists:cryptocurrencies,id',
-            // quantity: obligatoire, nombre, minimum 0.00000001
-            'quantity' => 'required|numeric|min:0.00000001',
-            // pricePerUnit: obligatoire, nombre, minimum 0.01
-            'pricePerUnit' => 'required|numeric|min:0.01',
-        ]);
-
-        // Récupère l'utilisateur authentifié (le client)
-        $user = auth()->user();
-        // Récupère le compte client associé
-        $account = ClientAccount::where('user_id', $user->id)->first();
-
-        // Calcule la quantité totale de cryptomonnaie détenue par le client
-        $holdingQuantity = WalletTransaction::where('user_id', $user->id)
-            // Filtre par la cryptomonnaie à vendre
-            ->where('crypto_id', $request->cryptoId)
-            // Récupère TOUTES les transactions pour cette crypto
-            ->get()
-            // Utilise reduce pour calculer le solde net (buy + sell)
-            ->reduce(function ($carry, $transaction) {
-                // Ajoute la quantité si achat, la soustrait si vente
-                return $carry + ($transaction->type === 'buy' ? $transaction->quantity : -$transaction->quantity);
-            }, 0); // Commence à 0
-
-        // Vérifie que le client détient suffisamment de cryptomonnaie pour vendre
-        if ($holdingQuantity < $request->quantity) {
-            // Lance une exception personnalisée avec des détails sur le holding
-            throw new InsufficientCryptoHoldingsException(
-                $request->cryptoId,
-                $request->quantity,
-                $holdingQuantity
-            );
-        }
-
-        // Enregistre le solde AVANT la transaction pour calculer le changement
-        $previousBalance = $account->balance_eur;
-
-        // Crée un enregistrement de transaction de vente dans la base de données
-        $transaction = WalletTransaction::create([
-            // ID du client effectuant la vente
-            'user_id' => $user->id,
-            // ID de la cryptomonnaie vendue
-            'crypto_id' => $request->cryptoId,
-            // Quantité de cryptomonnaie vendue
-            'quantity' => $request->quantity,
-            // Prix reçu par unité
-            'price_per_unit' => $request->pricePerUnit,
-            // Type de transaction (sell)
-            'type' => 'sell',
-            // Timestamp de la transaction
-            'transaction_date' => now(),
-        ]);
-
-        // Calcule le total des revenus de la vente (quantité × prix par unité)
-        $totalProceeds = $request->quantity * $request->pricePerUnit;
-        // Ajoute les revenus au solde EUR du client
-        $account->balance_eur += $totalProceeds;
-        // Sauvegarde le nouveau solde dans la base de données
-        $account->save();
-
-        // Diffuse l'événement UserBalanceChanged pour notifier les clients connectés
-        broadcast(new UserBalanceChanged($user->id, $account->balance_eur, $previousBalance, 'Cryptocurrency sale'));
-        // Diffuse l'événement TransactionCompleted pour notifier de la transaction
-        broadcast(new TransactionCompleted($user->id, 'sell', $request->cryptoId, $request->quantity, $request->pricePerUnit));
-
-        // Retourne la réponse JSON avec les détails de la transaction (HTTP 201 = Created)
+        // La validation et l'autorisation sont gérées par SellCryptoRequest
+        // La logique métier est déléguée au WalletService
+        $result = $this->walletService->sellCryptocurrency(
+            auth()->id(),
+            $request->cryptoId,
+            $request->quantity,
+            $request->pricePerUnit
+        );
+        
         return response()->json([
-            // Flag de succès
             'success' => true,
-            // Message de confirmation
             'message' => 'Sale successful',
-            // Détails de la transaction créée
-            'transaction' => [
-                // ID unique de la transaction
-                'id' => (string) $transaction->id,
-                // ID de la cryptomonnaie vendue
-                'cryptoId' => $transaction->crypto_id,
-                // Quantité vendue
-                'quantity' => (float) $transaction->quantity,
-                // Prix par unité reçu
-                'pricePerUnit' => (float) $transaction->price_per_unit,
-                // Type de transaction (sell)
-                'type' => $transaction->type,
-                // Timestamp en format ISO 8601
-                'timestamp' => $transaction->transaction_date->toIso8601String(),
-            ],
-            // Nouveau solde EUR après la vente
-            'newBalance' => (float) $account->balance_eur,
+            'transaction' => $result['transaction'],
+            'newBalance' => $result['newBalance'],
         ], 201);
     }
 
