@@ -39,5 +39,45 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Gestionnaire pour InsufficientBalanceException
+        $exceptions->render(function (\App\Exceptions\InsufficientBalanceException $e) {
+            \Illuminate\Support\Facades\Log::warning('Insufficient balance exception', [
+                'message' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error_type' => 'insufficient_balance'
+            ], 400);
+        });
+        
+        // Gestionnaire pour InsufficientCryptoHoldingsException
+        $exceptions->render(function (\App\Exceptions\InsufficientCryptoHoldingsException $e) {
+            \Illuminate\Support\Facades\Log::warning('Insufficient crypto holdings exception', [
+                'message' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error_type' => 'insufficient_holdings'
+            ], 400);
+        });
+        
+        // Gestionnaire pour InvalidTransactionException
+        $exceptions->render(function (\App\Exceptions\InvalidTransactionException $e) {
+            \Illuminate\Support\Facades\Log::warning('Invalid transaction exception', [
+                'message' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error_type' => 'invalid_transaction'
+            ], 400);
+        });
     })->create();

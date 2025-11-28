@@ -14,13 +14,16 @@ Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
 
 // --- Routes d'Authentification ---
 
-// Route pour la connexion utilisateur (Login)
+// Route pour la connexion utilisateur (Login) avec rate limiting
+// Limite à 5 tentatives par minute pour éviter les attaques par force brute
 // Endpoint public: permet aux utilisateurs de s'authentifier et de recevoir une session
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/login', [AuthController::class, 'login'])
+    ->middleware('throttle:5,1');
 
 // Groupe de routes protégées par le middleware 'auth:web'
 // Toutes les routes à l'intérieur de ce groupe nécessitent que l'utilisateur soit connecté
-Route::middleware('auth:web')->group(function () {
+// Rate limiting: 60 requêtes par minute max pour éviter l'abus de l'API
+Route::middleware(['auth:web', 'throttle:60,1'])->group(function () {
     
     // --- Routes Utilisateur Authentifié ---
 

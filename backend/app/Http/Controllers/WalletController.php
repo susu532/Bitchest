@@ -15,6 +15,10 @@ use App\Events\UserBalanceChanged;
 use App\Events\TransactionCompleted;
 // Importe la classe Request pour gérer les requêtes HTTP
 use Illuminate\Http\Request;
+// Importe les exceptions personnalisées pour une meilleure gestion des erreurs
+use App\Exceptions\InsufficientBalanceException;
+use App\Exceptions\InsufficientCryptoHoldingsException;
+use App\Exceptions\InvalidTransactionException;
 
 // Classe contrôleur pour gérer le portefeuille (wallet) - achats, ventes, résumé
 class WalletController extends Controller
@@ -53,13 +57,8 @@ class WalletController extends Controller
 
         // Vérifie que le solde EUR du client est suffisant pour l'achat
         if ($account->balance_eur < $totalCost) {
-            // Retourne erreur 400 si solde insuffisant
-            return response()->json([
-                // Flag d'erreur
-                'success' => false,
-                // Message d'erreur
-                'message' => 'Insufficient balance',
-            ], 400);
+            // Lance une exception personnalisée avec des détails sur le solde
+            throw new InsufficientBalanceException($totalCost, $account->balance_eur);
         }
 
         // Enregistre le solde AVANT la transaction pour calculer le changement
@@ -160,13 +159,12 @@ class WalletController extends Controller
 
         // Vérifie que le client détient suffisamment de cryptomonnaie pour vendre
         if ($holdingQuantity < $request->quantity) {
-            // Retourne erreur 400 si holding insuffisant
-            return response()->json([
-                // Flag d'erreur
-                'success' => false,
-                // Message d'erreur
-                'message' => 'Insufficient crypto holdings',
-            ], 400);
+            // Lance une exception personnalisée avec des détails sur le holding
+            throw new InsufficientCryptoHoldingsException(
+                $request->cryptoId,
+                $request->quantity,
+                $holdingQuantity
+            );
         }
 
         // Enregistre le solde AVANT la transaction pour calculer le changement
@@ -272,6 +270,8 @@ class WalletController extends Controller
                     'totalQuantity' => 0,
                     // Coût total d'achat (utilisé pour calculer le prix moyen)
                     'totalCost' => 0,
+                    // Prix moyen pondéré d'achat (Weighted Average Cost)
+                    'averagePrice' => 0,
                     // Tableau de toutes les transactions pour cette crypto
                     'transactions' => [],
                 ];
@@ -283,12 +283,24 @@ class WalletController extends Controller
                 $holdings[$transaction->crypto_id]['totalQuantity'] += $transaction->quantity;
                 // Ajoute le coût (quantité × prix) au coût total
                 $holdings[$transaction->crypto_id]['totalCost'] += $transaction->quantity * $transaction->price_per_unit;
+                
+                // Recalcule le prix moyen après l'achat (Weighted Average Cost)
+                if ($holdings[$transaction->crypto_id]['totalQuantity'] > 0) {
+                    $holdings[$transaction->crypto_id]['averagePrice'] = 
+                        $holdings[$transaction->crypto_id]['totalCost'] / $holdings[$transaction->crypto_id]['totalQuantity'];
+                }
             } else {
                 // Si c'est une vente (sell)
                 // Soustrait la quantité du total
                 $holdings[$transaction->crypto_id]['totalQuantity'] -= $transaction->quantity;
-                // Soustrait le coût du total (pour calculer correctement le prix moyen)
-                $holdings[$transaction->crypto_id]['totalCost'] -= $transaction->quantity * $transaction->price_per_unit;
+                
+                // CORRECTION DU BUG: On réduit le coût proportionnellement basé sur le prix moyen d'achat
+                // et non pas sur le prix de vente (qui pourrait être plus élevé ou plus bas)
+                $avgPrice = $holdings[$transaction->crypto_id]['averagePrice'];
+                $holdings[$transaction->crypto_id]['totalCost'] -= $transaction->quantity * $avgPrice;
+                
+                // Le prix moyen reste inchangé après une vente (principe du coût moyen pondéré)
+                // Car on vend au prix moyen d'achat, pas au prix de vente
             }
 
             // Ajoute les détails de cette transaction au tableau de transactions
@@ -308,12 +320,9 @@ class WalletController extends Controller
 
         // Traite chaque holding pour calculer le prix moyen et filtrer
         $holdings = array_map(function ($holding) {
-            // Si la quantité totale détenue est positive
-            if ($holding['totalQuantity'] > 0) {
-                // Calcule le prix moyen (coût total / quantité totale)
-                $holding['averagePrice'] = $holding['totalCost'] / $holding['totalQuantity'];
-            } else {
-                // Si quantité = 0, prix moyen = 0
+            // Le prix moyen a déjà été calculé dans la boucle ci-dessus
+            // On s'assure juste qu'il est à jour si la quantité est zéro
+            if ($holding['totalQuantity'] <= 0) {
                 $holding['averagePrice'] = 0;
             }
             // Retourne le holding avec le prix moyen calculé
