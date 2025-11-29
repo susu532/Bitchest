@@ -128,19 +128,19 @@ function AppRoutes() {
       <Routes>
         {/* Route publique: page de connexion (accessible à tous) */}
         <Route path="/" element={<LoginPage />} />
-        
+
         {/* Routes administrateur: protégées avec rôle 'admin' uniquement */}
         <Route element={<RequireAuth allowedRoles={['admin']} />}>
           {/* Tous les chemins /admin/* sont gérés par AdminDashboard */}
           <Route path="/admin/*" element={<AdminDashboard />} />
         </Route>
-        
+
         {/* Routes client: protégées avec rôle 'client' uniquement */}
         <Route element={<RequireAuth allowedRoles={['client']} />}>
           {/* Tous les chemins /client/* sont gérés par ClientDashboard */}
           <Route path="/client/*" element={<ClientDashboard />} />
         </Route>
-        
+
         {/* Route catch-all: redirige toute route non reconnue vers la page de connexion */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
