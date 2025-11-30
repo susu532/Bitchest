@@ -7,11 +7,13 @@ import ClientManagementPanel from '../components/admin/ClientManagementPanel';
 import MarketOverviewPanel from '../components/common/MarketOverviewPanel';
 import { useAuth } from '../state/AuthContext';
 import { useAppState, useAppServices } from '../state/AppStateProvider';
+import { useNotifications } from '../components/common/Notifications';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const state = useAppState();
   const { fetchCryptoAssets, fetchUsers } = useAppServices();
+  const { addNotification } = useNotifications();
 
   useEffect(() => {
     // Fetch data when dashboard loads
@@ -22,6 +24,15 @@ export default function AdminDashboard() {
   if (!user) {
     return <Navigate to="/" replace />;
   }
+
+  // Wrapper pour logout avec notification
+  const handleLogout = () => {
+    addNotification('Logged Out', 'info', 'You have been logged out successfully.', 3000);
+    // Petit délai pour laisser voir la notification avant de rediriger
+    setTimeout(() => {
+      logout();
+    }, 500);
+  };
 
   const navItems = [
     { label: 'Profile', to: '/admin/profile', description: 'Manage your administrator account' },
@@ -35,7 +46,7 @@ export default function AdminDashboard() {
       subtitle="Control BitChest accounts and monitor market activity"
       navItems={navItems}
       user={user}
-      onLogout={logout}
+      onLogout={handleLogout}
     >
       <Routes>
         <Route index element={<Navigate to="/admin/profile" replace />} />

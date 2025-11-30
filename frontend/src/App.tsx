@@ -7,8 +7,8 @@ import { useEffect } from 'react';
 import { AppStateProvider } from './state/AppStateProvider';
 // Importe le provider d'authentification et le hook useAuth pour accéder à l'état auth
 import { AuthProvider, useAuth } from './state/AuthContext';
-// Importe le hook et composant pour gérer les notifications utilisateur (affichées en temps réel)
-import { useNotifications, NotificationContainer } from './components/common/Notifications';
+// Importe le hook, composant et provider pour gérer les notifications utilisateur (affichées en temps réel)
+import { useNotifications, NotificationContainer, NotificationProvider } from './components/common/Notifications';
 // Importe le service echo pour la communication WebSocket (prix des cryptos, transactions, balance)
 import { echoService } from './utils/echo';
 // Importe les pages de l'application
@@ -68,7 +68,7 @@ function AppRoutes() {
   // Récupère l'état de chargement et les données utilisateur authentifié
   const { isLoading, user } = useAuth();
   // Récupère les fonctions pour gérer les notifications utilisateur
-  const { notifications, addNotification, removeNotification } = useNotifications();
+  const { addNotification } = useNotifications();
 
   /**
    * Effect: Abonnement aux événements WebSocket utilisateur
@@ -123,33 +123,35 @@ function AppRoutes() {
 
   // Retourne la structure de routage de l'application
   return (
-    <>
-      {/* Configuration des routes de l'application */}
-      <Routes>
-        {/* Route publique: page de connexion (accessible à tous) */}
-        <Route path="/" element={<LoginPage />} />
+    <Routes>
+      {/* Route publique: page de connexion (accessible à tous) */}
+      <Route path="/" element={<LoginPage />} />
 
-        {/* Routes administrateur: protégées avec rôle 'admin' uniquement */}
-        <Route element={<RequireAuth allowedRoles={['admin']} />}>
-          {/* Tous les chemins /admin/* sont gérés par AdminDashboard */}
-          <Route path="/admin/*" element={<AdminDashboard />} />
-        </Route>
+      {/* Routes administrateur: protégées avec rôle 'admin' uniquement */}
+      <Route element={<RequireAuth allowedRoles={['admin']} />}>
+        {/* Tous les chemins /admin/* sont gérés par AdminDashboard */}
+        <Route path="/admin/*" element={<AdminDashboard />} />
+      </Route>
 
-        {/* Routes client: protégées avec rôle 'client' uniquement */}
-        <Route element={<RequireAuth allowedRoles={['client']} />}>
-          {/* Tous les chemins /client/* sont gérés par ClientDashboard */}
-          <Route path="/client/*" element={<ClientDashboard />} />
-        </Route>
+      {/* Routes client: protégées avec rôle 'client' uniquement */}
+      <Route element={<RequireAuth allowedRoles={['client']} />}>
+        {/* Tous les chemins /client/* sont gérés par ClientDashboard */}
+        <Route path="/client/*" element={<ClientDashboard />} />
+      </Route>
 
-        {/* Route catch-all: redirige toute route non reconnue vers la page de connexion */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-
-      {/* Conteneur des notifications: affiche toutes les notifications de l'application */}
-      {/* Les notifications disparaissent après un délai ou quand l'utilisateur clique dessus */}
-      <NotificationContainer notifications={notifications} onRemove={removeNotification} />
-    </>
+      {/* Route catch-all: redirige toute route non reconnue vers la page de connexion */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
+}
+
+/**
+ * Composant NotificationWrapper: Affiche le conteneur de notifications
+ * Doit être à l'intérieur de NotificationProvider
+ */
+function NotificationWrapper() {
+  const { notifications, removeNotification } = useNotifications();
+  return <NotificationContainer notifications={notifications} onRemove={removeNotification} />;
 }
 
 /**
@@ -158,6 +160,7 @@ function AppRoutes() {
  * Enveloppe l'application avec les providers d'état global:
  * - AppStateProvider: gère l'état global (utilisateurs, cryptos, transactions)
  * - AuthProvider: gère l'authentification et l'utilisateur connecté
+ * - NotificationProvider: gère les notifications partagées
  */
 export default function App() {
   return (
@@ -165,8 +168,13 @@ export default function App() {
     <AppStateProvider>
       {/* Provider d'authentification pour accéder à l'utilisateur connecté et son rôle */}
       <AuthProvider>
-        {/* Composant de routage qui configure toutes les routes de l'application */}
-        <AppRoutes />
+        {/* Provider de notifications pour partager l'état des notifications entre tous les composants */}
+        <NotificationProvider>
+          {/* Composant de routage qui configure toutes les routes de l'application */}
+          <AppRoutes />
+          {/* Conteneur des notifications: affiche toutes les notifications de l'application */}
+          <NotificationWrapper />
+        </NotificationProvider>
       </AuthProvider>
     </AppStateProvider>
   );

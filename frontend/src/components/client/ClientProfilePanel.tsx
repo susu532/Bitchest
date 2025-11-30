@@ -6,6 +6,7 @@ import type { User } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
 import { useAuth } from '../../state/AuthContext';
 import { validateUserForm, validatePasswordChange } from '../../utils/validation';
+import { useNotifications } from '../common/Notifications';
 
 type ClientProfilePanelProps = {
   user: User;
@@ -14,6 +15,7 @@ type ClientProfilePanelProps = {
 export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
   const { updateCurrentUserProfile } = useAppServices();
   const { changePassword, updateUser: updateAuthUser } = useAuth();
+  const { addNotification } = useNotifications();
 
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
@@ -51,9 +53,19 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
         email: email.toLowerCase(),
       });
       setProfileFeedback('Profile updated successfully.');
+      // Affiche une notification de succès
+      addNotification(
+        'Profile Updated',
+        'success',
+        'Your personal information has been updated successfully.',
+        5000
+      );
       setTimeout(() => setProfileFeedback(null), 4_000);
     } catch (error: any) {
-      setProfileErrors({ submit: error.message || 'Failed to update profile.' });
+      const errorMsg = error.message || 'Failed to update profile.';
+      setProfileErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Update Failed', 'error', errorMsg, 6000);
     }
   };
 
@@ -71,11 +83,21 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     try {
       await changePassword(currentPassword, newPassword);
       setPasswordFeedback('Password updated successfully.');
+      // Affiche une notification de succès
+      addNotification(
+        'Password Changed',
+        'success',
+        'Your password has been updated successfully.',
+        5000
+      );
       setCurrentPassword('');
       setNewPassword('');
       setPasswordConfirmation('');
     } catch (error: any) {
-      setPasswordErrors({ submit: error.message || 'Failed to change password' });
+      const errorMsg = error.message || 'Failed to change password';
+      setPasswordErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Password Change Failed', 'error', errorMsg, 6000);
     }
   };
 

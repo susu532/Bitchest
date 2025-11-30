@@ -8,6 +8,8 @@ import type { FormEvent } from 'react';
 
 // Importe le hook d'authentification pour accéder à la fonction login
 import { useAuth } from '../state/AuthContext';
+// Importe le hook de notifications pour afficher des toasts
+import { useNotifications } from '../components/common/Notifications';
 
 // Type pour l'état de la location (pour savoir d'où vient l'utilisateur)
 type LocationState = {
@@ -22,6 +24,8 @@ export default function LoginPage() {
   const location = useLocation();
   // Récupère la fonction login et l'utilisateur depuis le contexte d'auth
   const { login, user } = useAuth();
+  // Récupère la fonction d'ajout de notifications
+  const { addNotification } = useNotifications();
 
   // État local pour l'email saisi
   const [email, setEmail] = useState('');
@@ -48,11 +52,17 @@ export default function LoginPage() {
     // Si la connexion échoue
     if (!result.success) {
       // Affiche le message d'erreur retourné ou un message par défaut
-      setError(result.message ?? 'Unable to sign in. Please try again.');
+      const errorMsg = result.message ?? 'Unable to sign in. Please try again.';
+      setError(errorMsg);
+      // Affiche une notification d'erreur
+      addNotification('Login Failed', 'error', errorMsg, 6000);
       // Désactive l'état de chargement pour permettre de réessayer
       setIsSubmitting(false);
       return;
     }
+
+    // Affiche une notification de succès
+    addNotification('Welcome back!', 'success', `Signed in as ${email}`, 4000);
 
     // Détermine la page de destination après connexion réussie
     // Si l'utilisateur venait d'une page protégée, on le renvoie là-bas

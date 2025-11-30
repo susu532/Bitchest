@@ -14,6 +14,8 @@ import { summarizeHoldings, enrichHoldingsWithPrices } from '../../utils/wallet'
 import { validateUserForm } from '../../utils/validation';
 // Importe le composant de modal de confirmation moderne
 import ConfirmationModal from './ConfirmationModal';
+// Importe le hook de notifications pour afficher des toasts
+import { useNotifications } from '../common/Notifications';
 
 // Props du composant: ID de l'admin actuel et liste de tous les utilisateurs
 type ClientManagementPanelProps = {
@@ -36,6 +38,8 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
   const { clientAccounts, cryptoAssets } = useAppState();
   // Récupère les services pour les opérations CRUD sur les clients
   const { createClient, updateUser, deleteUser } = useAppServices();
+  // Récupère la fonction d'ajout de notifications
+  const { addNotification } = useNotifications();
 
   // --- État pour la création de client ---
   // Affiche/masque le formulaire de création
@@ -98,8 +102,14 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       // Appelle le service pour créer le client
       const result = await createClient(creationData);
       // Affiche le message de succès avec le mot de passe temporaire
-      setCreationFeedback(
-        `Client created successfully. Temporary password: ${result.tempPassword} (share securely with the client).`,
+      const successMsg = `Client created successfully. Temporary password: ${result.tempPassword} (share securely with the client).`;
+      setCreationFeedback(successMsg);
+      // Affiche une notification de succès
+      addNotification(
+        'Client Created',
+        'success',
+        `${creationData.firstName} ${creationData.lastName} has been added successfully.`,
+        6000
       );
       // Réinitialise le formulaire
       setCreationErrors({});
@@ -108,7 +118,10 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       setIsCreating(false);
     } catch (error: any) {
       // Affiche l'erreur retournée par l'API
-      setCreationErrors({ submit: error.message || 'Failed to create client' });
+      const errorMsg = error.message || 'Failed to create client';
+      setCreationErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Creation Failed', 'error', errorMsg, 6000);
     }
   };
 
@@ -153,10 +166,20 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
       });
       // Affiche le succès et ferme le mode édition
       setEditFeedback('Client updated successfully.');
+      // Affiche une notification de succès
+      addNotification(
+        'Client Updated',
+        'success',
+        `${editingUser.firstName} ${editingUser.lastName} has been updated successfully.`,
+        5000
+      );
       setEditingUser(null);
       setEditErrors({});
     } catch (error: any) {
-      setEditErrors({ submit: error.message || 'Failed to update client' });
+      const errorMsg = error.message || 'Failed to update client';
+      setEditErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Update Failed', 'error', errorMsg, 6000);
       console.error('Failed to update client:', error);
     }
   };
@@ -183,11 +206,21 @@ export default function ClientManagementPanel({ users, adminId }: ClientManageme
     try {
       // Appelle le service pour supprimer le client
       await deleteUser(userToDelete.id);
+      // Affiche une notification de succès
+      addNotification(
+        'Client Deleted',
+        'success',
+        `${userToDelete.firstName} ${userToDelete.lastName} has been deleted successfully.`,
+        5000
+      );
       // Ferme la modal et réinitialise
       setIsDeleteModalOpen(false);
       setUserToDelete(null);
     } catch (error: any) {
+      const errorMsg = error.message || 'Failed to delete client';
       console.error('Failed to delete user:', error);
+      // Affiche une notification d'erreur
+      addNotification('Deletion Failed', 'error', errorMsg, 6000);
       // Ferme la modal même en cas d'erreur
       setIsDeleteModalOpen(false);
       setUserToDelete(null);

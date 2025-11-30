@@ -14,6 +14,7 @@ import ClientProfilePanel from '../components/client/ClientProfilePanel';
 // Importe les hooks pour accéder à l'authentification et à l'état global
 import { useAuth } from '../state/AuthContext';
 import { useAppState, useAppServices } from '../state/AppStateProvider';
+import { useNotifications } from '../components/common/Notifications';
 
 // Composant principal du Dashboard Client
 // Gère le chargement des données initiales et le routage des sous-pages
@@ -24,6 +25,8 @@ export default function ClientDashboard() {
   const state = useAppState();
   // Récupère les services pour charger les données
   const { fetchCryptoAssets, fetchClientAccount } = useAppServices();
+  // Récupère la fonction d'ajout de notifications
+  const { addNotification } = useNotifications();
 
   // Effet pour charger les données nécessaires au démarrage du dashboard
   useEffect(() => {
@@ -43,6 +46,15 @@ export default function ClientDashboard() {
   // Récupère le compte spécifique de l'utilisateur connecté depuis l'état global
   const account = state.clientAccounts[user.id];
 
+  // Wrapper pour logout avec notification
+  const handleLogout = () => {
+    addNotification('Logged Out', 'info', 'You have been logged out successfully.', 3000);
+    // Petit délai pour laisser voir la notification avant de rediriger
+    setTimeout(() => {
+      logout();
+    }, 500);
+  };
+
   // Si le compte n'est pas encore chargé (ou n'existe pas)
   if (!account) {
     return (
@@ -52,7 +64,7 @@ export default function ClientDashboard() {
         subtitle="Manage your BitChest wallet and monitor the market"
         navItems={[]}
         user={user}
-        onLogout={logout}
+        onLogout={handleLogout}
       >
         <p>Your wallet is not available at the moment. Please contact support.</p>
       </DashboardLayout>
@@ -74,7 +86,7 @@ export default function ClientDashboard() {
       subtitle="Manage your BitChest wallet and stay on top of the market"
       navItems={navItems}
       user={user}
-      onLogout={logout}
+      onLogout={handleLogout}
     >
       {/* Configuration des routes internes du dashboard client */}
       <Routes>

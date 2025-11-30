@@ -6,6 +6,7 @@ import type { User } from '../../state/types';
 import { useAppServices } from '../../state/AppStateProvider';
 import { useAuth } from '../../state/AuthContext';
 import { validateUserForm, validatePasswordChange } from '../../utils/validation';
+import { useNotifications } from '../common/Notifications';
 
 type AdminProfilePanelProps = {
   admin: User;
@@ -14,6 +15,7 @@ type AdminProfilePanelProps = {
 export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
   const { updateCurrentUserProfile } = useAppServices();
   const { changePassword, updateUser: updateAuthUser } = useAuth();
+  const { addNotification } = useNotifications();
 
   const [firstName, setFirstName] = useState(admin.firstName);
   const [lastName, setLastName] = useState(admin.lastName);
@@ -49,10 +51,20 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
         email: email.toLowerCase(),
       });
       setProfileMessage('Profile updated successfully.');
+      // Affiche une notification de succès
+      addNotification(
+        'Profile Updated',
+        'success',
+        'Your administrator profile has been updated successfully.',
+        5000
+      );
       setTimeout(() => setProfileMessage(null), 4_000);
     } catch (error: any) {
+      const errorMsg = error.message || 'Failed to update profile.';
       console.error('Failed to update profile:', error);
-      setProfileErrors({ submit: error.message || 'Failed to update profile.' });
+      setProfileErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Update Failed', 'error', errorMsg, 6000);
     }
   };
 
@@ -70,10 +82,20 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
     try {
       await changePassword(currentPassword, newPassword);
       setPasswordMessage('Password updated. The change is effective immediately.');
+      // Affiche une notification de succès
+      addNotification(
+        'Password Changed',
+        'success',
+        'Your administrator password has been updated successfully.',
+        5000
+      );
       setCurrentPassword('');
       setNewPassword('');
     } catch (error: any) {
-      setPasswordErrors({ submit: error.message || 'Failed to change password' });
+      const errorMsg = error.message || 'Failed to change password';
+      setPasswordErrors({ submit: errorMsg });
+      // Affiche une notification d'erreur
+      addNotification('Password Change Failed', 'error', errorMsg, 6000);
     }
   };
 

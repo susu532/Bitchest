@@ -58,21 +58,31 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     const totalCost = Number((currentPrice * buyForm.quantity).toFixed(2));
 
     if (totalCost > account.balanceEUR) {
-      setTradeError('Insufficient euro balance to complete this purchase.');
+      const errorMsg = 'Insufficient euro balance to complete this purchase.';
+      setTradeError(errorMsg);
+      // Affiche une notification d'erreur
+      addNotification('Insufficient Balance', 'error', `You need €${totalCost.toLocaleString()} but only have €${account.balanceEUR.toLocaleString()}.`, 6000);
       return;
     }
 
     try {
       const response: any = await api.buyCryptocurrency(buyForm.cryptoId, buyForm.quantity, currentPrice);
       if (response.success) {
-        setTradeMessage(
-          `Purchase completed. You bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`,
+        const successMsg = `Purchase completed. You bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`;
+        setTradeMessage(successMsg);
+        // Affiche une notification de succès
+        addNotification(
+          'Purchase Successful',
+          'success',
+          `You successfully bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`,
+          5000
         );
         setBuyForm((previous) => ({ ...previous, quantity: 0 }));
         // Refresh account data
         await fetchClientAccount();
       } else {
         setTradeError(response.message || 'Purchase failed');
+        addNotification('Purchase Failed', 'error', response.message || 'Purchase failed', 6000);
       }
     } catch (error: any) {
       const errorMsg = error.message || 'Purchase failed';
@@ -105,7 +115,15 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
 
     const available = holdings[sellForm.cryptoId]?.quantity ?? 0;
     if (available < sellForm.quantity) {
-      setTradeError('You do not have enough units to sell this amount.');
+      const errorMsg = 'You do not have enough units to sell this amount.';
+      setTradeError(errorMsg);
+      // Affiche une notification d'erreur
+      addNotification(
+        'Insufficient Holdings',
+        'error',
+        `You only have ${available.toFixed(6)} ${asset.symbol} but tried to sell ${sellForm.quantity}.`,
+        6000
+      );
       return;
     }
 
@@ -115,14 +133,21 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     try {
       const response: any = await api.sellCryptocurrency(sellForm.cryptoId, sellForm.quantity, currentPrice);
       if (response.success) {
-        setTradeMessage(
-          `Sale completed. You sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`,
+        const successMsg = `Sale completed. You sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`;
+        setTradeMessage(successMsg);
+        // Affiche une notification de succès
+        addNotification(
+          'Sale Successful',
+          'success',
+          `You successfully sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`,
+          5000
         );
         setSellForm((previous) => ({ ...previous, quantity: 0 }));
         // Refresh account data
         await fetchClientAccount();
       } else {
         setTradeError(response.message || 'Sale failed');
+        addNotification('Sale Failed', 'error', response.message || 'Sale failed', 6000);
       }
     } catch (error: any) {
       const errorMsg = error.message || 'Sale failed';

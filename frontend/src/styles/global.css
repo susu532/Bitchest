@@ -1373,3 +1373,160 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Notification Toast Styles */
+.notification-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  pointer-events: none;
+  max-width: 400px;
+  width: 100%;
+}
+
+.notification {
+  background: rgba(6, 20, 31, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  animation: slide-in-right 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.notification::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.notification:hover {
+  transform: translateX(-4px);
+  box-shadow: var(--shadow-3d-hover);
+}
+
+.notification__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notification__details {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.notification__close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 0.25rem;
+  margin: -0.25rem -0.25rem 0 0;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.notification__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-light);
+}
+
+/* Notification Variants */
+.notification--success {
+  border-color: rgba(1, 255, 25, 0.3);
+}
+
+.notification--success::before {
+  background: #01ff19;
+  box-shadow: 0 0 10px rgba(1, 255, 25, 0.5);
+}
+
+.notification--success .notification__title {
+  color: #8bff9a;
+}
+
+.notification--error {
+  border-color: rgba(255, 89, 100, 0.3);
+}
+
+.notification--error::before {
+  background: #ff5964;
+  box-shadow: 0 0 10px rgba(255, 89, 100, 0.5);
+}
+
+.notification--error .notification__title {
+  color: #ff9da6;
+}
+
+.notification--info {
+  border-color: rgba(53, 167, 255, 0.3);
+}
+
+.notification--info::before {
+  background: #35a7ff;
+  box-shadow: 0 0 10px rgba(53, 167, 255, 0.5);
+}
+
+.notification--info .notification__title {
+  color: #8bcaff;
+}
+
+.notification--warning {
+  border-color: rgba(255, 179, 0, 0.3);
+}
+
+.notification--warning::before {
+  background: #ffb300;
+  box-shadow: 0 0 10px rgba(255, 179, 0, 0.5);
+}
+
+.notification--warning .notification__title {
+  color: #ffe082;
+}
+
+@media (max-width: 600px) {
+  .notification-container {
+    top: auto;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-width: none;
+  }
+  
+  .notification {
+    animation-name: slide-in-up;
+  }
+}
