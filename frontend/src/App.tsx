@@ -207,34 +207,22 @@ function AppRoutes() {
   // Les routes sont testées dans l'ordre et la première correspondance est affichée.
   return (
     <Routes>
-      {/* Cette route définit la page de connexion comme route racine publique. */}
-      {/* path="/" signifie que cette route correspond à l'URL de base de l'application. */}
-      {/* element={<LoginPage />} spécifie le composant à afficher quand l'utilisateur visite cette route. */}
+      
       <Route path="/" element={<LoginPage />} />
 
-      {/* Cette route wrapper protège toutes les routes admin avec RequireAuth. */}
-      {/* element={<RequireAuth allowedRoles={['admin']} />} vérifie que l'utilisateur est un admin. */}
-      {/* Les routes imbriquées ne seront accessibles qu'aux utilisateurs ayant le rôle 'admin'. */}
+      
       <Route element={<RequireAuth allowedRoles={['admin']} />}>
-        {/* Cette route imbriquée gère tous les chemins commençant par /admin. */}
-        {/* L'astérisque (*) dans path="/admin/*" capture tous les sous-chemins. */}
-        {/* AdminDashboard gérera son propre routing interne pour /admin/users, /admin/stats, etc. */}
+        
         <Route path="/admin/*" element={<AdminDashboard />} />
       </Route>
 
-      {/* Cette route wrapper protège toutes les routes client avec RequireAuth. */}
-      {/* element={<RequireAuth allowedRoles={['client']} />} vérifie que l'utilisateur est un client. */}
-      {/* Les routes imbriquées ne seront accessibles qu'aux utilisateurs ayant le rôle 'client'. */}
+      
       <Route element={<RequireAuth allowedRoles={['client']} />}>
-        {/* Cette route imbriquée gère tous les chemins commençant par /client. */}
-        {/* L'astérisque (*) dans path="/client/*" capture tous les sous-chemins. */}
-        {/* ClientDashboard gérera son propre routing interne pour /client/portfolio, /client/market, etc. */}
+    
         <Route path="/client/*" element={<ClientDashboard />} />
       </Route>
 
-      {/* Cette route catch-all redirige toutes les URLs non reconnues vers la page de login. */}
-      {/* path="*" correspond à n'importe quel chemin qui n'a pas matché les routes précédentes. */}
-      {/* element={<Navigate to="/" replace />} redirige l'utilisateur vers la racine (page de login). */}
+   
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -266,21 +254,13 @@ export default function App() {
     // Il gère les utilisateurs, les cryptomonnaies, les comptes clients et les transactions.
     // Tous les composants peuvent accéder et modifier ces données via useAppState et useAppServices.
     <AppStateProvider>
-      // Ce provider gère l'authentification et les données de l'utilisateur connecté.
-      // Il fournit user, isAuthenticated, login et logout à tous les composants.
-      // Il dépend d'AppStateProvider car il utilise certaines fonctions de l'état global.
+  
       <AuthProvider>
-        // Ce provider gère le système de notifications toast de l'application.
-        // Il fournit addNotification, removeNotification et le tableau notifications.
-        // Il permet d'afficher des messages de succès, erreur ou info depuis n'importe quel composant.
+       
         <NotificationProvider>
-          // Ce composant configure toutes les routes et gère les abonnements WebSocket.
-          // Il affiche LoginPage, AdminDashboard ou ClientDashboard selon l'URL et le rôle.
-          // Il s'abonne également aux événements temps réel pour l'utilisateur connecté.
+        
           <AppRoutes />
-          // Ce composant affiche toutes les notifications actives dans un conteneur fixe.
-          // Il se positionne généralement en haut à droite de l'écran.
-          // Les notifications apparaissent avec une animation et disparaissent automatiquement après quelques secondes.
+        
           <NotificationWrapper />
         </NotificationProvider>
       </AuthProvider>
