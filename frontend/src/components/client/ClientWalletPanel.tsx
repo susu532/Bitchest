@@ -60,7 +60,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     if (totalCost > account.balanceEUR) {
       const errorMsg = 'Insufficient euro balance to complete this purchase.';
       setTradeError(errorMsg);
-      // Affiche une notification d'erreur
+
       addNotification('Insufficient Balance', 'error', `You need €${totalCost.toLocaleString()} but only have €${account.balanceEUR.toLocaleString()}.`, 6000);
       return;
     }
@@ -70,7 +70,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
       if (response.success) {
         const successMsg = `Purchase completed. You bought ${buyForm.quantity} ${asset.symbol} for €${totalCost.toLocaleString()}.`;
         setTradeMessage(successMsg);
-        // Affiche une notification de succès
+
         addNotification(
           'Purchase Successful',
           'success',
@@ -78,7 +78,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
           5000
         );
         setBuyForm((previous) => ({ ...previous, quantity: 0 }));
-        // Refresh account data
+
         await fetchClientAccount();
       } else {
         setTradeError(response.message || 'Purchase failed');
@@ -87,7 +87,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     } catch (error: any) {
       const errorMsg = error.message || 'Purchase failed';
       setTradeError(errorMsg);
-      // Show critical error in notification system for better visibility
+
       addNotification('Purchase Failed', 'error', errorMsg, 8000);
     }
   };
@@ -117,7 +117,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     if (available < sellForm.quantity) {
       const errorMsg = 'You do not have enough units to sell this amount.';
       setTradeError(errorMsg);
-      // Affiche une notification d'erreur
+
       addNotification(
         'Insufficient Holdings',
         'error',
@@ -135,7 +135,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
       if (response.success) {
         const successMsg = `Sale completed. You sold ${sellForm.quantity} ${asset.symbol} for €${proceeds.toLocaleString()}.`;
         setTradeMessage(successMsg);
-        // Affiche une notification de succès
+
         addNotification(
           'Sale Successful',
           'success',
@@ -143,7 +143,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
           5000
         );
         setSellForm((previous) => ({ ...previous, quantity: 0 }));
-        // Refresh account data
+
         await fetchClientAccount();
       } else {
         setTradeError(response.message || 'Sale failed');
@@ -152,7 +152,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
     } catch (error: any) {
       const errorMsg = error.message || 'Sale failed';
       setTradeError(errorMsg);
-      // Show critical error in notification system for better visibility
+
       addNotification('Sale Failed', 'error', errorMsg, 8000);
     }
   };

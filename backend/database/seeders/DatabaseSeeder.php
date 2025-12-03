@@ -12,12 +12,10 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
+    
     public function run(): void
     {
-        // Create admin user
+
         $admin = User::create([
             'first_name' => 'Alicia',
             'last_name' => 'Stone',
@@ -26,7 +24,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Create test client user
         $client = User::create([
             'first_name' => 'Bruno',
             'last_name' => 'Martin',
@@ -35,13 +32,11 @@ class DatabaseSeeder extends Seeder
             'role' => 'client',
         ]);
 
-        // Create client account with 500 EUR balance
         ClientAccount::create([
             'user_id' => $client->id,
             'balance_eur' => 500,
         ]);
 
-        // Seed cryptocurrencies and price data
         $this->call(CryptoSeeder::class);
     }
 }

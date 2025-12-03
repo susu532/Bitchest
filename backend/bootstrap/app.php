@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Add CORS middleware first - this runs before everything else
+
         $middleware->use([
             \App\Http\Middleware\CorsMiddleware::class,
         ]);
@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->statefulApi();
         
-        // Disable CSRF for API routes - use exact path matching
+
         $middleware->validateCsrfTokens(except: [
             'auth/login',
             'auth/logout',
@@ -39,7 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // Gestionnaire pour InsufficientBalanceException
+
         $exceptions->render(function (\App\Exceptions\InsufficientBalanceException $e) {
             \Illuminate\Support\Facades\Log::warning('Insufficient balance exception', [
                 'message' => $e->getMessage(),
@@ -53,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 400);
         });
         
-        // Gestionnaire pour InsufficientCryptoHoldingsException
+
         $exceptions->render(function (\App\Exceptions\InsufficientCryptoHoldingsException $e) {
             \Illuminate\Support\Facades\Log::warning('Insufficient crypto holdings exception', [
                 'message' => $e->getMessage(),
@@ -67,7 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 400);
         });
         
-        // Gestionnaire pour InvalidTransactionException
+
         $exceptions->render(function (\App\Exceptions\InvalidTransactionException $e) {
             \Illuminate\Support\Facades\Log::warning('Invalid transaction exception', [
                 'message' => $e->getMessage(),

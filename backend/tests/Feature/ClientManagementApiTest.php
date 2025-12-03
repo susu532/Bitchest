@@ -12,9 +12,7 @@ class ClientManagementApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test admin can create a new client.
-     */
+    
     public function test_admin_can_create_client()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -40,16 +38,13 @@ class ClientManagementApiTest extends TestCase
                 'temporaryPassword',
             ]);
 
-        // Verify user was created with client role
         $this->assertDatabaseHas('users', [
             'email' => 'john.client@example.com',
             'role' => 'client',
         ]);
     }
 
-    /**
-     * Test new client receives 500 EUR initial balance.
-     */
+    
     public function test_new_client_receives_500_eur_balance()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -64,16 +59,13 @@ class ClientManagementApiTest extends TestCase
 
         $response->assertStatus(201);
 
-        // Find the created user
         $user = User::where('email', 'jane@example.com')->first();
         $account = ClientAccount::where('user_id', $user->id)->first();
 
         $this->assertEquals(500, $account->balance_eur);
     }
 
-    /**
-     * Test temporary password is returned on client creation.
-     */
+    
     public function test_temporary_password_returned_on_creation()
     {
         $admin = User::factory()->create(['role' => admin']);
@@ -94,9 +86,7 @@ class ClientManagementApiTest extends TestCase
         $this->assertGreaterThanOrEqual(12, strlen($tempPassword));
     }
 
-    /**
-     * Test duplicate email prevents client creation.
-     */
+    
     public function test_duplicate_email_prevents_creation()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -113,9 +103,7 @@ class ClientManagementApiTest extends TestCase
         $response->assertStatus(422);
     }
 
-    /**
-     * Test admin can update client data.
-     */
+    
     public function test_admin_can_update_client()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -139,9 +127,7 @@ class ClientManagementApiTest extends TestCase
         ]);
     }
 
-    /**
-     * Test admin can delete a client.
-     */
+    
     public function test_admin_can_delete_client()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -155,14 +141,11 @@ class ClientManagementApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        // Verify user and account were deleted
         $this->assertDatabaseMissing('users', ['id' => $client->id]);
         $this->assertDatabaseMissing('client_accounts', ['user_id' => $client->id]);
     }
 
-    /**
-     * Test non-admin cannot create clients.
-     */
+    
     public function test_non_admin_cannot_create_client()
     {
         $client = User::factory()->create(['role' => 'client']);
@@ -178,9 +161,7 @@ class ClientManagementApiTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * Test unauthenticated user cannot manage clients.
-     */
+    
     public function test_unauthenticated_cannot_manage_clients()
     {
         $response = $this->postJson('/clients', [
@@ -192,9 +173,7 @@ class ClientManagementApiTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /**
-     * Test admin can view all users.
-     */
+    
     public function test_admin_can_view_all_users()
     {
         $admin = User::factory()->create(['role' => 'admin']);

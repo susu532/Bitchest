@@ -11,9 +11,7 @@ class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test that users can be created with hashed passwords.
-     */
+    
     public function test_user_password_is_hashed()
     {
         $password = 'SecurePassword123';
@@ -30,23 +28,19 @@ class AuthenticationTest extends TestCase
         $this->assertTrue(Hash::check($password, $user->password));
     }
 
-    /**
-     * Test that password hashing prevents password viewing.
-     */
+    
     public function test_password_not_visible_in_serialization()
     {
         $user = User::factory()->create();
         
         $userData = $user->toArray();
         
-        // Password should be hidden during serialization
+
         $this->assertArrayNotHasKey('password', $user->getHidden());
         $this->assertTrue(in_array('password', $user->getHidden()));
     }
 
-    /**
-     * Test that invalid password fails authentication.
-     */
+    
     public function test_invalid_password_fails_check()
     {
         $password = 'CorrectPassword123';
@@ -63,9 +57,7 @@ class AuthenticationTest extends TestCase
         $this->assertFalse(Hash::check($wrongPassword, $user->password));
     }
 
-    /**
-     * Test user roles are properly assigned.
-     */
+    
     public function test_user_roles_are_properly_assigned()
     {
         $admin = User::factory()->create(['role' => 'admin']);
@@ -75,9 +67,7 @@ class AuthenticationTest extends TestCase
         $this->assertEquals('client', $client->role);
     }
 
-    /**
-     * Test that email is case-insensitive.
-     */
+    
     public function test_email_stored_consistently()
     {
         $user = User::create([

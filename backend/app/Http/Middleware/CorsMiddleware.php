@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 
 class CorsMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
+    
     public function handle(Request $request, Closure $next): mixed
     {
-        // Get the origin from request headers
+
         $origin = $request->header('Origin');
         $allowed_origins = [
             'http://localhost:3000',
@@ -20,11 +18,9 @@ class CorsMiddleware
             'http://192.168.1.231:3000',
         ];
 
-        // Check if origin is allowed
         $is_origin_allowed = in_array($origin, $allowed_origins);
         $response_origin = $is_origin_allowed ? $origin : 'http://localhost:3000';
 
-        // Handle preflight requests BEFORE authentication
         if ($request->getMethod() === 'OPTIONS') {
             return response('', 200)
                 ->header('Access-Control-Allow-Origin', $response_origin)
@@ -37,7 +33,6 @@ class CorsMiddleware
 
         $response = $next($request);
 
-        // Add CORS headers to all responses
         $response->header('Access-Control-Allow-Origin', $response_origin);
         $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
         $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');

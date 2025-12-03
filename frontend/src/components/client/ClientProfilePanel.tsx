@@ -46,14 +46,14 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
         lastName,
         email: email.toLowerCase(),
       });
-      // Update AuthContext immediately so the user sees changes in real-time
+
       updateAuthUser({
         firstName,
         lastName,
         email: email.toLowerCase(),
       });
       setProfileFeedback('Profile updated successfully.');
-      // Affiche une notification de succès
+
       addNotification(
         'Profile Updated',
         'success',
@@ -64,7 +64,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     } catch (error: any) {
       const errorMsg = error.message || 'Failed to update profile.';
       setProfileErrors({ submit: errorMsg });
-      // Affiche une notification d'erreur
+
       addNotification('Update Failed', 'error', errorMsg, 6000);
     }
   };
@@ -83,7 +83,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     try {
       await changePassword(currentPassword, newPassword);
       setPasswordFeedback('Password updated successfully.');
-      // Affiche une notification de succès
+
       addNotification(
         'Password Changed',
         'success',
@@ -96,7 +96,7 @@ export default function ClientProfilePanel({ user }: ClientProfilePanelProps) {
     } catch (error: any) {
       const errorMsg = error.message || 'Failed to change password';
       setPasswordErrors({ submit: errorMsg });
-      // Affiche une notification d'erreur
+
       addNotification('Password Change Failed', 'error', errorMsg, 6000);
     }
   };

@@ -21,7 +21,7 @@ export default function RealTimePriceTicker({ cryptoAssets, onPriceUpdate }: Rea
   const [realTimePrices, setRealTimePrices] = useState<Record<string, PriceUpdate>>({});
 
   useEffect(() => {
-    // Subscribe to all crypto price updates
+
     echoService.subscribeToprices((data: any) => {
       const update: PriceUpdate = {
         cryptoId: data.cryptoId,

@@ -16,7 +16,7 @@ export default function AdminDashboard() {
   const { addNotification } = useNotifications();
 
   useEffect(() => {
-    // Fetch data when dashboard loads
+
     fetchCryptoAssets();
     fetchUsers();
   }, [fetchCryptoAssets, fetchUsers]);
@@ -25,10 +25,9 @@ export default function AdminDashboard() {
     return <Navigate to="/" replace />;
   }
 
-  // Wrapper pour logout avec notification
   const handleLogout = () => {
     addNotification('Logged Out', 'info', 'You have been logged out successfully.', 3000);
-    // Petit délai pour laisser voir la notification avant de rediriger
+
     setTimeout(() => {
       logout();
     }, 500);

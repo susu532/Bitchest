@@ -4,9 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * FormRequest pour l'achat de cryptomonnaie
- */
+
 class BuyCryptoRequest extends FormRequest
 {
     public function authorize(): bool

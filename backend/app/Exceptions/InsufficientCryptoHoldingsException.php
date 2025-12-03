@@ -4,18 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 
-/**
- * Exception lancée quand un client tente de vendre plus de crypto qu'il n'en possède
- */
+
 class InsufficientCryptoHoldingsException extends Exception
 {
-    /**
-     * Constructeur de l'exception
-     * 
-     * @param string $cryptoId ID de la cryptomonnaie
-     * @param float $requested Quantité demandée
-     * @param float $available Quantité disponible
-     */
+    
     public function __construct($cryptoId, $requested, $available)
     {
         $message = sprintf(

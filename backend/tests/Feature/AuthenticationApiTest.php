@@ -12,9 +12,7 @@ class AuthenticationApiTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test successful login returns user data.
-     */
+    
     public function test_login_successful_with_correct_credentials()
     {
         $password = 'TestPassword123';
@@ -46,9 +44,7 @@ class AuthenticationApiTest extends TestCase
             ]);
     }
 
-    /**
-     * Test login fails with incorrect password.
-     */
+    
     public function test_login_fails_with_incorrect_password()
     {
         $password = 'CorrectPassword123';
@@ -69,9 +65,7 @@ class AuthenticationApiTest extends TestCase
             ->assertJson(['success' => false]);
     }
 
-    /**
-     * Test login fails with non-existent email.
-     */
+    
     public function test_login_fails_with_non_existent_email()
     {
         $response = $this->postJson('/auth/login', [
@@ -83,9 +77,7 @@ class AuthenticationApiTest extends TestCase
             ->assertJson(['success' => false]);
     }
 
-    /**
-     * Test password change requires authentication.
-     */
+    
     public function test_password_change_requires_authentication()
     {
         $response = $this->postJson('/auth/change-password', [
@@ -96,9 +88,7 @@ class AuthenticationApiTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /**
-     * Test authenticated user can change password.
-     */
+    
     public function test_authenticated_user_can_change_password()
     {
         $oldPassword = 'OldPassword123';
@@ -122,14 +112,11 @@ class AuthenticationApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        // Verify password was actually changed
         $updatedUser = User::find($user->id);
         $this->assertTrue(Hash::check($newPassword, $updatedUser->password));
     }
 
-    /**
-     * Test password change fails with wrong current password.
-     */
+    
     public function test_password_change_fails_with_wrong_current_password()
     {
         $user = User::create([
@@ -151,9 +138,7 @@ class AuthenticationApiTest extends TestCase
             ->assertJson(['success' => false]);
     }
 
-    /**
-     * Test logout clears session.
-     */
+    
     public function test_logout_clears_session()
     {
         $user = User::factory()->create();
@@ -165,7 +150,6 @@ class AuthenticationApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['success' => true]);
 
-        // Verify session is invalidated
         $this->assertGuest();
     }
 }

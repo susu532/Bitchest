@@ -4,24 +4,17 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * FormRequest pour la création d'un client
- * Centralise les règles de validation et les messages d'erreur
- */
+
 class CreateClientRequest extends FormRequest
 {
-    /**
-     * Détermine si l'utilisateur est autorisé à faire cette requête
-     */
+    
     public function authorize(): bool
     {
-        // Seuls les admins peuvent créer des clients
+
         return auth()->check() && auth()->user()->role === 'admin';
     }
 
-    /**
-     * Règles de validation
-     */
+    
     public function rules(): array
     {
         return [
@@ -31,9 +24,7 @@ class CreateClientRequest extends FormRequest
         ];
     }
 
-    /**
-     * Messages d'erreur personnalisés
-     */
+    
     public function messages(): array
     {
         return [

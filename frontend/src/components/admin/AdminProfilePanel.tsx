@@ -44,14 +44,14 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
         lastName,
         email: email.toLowerCase(),
       });
-      // Update AuthContext immediately so the user sees changes in real-time
+
       updateAuthUser({
         firstName,
         lastName,
         email: email.toLowerCase(),
       });
       setProfileMessage('Profile updated successfully.');
-      // Affiche une notification de succès
+
       addNotification(
         'Profile Updated',
         'success',
@@ -63,7 +63,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
       const errorMsg = error.message || 'Failed to update profile.';
       console.error('Failed to update profile:', error);
       setProfileErrors({ submit: errorMsg });
-      // Affiche une notification d'erreur
+
       addNotification('Update Failed', 'error', errorMsg, 6000);
     }
   };
@@ -82,7 +82,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
     try {
       await changePassword(currentPassword, newPassword);
       setPasswordMessage('Password updated. The change is effective immediately.');
-      // Affiche une notification de succès
+
       addNotification(
         'Password Changed',
         'success',
@@ -94,7 +94,7 @@ export default function AdminProfilePanel({ admin }: AdminProfilePanelProps) {
     } catch (error: any) {
       const errorMsg = error.message || 'Failed to change password';
       setPasswordErrors({ submit: errorMsg });
-      // Affiche une notification d'erreur
+
       addNotification('Password Change Failed', 'error', errorMsg, 6000);
     }
   };
