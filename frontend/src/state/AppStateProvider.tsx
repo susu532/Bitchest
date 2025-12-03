@@ -122,26 +122,13 @@ function persistState(state: AppState) {
 // Sans cela, une erreur non gérée ferait crasher l'application.
   try {
     // Convertit l'état en JSON et le sauvegarde
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   } catch (error) {
     // Affiche un avertissement si la sauvegarde échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     console.warn('Unable to persist BitChest state', error);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Fonction pour charger l'état depuis le localStorage
@@ -164,27 +151,16 @@ function loadPersistedState(): AppState | null {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
     return raw ? (JSON.parse(raw) as AppState) : null;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   } catch (error) {
     // Affiche un avertissement si le chargement échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     console.warn('Unable to load BitChest state from storage', error);
     // Retourne null en cas d'erreur
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
     return null;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Reducer qui traite les actions pour mettre à jour l'état
@@ -194,8 +170,6 @@ function loadPersistedState(): AppState | null {
 function appReducer(state: AppState, action: AppAction): AppState {
   // Switch sur le type d'action
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
   switch (action.type) {
     // Action pour mettre à jour les informations d'un utilisateur
 // Ce case traite l'action de type 'update-user' dans le reducer.
@@ -213,52 +187,30 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const users = state.users.map((user) =>
         // Si c'est l'utilisateur à mettre à jour
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         user.id === userId
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           ? {
             // Fusionne les données existantes avec les nouvelles
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             ...user,
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             ...data,
             // Met à jour la date de modification
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             updatedAt: new Date().toISOString(),
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           }
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           : // Sinon retourne l'utilisateur inchangé
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           user,
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       );
       // Retourne le nouvel état avec les utilisateurs mis à jour
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return { ...state, users };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour créer un nouveau client avec son compte
 // Ce case traite l'action de type 'create-client' dans le reducer.
@@ -276,41 +228,22 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Ajoute le nouvel utilisateur à la liste
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         users: [...state.users, user],
         // Ajoute le compte client
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
         clientAccounts: {
           // Spread les comptes existants
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           ...state.clientAccounts,
           // Ajoute le nouveau compte
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           [account.userId]: account,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour supprimer un utilisateur et son compte
 // Ce case traite l'action de type 'delete-user' dans le reducer.
@@ -328,36 +261,20 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Filtre la liste des utilisateurs (supprime celui avec cet ID)
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         users: state.users.filter((user) => user.id !== userId),
         // Filtre également les comptes clients (supprime celui de cet utilisateur)
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         clientAccounts: Object.fromEntries(
           // Convertit en tableau [key, value], filtre, reconvertit en objet
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           Object.entries(state.clientAccounts).filter(([key]) => key !== userId),
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ),
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour mettre à jour le mot de passe d'un client
 // Ce case traite l'action de type 'update-client-password' dans le reducer.
@@ -375,53 +292,31 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const updatedUsers = state.users.map((user) =>
         // Si c'est l'utilisateur dont on change le mot de passe
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         user.id === userId
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           ? {
             // Fusionne les données existantes
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             ...user,
             // Met à jour le mot de passe
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             password: newPassword,
             // Met à jour la date de modification
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             updatedAt: new Date().toISOString(),
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           }
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           : // Sinon retourne l'utilisateur inchangé
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           user,
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       );
       // Retourne l'état avec les utilisateurs mis à jour
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return { ...state, users: updatedUsers };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour enregistrer une transaction
 // Ce case traite l'action de type 'record-transaction' dans le reducer.
@@ -447,9 +342,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
         return state;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
 
       // Crée le compte mis à jour
@@ -458,23 +350,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const updatedAccount: ClientAccount = {
         // Spread le compte existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...account,
         // Met à jour le solde EUR avec l'ajustement
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         balanceEUR: Number((account.balanceEUR + balanceAdjustment).toFixed(2)),
         // Ajoute la nouvelle transaction à la liste
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         transactions: [...account.transactions, transaction],
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
 
       // Retourne l'état avec le compte mis à jour
@@ -483,22 +366,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Met à jour les comptes clients
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         clientAccounts: { ...state.clientAccounts, [userId]: updatedAccount },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour charger/remplacer tous les actifs cryptographiques
 // Ce case traite l'action de type 'set-crypto-assets' dans le reducer.
@@ -511,22 +383,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Remplace les actifs cryptographiques
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         cryptoAssets: action.payload,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour charger/remplacer la liste de tous les utilisateurs
 // Ce case traite l'action de type 'set-users' dans le reducer.
@@ -539,22 +401,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Remplace la liste des utilisateurs
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         users: action.payload,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour charger/remplacer le compte d'un client spécifique
 // Ce case traite l'action de type 'set-client-account' dans le reducer.
@@ -572,36 +424,19 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Met à jour les comptes clients
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
         clientAccounts: {
           // Spread les comptes existants
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           ...state.clientAccounts,
           // Met à jour le compte pour cet utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           [userId]: account,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Action pour mettre à jour le prix d'une cryptomonnaie
 // Ce case traite l'action de type 'update-crypto-price' dans le reducer.
@@ -627,9 +462,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
         return state;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
 
       // Récupère le dernier point du graphique
@@ -650,49 +482,25 @@ function appReducer(state: AppState, action: AppAction): AppState {
       if (lastPoint && lastPoint.date.split('T')[0] === new Date().toISOString().split('T')[0]) {
         // Met à jour le prix du dernier point
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
         newHistory[newHistory.length - 1] = {
           // Conserve la date
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           date: lastPoint.date,
           // Met à jour le prix
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           value: price,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       } else {
         // Sinon ajoute un nouveau point
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
         newHistory.push({
           // Date actuelle
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           date: new Date().toISOString(),
           // Nouveau prix
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           value: price,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
 
       // Filtre pour ne conserver que les 30 derniers jours
@@ -702,9 +510,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const thirtyDaysAgo = new Date();
       // Recule de 30 jours
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       // Filtre les points plus anciens que 30 jours
 // Cette fonction gère une opération importante de l'application.
@@ -718,93 +524,49 @@ function appReducer(state: AppState, action: AppAction): AppState {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return {
         // Spread l'état existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         ...state,
         // Met à jour les actifs cryptographiques
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
         cryptoAssets: {
           // Spread les actifs existants
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           ...state.cryptoAssets,
           // Met à jour l'actif spécifique
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           [cryptoId]: {
             // Spread l'actif existant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             ...asset,
             // Met à jour le prix actuel
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             currentPrice: price,
             // Met à jour l'historique filtré
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             history: filteredHistory,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
     // Cas par défaut: retourne l'état inchangé
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     default:
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return state;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Type pour les props du provider
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
 type AppStateProviderProps = {
   // Éléments enfants à envelopper avec le provider
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   children: React.ReactNode;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 };
 
 // Composant provider qui gère l'état global et les services
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 export function AppStateProvider({ children }: AppStateProviderProps) {
   // Initialise le reducer avec l'état initial
 // Cette fonction gère une opération importante de l'application.
@@ -812,19 +574,13 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
   const [state, dispatch] = useReducer(
     // Le reducer qui traite les actions
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     appReducer,
     // L'état initial
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     INITIAL_STATE,
     // Initializer: charge depuis localStorage ou utilise l'état initial
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
     (initial): AppState => {
       // Si on n'est pas dans le navigateur (SSR), retourne l'initial
 // Cette condition vérifie si une expression est vraie avant d'exécuter le code associé.
@@ -835,9 +591,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
         return initial;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
       // Charge l'état persisté ou utilise l'initial
 // Cette fonction gère une opération importante de l'application.
@@ -849,34 +602,20 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return persisted ?? initial;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Effet pour sauvegarder l'état quand il change
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
   useEffect(() => {
     // Sauvegarde l'état actuel
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     persistState(state);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }, [state]);
 
   // Effet pour synchroniser les prix des cryptomonnaies toutes les 5 secondes
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
   useEffect(() => {
     // Fonction pour récupérer les prix depuis l'API
 // Cette fonction asynchrone gère une opération importante de l'application.
@@ -899,8 +638,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
         if (response.success) {
           // Met à jour chaque crypto avec les nouveaux prix
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           Object.entries(response.cryptoAssets).forEach(([cryptoId, asset]: [string, any]) => {
             // Récupère l'actif courant depuis l'état
 // Cette fonction gère une opération importante de l'application.
@@ -918,66 +655,30 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
               dispatch({
                 // Type d'action
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 type: 'update-crypto-price',
                 // Payload avec l'ID crypto et le nouveau prix
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
                 payload: {
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                   cryptoId,
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                   price: asset.currentPrice,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
                 },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
               });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
             }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       } catch (error) {
         // Affiche une erreur si la synchronisation échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         console.warn('[Price Poll] Failed to fetch prices:', error);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     };
 
     // Appelle immédiatement et puis toutes les 5 secondes
     // Première synchronisation immédiate
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     pollPrices();
     // Crée un intervalle pour synchroniser toutes les 5 secondes
 // Cette fonction gère une opération importante de l'application.
@@ -990,9 +691,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
     return () => clearInterval(interval);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }, [state.cryptoAssets]);
 
   // Service pour créer un nouveau client
@@ -1016,13 +714,8 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Si la condition est fausse, le code dans le bloc if est ignoré.
       if (!response.success) {
         // Lance une erreur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         throw new Error(response.message || 'Failed to create client');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
 
       // Crée un objet utilisateur avec les données de la réponse
@@ -1031,48 +724,29 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const user: User = {
         // ID de l'utilisateur retourné par le serveur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         id: response.user.id,
         // Prénom
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         firstName: response.user.firstName,
         // Nom de famille
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         lastName: response.user.lastName,
         // Email
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         email: response.user.email,
         // Rôle fixé à 'client'
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         role: 'client',
         // Mot de passe vide (pour la sécurité)
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         password: '',
         // Date de création
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         createdAt: response.user.createdAt,
         // Date de dernière mise à jour
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         updatedAt: response.user.updatedAt,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
 
       // Crée le compte client initial
@@ -1081,23 +755,14 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
       const account: ClientAccount = {
         // Lie au nouvel utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         userId: user.id,
         // Balance initiale: 500 EUR
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         balanceEUR: 500,
         // Pas de transactions initialement
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         transactions: [],
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       };
 
       // Dispatch l'action de création
@@ -1111,17 +776,10 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return { tempPassword: response.temporaryPassword, user };
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Service pour mettre à jour le profil de l'utilisateur connecté
@@ -1145,30 +803,18 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Si la condition est fausse, le code dans le bloc if est ignoré.
       if (!response.success) {
         // Lance une erreur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         throw new Error(response.message || 'Failed to update profile');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
       // Retourne les données utilisateur mises à jour
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
       return response.user;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Service pour mettre à jour un utilisateur spécifique
@@ -1192,30 +838,18 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Si la condition est fausse, le code dans le bloc if est ignoré.
       if (!response.success) {
         // Lance une erreur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         throw new Error(response.message || 'Failed to update user');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
       // Dispatch l'action de mise à jour
 // Cette instruction envoie une action au reducer pour mettre à jour l'état global.
 // Le reducer traitera cette action et retournera un nouvel état immutable.
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
       dispatch({ type: 'update-user', payload });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Service pour supprimer un utilisateur
@@ -1239,30 +873,18 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Si la condition est fausse, le code dans le bloc if est ignoré.
       if (!response.success) {
         // Lance une erreur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
         throw new Error(response.message || 'Failed to delete user');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
       // Dispatch l'action de suppression
 // Cette instruction envoie une action au reducer pour mettre à jour l'état global.
 // Le reducer traitera cette action et retournera un nouvel état immutable.
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
       dispatch({ type: 'delete-user', payload: { userId } });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Service pour enregistrer une transaction
@@ -1280,17 +902,10 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Le reducer traitera cette action et retournera un nouvel état immutable.
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
       dispatch({ type: 'record-transaction', payload });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     },
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Service pour récupérer tous les actifs cryptographiques
@@ -1317,26 +932,12 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Le reducer traitera cette action et retournera un nouvel état immutable.
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
         dispatch({ type: 'set-crypto-assets', payload: response.cryptoAssets });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     } catch (error) {
       // Affiche une erreur si le chargement échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       console.warn('Failed to fetch cryptocurrencies:', error);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }, []);
 
   // Service pour récupérer tous les utilisateurs
@@ -1364,83 +965,43 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
         dispatch({
           // Type d'action
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           type: 'set-users',
           // Transforme les utilisateurs au bon format
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           payload: response.users.map((u: any) => ({
             // ID de l'utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             id: u.id,
             // Prénom
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             firstName: u.firstName,
             // Nom de famille
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             lastName: u.lastName,
             // Email
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             email: u.email,
             // Rôle
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             role: u.role,
             // Mot de passe vide
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             password: '',
             // Date de création
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             createdAt: u.createdAt,
             // Date de dernière mise à jour
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             updatedAt: u.updatedAt,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           })),
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     } catch (error) {
       // Affiche une erreur si le chargement échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       console.warn('Failed to fetch users:', error);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }, []);
 
   // Service pour récupérer le compte du client connecté
@@ -1468,106 +1029,54 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Tous les composants abonnés à cet état seront automatiquement re-rendus.
         dispatch({
           // Type d'action
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
           type: 'set-client-account',
           // Payload avec l'ID utilisateur et le compte
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
           payload: {
             // ID de l'utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
             userId: response.account.userId,
             // Compte du client avec les transactions
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
             account: {
               // ID de l'utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
               userId: response.account.userId,
               // Solde en EUR
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
               balanceEUR: response.account.balanceEUR,
               // Transforme les transactions au bon format
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
               transactions: response.account.transactions.map((t: any) => ({
                 // ID de la transaction
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 id: t.id,
                 // ID de la cryptomonnaie
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 cryptoId: t.cryptoId,
                 // Quantité
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 quantity: t.quantity,
                 // Prix par unité
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 pricePerUnit: t.pricePerUnit,
                 // Type de transaction
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 type: t.type,
                 // Timestamp
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
                 timestamp: t.timestamp,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
               })),
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
             },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
           },
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         });
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     } catch (error) {
       // Affiche une erreur si le chargement échoue
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       console.warn('Failed to fetch client account:', error);
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }, []);
 
   // Crée la valeur du contexte des services en memoisant
@@ -1576,61 +1085,36 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // Elle est définie pour encapsuler la logique métier de manière réutilisable.
   const servicesValue = useMemo(
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
     () => ({
       // Service de création de client
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       createClient,
       // Service de mise à jour du profil courant
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       updateCurrentUserProfile,
       // Service de mise à jour d'utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       updateUser,
       // Service de suppression d'utilisateur
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       deleteUser,
       // Service d'enregistrement de transaction
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       recordTransaction,
       // Service de récupération des cryptomonnaies
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       fetchCryptoAssets,
       // Service de récupération des utilisateurs
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       fetchUsers,
       // Service de récupération du compte client
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       fetchClientAccount,
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     }),
     // Dépendances: toutes les fonctions de service
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     [createClient, updateCurrentUserProfile, deleteUser, recordTransaction, updateUser, fetchCryptoAssets, fetchUsers, fetchClientAccount],
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
 
   // Retourne les providers imbriqués
@@ -1639,47 +1123,21 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
   return (
     // Provider d'état (état + dispatch)
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
     <AppStateContext.Provider value={{ state, dispatch }}>
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       {/* Provider de services (fonctions métier) */}
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
       <AppServicesContext.Provider value={servicesValue}>
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         {/* Les enfants accèdent à l'état et aux services via les contextes */}
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
         {children}
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
       </AppServicesContext.Provider>
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle accède ou appelle une propriété/méthode d'un objet.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     </AppStateContext.Provider>
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
   );
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Hook pour accéder à l'état global
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
 export function useAppState() {
   // Récupère le contexte d'état
 // Cette fonction gère une opération importante de l'application.
@@ -1691,28 +1149,18 @@ export function useAppState() {
 // Elle permet de contrôler le flux d'exécution en fonction de conditions logiques.
 // Si la condition est fausse, le code dans le bloc if est ignoré.
   if (!context) {
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     throw new Error('useAppState must be used within an AppStateProvider');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
   // Retourne l'état global
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
   return context.state;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Hook pour accéder aux services globaux
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
 export function useAppServices() {
   // Récupère le contexte des services
 // Cette fonction gère une opération importante de l'application.
@@ -1724,28 +1172,18 @@ export function useAppServices() {
 // Elle permet de contrôler le flux d'exécution en fonction de conditions logiques.
 // Si la condition est fausse, le code dans le bloc if est ignoré.
   if (!context) {
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     throw new Error('useAppServices must be used within an AppStateProvider');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
   // Retourne les services
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
   return context;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
 // Hook pour accéder au dispatch global
 // Cette accolade ouvre un nouveau bloc de code.
-// Elle définit le début d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// Le code à l'intérieur de ce bloc aura une portée (scope) spécifique.
 export function useAppDispatch() {
   // Récupère le contexte d'état
 // Cette fonction gère une opération importante de l'application.
@@ -1757,21 +1195,13 @@ export function useAppDispatch() {
 // Elle permet de contrôler le flux d'exécution en fonction de conditions logiques.
 // Si la condition est fausse, le code dans le bloc if est ignoré.
   if (!context) {
-// Cette ligne effectue une opération nécessaire au fonctionnement de l'application.
 // Elle exécute une instruction JavaScript.
-// Elle contribue à la logique globale de cette fonction ou composant React.
     throw new Error('useAppDispatch must be used within an AppStateProvider');
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
   }
   // Retourne la fonction dispatch
 // Cette instruction retourne la valeur ou le composant résultant de cette fonction.
 // Elle termine l'exécution de la fonction et passe le contrôle au code appelant.
 // La valeur retournée sera utilisée par le composant parent ou le code appelant.
   return context.dispatch;
-// Cette accolade ferme un bloc de code précédemment ouvert.
-// Elle marque la fin d'une fonction, d'une condition, d'une boucle ou d'un objet.
-// L'indentation permet de visualiser la structure et la hiérarchie du code.
 }
 
