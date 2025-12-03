@@ -23,3 +23,26 @@ cd "C:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan crypto:update
 
 
 cd "c:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan migrate:refresh --seed
+
+
+
+
+Fonctionnalité	Frontend Principal	Backend Controller	Models	Migrations
+Login	   LoginPage.tsx	AuthController	User	users, sessions
+Logout	   Header.tsx	   AuthController	-	sessions
+Achat Crypto	   ClientDashboard.tsx 	WalletController	ClientAccount, WalletTransaction	client_accounts, wallet_transactions
+Vente Crypto	ClientDashboard.tsx	  WalletController	ClientAccount, WalletTransaction	client_accounts, wallet_transactions
+Créer Client	   ClientManagementPanel.tsx	ClientController	User, ClientAccount	users, client_accounts
+Modifier Client	    ClientManagementPanel.tsx	ClientController	User	users
+Supprimer Client	ClientManagementPanel.tsx	ClientController	User	users (CASCADE)
+Lister Cryptos	   MarketPage.tsx	CryptocurrencyController	Cryptocurrency, CryptoPrice	cryptocurrencies, crypto_prices
+Prix Temps Réel	   AppStateProvider.tsx	UpdatePricesCommand	Cryptocurrency, CryptoPrice	crypto_prices
+Changer MDP	      ProfilePage.tsx	AuthController	User	users
+Profil	         ProfilePage.tsx	UserController	User	users
+Compte Client	    App.tsx	   ClientController	ClientAccount, WalletTransaction	client_accounts, wallet_transactions
+Détails Crypto	    MarketPage.tsx	CryptocurrencyController	Cryptocurrency, CryptoPrice	cryptocurrencies, crypto_prices
+Portfolio	   PortfolioPage.tsx	WalletController	ClientAccount, WalletTransaction, CryptoPrice	client_accounts, wallet_transactions, crypto_prices
+Lister Users	AdminDashboard.tsx	UserController	User	users
+Vérif Session	App.tsx	AuthController	User	sessions, users
+Prix Actuel	      PriceRefresher.tsx	  CryptocurrencyController	CryptoPrice	crypto_prices
+WebSocket	      echo.ts	Events (3)	-	-
