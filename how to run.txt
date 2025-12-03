@@ -46,3 +46,8 @@ Lister Users	AdminDashboard.tsx	UserController	User	users
 Vérif Session	App.tsx	AuthController	User	sessions, users
 Prix Actuel	      PriceRefresher.tsx	  CryptocurrencyController	CryptoPrice	crypto_prices
 WebSocket	      echo.ts	Events (3)	-	-
+
+
+
+
+
