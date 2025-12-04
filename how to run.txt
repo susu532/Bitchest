@@ -34,6 +34,19 @@ cd "c:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan migrate:refre
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ================================================================================
                  TABLEAU DE CORRESPONDANCE FRONTEND-BACKEND
 ================================================================================
