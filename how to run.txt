@@ -260,4 +260,371 @@ cd "c:\Users\slayer\OneDrive\Bureau\Bitchest\backend"; php artisan migrate:refre
 
 
 
+Laravel
+Framework PHP moderne et élégant pour le développement web. Laravel fournit une architecture MVC (Model-View-Controller) robuste, avec des fonctionnalités intégrées pour le routing, l'authentification, la gestion de base de données (Eloquent ORM), et bien plus.
 
+PHP 8.2+
+Langage de programmation côté serveur utilisé pour le backend. La version 8.2+ apporte des améliorations de performance, de nouvelles fonctionnalités comme les enums, readonly properties, et un système de types plus strict.
+
+Composer
+Gestionnaire de dépendances pour PHP. Il permet de gérer les packages et bibliothèques nécessaires au projet backend. Le fichier 
+composer.json
+ définit toutes les dépendances du projet.
+
+PSR-4
+Standard de chargement automatique (autoloading) de PHP. Il définit comment les classes doivent être organisées et chargées automatiquement. Dans le projet: "App\\" pointe vers app/, "Database\\Factories\\" vers database/factories/.
+
+Artisan
+Interface en ligne de commande (CLI) de Laravel. Fournit des commandes utiles pour créer des migrations, des contrôleurs, des modèles, lancer des tests, et exécuter des tâches personnalisées. Exemple: php artisan migrate, php artisan serve.
+
+Eloquent ORM
+Object-Relational Mapping de Laravel. Il permet d'interagir avec la base de données en utilisant des modèles PHP orientés objet plutôt que des requêtes SQL brutes. Chaque table a un modèle correspondant (User, Cryptocurrency, etc.).
+
+Laravel Reverb
+Package Laravel pour le WebSocket et la communication temps réel. Utilisé dans ce projet pour diffuser les mises à jour de prix des cryptomonnaies et les événements utilisateur en temps réel.
+
+Migrations
+Système de gestion de versions pour les schémas de base de données. Les migrations permettent de créer, modifier ou supprimer des tables et colonnes de manière contrôlée et versionnée.
+
+Seeders
+Classes utilisées pour peupler la base de données avec des données de test ou initiales. Utile pour le développement et les tests.
+
+Factories
+Générateurs de données factices (fake data) pour les modèles. Utilisées avec Faker pour créer des instances de modèles avec des données aléatoires mais réalistes pour les tests.
+
+Technologies Frontend
+React
+Bibliothèque JavaScript pour la construction d'interfaces utilisateur. React utilise un DOM virtuel et un système de composants réutilisables. Version utilisée: 18.3.1 avec support des hooks et des fonctionnalités modernes.
+
+TypeScript
+Superset de JavaScript qui ajoute un système de types statiques. Permet de détecter les erreurs à la compilation, améliore l'auto-complétion dans les IDE, et rend le code plus maintenable. Version: 5.9.3.
+
+TSX/JSX
+Extension de syntaxe pour TypeScript/JavaScript permettant d'écrire du code similaire à HTML directement dans les fichiers TypeScript/JavaScript. 
+tsx
+ est la version TypeScript de jsx.
+
+React Hooks
+Fonctions spéciales de React (useState, useEffect, useContext, etc.) qui permettent d'utiliser l'état et d'autres fonctionnalités React dans les composants fonctionnels.
+
+React Router DOM
+Bibliothèque de routing pour les applications React. Permet de créer une navigation côté client (SPA - Single Page Application) avec différentes routes/pages sans rechargement de page. Version: 7.9.5.
+
+Context API
+Système de gestion d'état global de React. Utilisé pour partager des données (comme l'état d'authentification, les données utilisateur) entre différents composants sans prop drilling.
+
+Outils de Build & Configuration
+Webpack
+Module bundler qui compile et empaquète tous les fichiers JavaScript, TypeScript, CSS et autres assets en bundles optimisés pour le navigateur. Version: 5.90.0.
+
+Webpack Dev Server
+Serveur de développement pour Webpack qui fournit le rechargement automatique (hot reload) et un serveur HTTP pour tester l'application localement. Port configuré: 3000.
+
+ts-loader
+Loader Webpack qui compile les fichiers TypeScript (
+.ts
+, 
+.tsx
+) en JavaScript pendant le processus de build.
+
+css-loader
+Loader Webpack qui interprète les imports/requires CSS et résout les chemins des fichiers.
+
+style-loader
+Loader Webpack qui inject le CSS compilé dans le DOM via des balises <style> en mode développement.
+
+MiniCssExtractPlugin
+Plugin Webpack qui extrait le CSS dans des fichiers séparés en production au lieu de l'injecter dans le JavaScript. Optimise les performances de chargement.
+
+HtmlWebpackPlugin
+Plugin Webpack qui génère automatiquement un fichier HTML incluant les bundles JavaScript et CSS générés avec leurs hashes de cache.
+
+CopyWebpackPlugin
+Plugin Webpack qui copie des fichiers statiques (images, polices, etc.) du dossier public vers le dossier de build dist.
+
+Source Maps
+Fichiers qui mappent le code compilé/minifié au code source original. Facilite le débogage en permettant de voir le code TypeScript original dans les outils de développement du navigateur.
+
+Hot Module Replacement (HMR)
+Fonctionnalité qui permet de mettre à jour les modules JavaScript en cours d'exécution sans recharger toute la page. Améliore l'expérience de développement.
+
+Base de Données
+SQLite
+Système de gestion de base de données relationnelle léger, autonome, sans serveur. Utilisé pour ce projet. Les données sont stockées dans un fichier unique (
+database.sqlite
+).
+
+MySQL/MariaDB
+Systèmes de gestion de bases de données relationnelles supportés par Laravel (configurés mais non utilisés dans ce projet). Alternatives à SQLite pour des déploiements en production.
+
+PostgreSQL
+Système de gestion de base de données relationnelle objet open-source, également supporté par Laravel (configuré mais non utilisé).
+
+PDO (PHP Data Objects)
+Extension PHP pour accéder aux bases de données de manière uniforme et sécurisée. Utilisée par Laravel pour se connecter aux différents types de bases de données.
+
+Foreign Keys
+Contraintes de base de données qui assurent l'intégrité référentielle entre les tables. Par exemple, une transaction de portefeuille doit référencer un utilisateur existant.
+
+Communication Temps Réel
+WebSocket
+Protocole de communication bidirectionnelle full-duplex sur une connexion TCP. Permet une communication en temps réel entre le client et le serveur sans polling.
+
+Pusher
+Service et bibliothèque pour implémenter la communication temps réel via WebSockets. Utilisé côté frontend pour se connecter au serveur Laravel Reverb.
+
+Laravel Echo
+Bibliothèque JavaScript qui facilite l'abonnement aux canaux et l'écoute des événements diffusés par Laravel. Fournit une API simple pour les WebSockets.
+
+Broadcasting
+Système de diffusion d'événements de Laravel. Permet de diffuser des événements côté serveur (comme une mise à jour de prix) à tous les clients connectés en temps réel.
+
+Channels (Canaux)
+Espaces de diffusion pour les événements WebSocket. Il existe des canaux publics (crypto-prices) et privés (user.{id}) nécessitant une authentification.
+
+Events (Événements)
+Classes PHP qui représentent des événements métier dans l'application (ex: CryptoPriceUpdated, TransactionCompleted, UserBalanceChanged). Peuvent être diffusés via broadcasting.
+
+Architecture & Patterns
+MVC (Model-View-Controller)
+Pattern architectural utilisé par Laravel. Sépare la logique métier (Model), la présentation (View), et le contrôle de flux (Controller).
+
+RESTful API
+Architecture d'API basée sur HTTP utilisant les verbes standard (GET, POST, PUT, DELETE) et les codes de statut HTTP. Le backend expose des endpoints REST pour le frontend.
+
+Middleware
+Couches de filtrage HTTP qui s'exécutent avant ou après les requêtes. Utilisés pour l'authentification (auth:web), le throttling (limitation de requêtes), et CORS.
+
+Service Layer
+Pattern où la logique métier complexe est encapsulée dans des services dédiés. Exemple: WalletService gère toute la logique d'achat/vente de cryptomonnaies.
+
+Repository Pattern
+Pattern (implicite via Eloquent) où l'accès aux données est abstrait derrière une interface. Les modèles Eloquent agissent comme des repositories.
+
+Dependency Injection
+Pattern où les dépendances d'une classe sont fournies de l'extérieur plutôt que créées à l'intérieur. Laravel utilise un conteneur IoC (Inversion of Control) pour gérer cela.
+
+SPA (Single Page Application)
+Architecture frontend où l'application charge une seule page HTML et met à jour dynamiquement le contenu sans rechargement complet. React Router gère la navigation.
+
+Bibliothèques Frontend
+Chart.js
+Bibliothèque JavaScript pour créer des graphiques interactifs (lignes, barres, etc.). Utilisée pour afficher l'historique des prix des cryptomonnaies. Version: 4.5.1.
+
+react-chartjs-2
+Wrapper React pour Chart.js qui permet d'utiliser Chart.js avec des composants React. Version: 5.3.1.
+
+chartjs-adapter-date-fns
+Adaptateur pour Chart.js qui permet d'utiliser date-fns pour le formatage des axes temporels dans les graphiques. Version: 3.0.0.
+
+clsx
+Utilitaire léger pour construire conditionnellement des chaînes de classes CSS. Simplifie la gestion des classes CSS dynamiques dans React.
+
+nanoid
+Générateur d'identifiants uniques courts et sécurisés. Alternative à UUID, plus compact. Utilisé pour générer des IDs dans l'application.
+
+Sécurité & Authentification
+Session-based Authentication
+Méthode d'authentification où l'état de connexion est stocké côté serveur dans une session. Laravel utilise des cookies de session sécurisés.
+
+CSRF (Cross-Site Request Forgery)
+Protection contre les attaques où un site malveillant envoie des requêtes au nom d'un utilisateur authentifié. Laravel génère des tokens CSRF pour chaque session.
+
+CORS (Cross-Origin Resource Sharing)
+Mécanisme de sécurité du navigateur qui contrôle les requêtes HTTP entre différents domaines. Le backend configure CORS pour autoriser le frontend à faire des requêtes.
+
+Password Hashing
+Hashage sécurisé des mots de passe avant stockage en base de données. Laravel utilise bcrypt par défaut via la directive 'password' => 'hashed'.
+
+Throttling
+Limitation du nombre de requêtes qu'un utilisateur peut faire dans un intervalle de temps. Protège contre les attaques par force brute et le spam. Configuration: 60 requêtes/minute.
+
+Authentication Guard
+Système de Laravel pour définir comment les utilisateurs sont authentifiés. Le projet utilise le guard web qui gère l'authentification par session.
+
+Sanctum/Passport
+Packages Laravel pour l'authentification API (non utilisés dans ce projet qui utilise l'authentification par session web).
+
+Concepts Métier
+Cryptocurrency (Cryptomonnaie)
+Monnaie numérique utilisant la cryptographie. Dans le projet, modèle représentant une crypto (Bitcoin, Ethereum, etc.) avec son nom, symbole, et description.
+
+Wallet (Portefeuille)
+Compte virtuel permettant de stocker et gérer des cryptomonnaies. Chaque client possède un portefeuille avec un solde en euros et des holdings en crypto.
+
+Transaction
+Opération d'achat ou de vente de cryptomonnaie. Enregistrée dans WalletTransaction avec le type (buy/sell), le montant, le prix, et la date.
+
+Holdings
+Quantité de cryptomonnaie possédée par un utilisateur. Calculée à partir de l'historique des transactions (achats - ventes).
+
+Price History (Historique de Prix)
+Enregistrement de l'évolution du prix d'une cryptomonnaie dans le temps. Stocké dans CryptoPrice avec un timestamp.
+
+Client Account
+Compte client avec un solde en euros. Lié à un utilisateur de type "client" (par opposition à "admin").
+
+Commission
+Frais prélevés sur chaque transaction (non implémentés dans le code visible mais concept métier potentiel).
+
+Tests & Qualité
+PHPUnit
+Framework de tests unitaires pour PHP. Utilisé pour tester la logique métier du backend Laravel. Version: 11.5.3.
+
+Mockery
+Bibliothèque de mocking pour PHP. Permet de créer des objets simulés (mocks) pour les tests unitaires. Version: 1.6.
+
+Faker (FakerPHP)
+Générateur de fausses données réalistes (noms, emails, adresses, etc.). Utilisé dans les seeders et factories pour créer des données de test.
+
+Laravel Pint
+Outil de formatage de code PHP (code style fixer) pour Laravel. Maintient un style de code cohérent dans le projet.
+
+Développement & DevOps
+npm (Node Package Manager)
+Gestionnaire de paquets pour JavaScript/Node.js. Gère les dépendances frontend définies dans 
+package.json
+.
+
+Git
+Système de contrôle de version distribué. Le projet utilise Git pour suivre les modifications du code.
+
+Environment Variables (.env)
+Fichier de configuration contenant les variables d'environnement sensibles (clés API, configurations de base de données, etc.). Exclu du versioning via 
+.gitignore
+.
+
+EditorConfig
+Fichier de configuration (
+.editorconfig
+) qui définit les conventions de formatage du code (indentation, fin de ligne, etc.) pour différents éditeurs.
+
+Cache & Optimization
+Mécanismes de Laravel pour mettre en cache les routes, configurations, et vues pour améliorer les performances en production.
+
+Modules Webpack
+Module Resolution
+Processus par lequel Webpack trouve et résout les importations de modules. Configuré avec moduleResolution: "node" dans TypeScript.
+
+Code Splitting
+Technique d'optimisation qui divise le code en plusieurs bundles chargés à la demande. Réduit le temps de chargement initial.
+
+Tree Shaking
+Processus d'élimination du code mort (non utilisé) lors du build de production. Webpack analyse les imports/exports pour ne garder que le code utilisé.
+
+Asset Modules
+Système de Webpack 5 pour gérer les assets (images, polices, etc.) sans loaders supplémentaires. Configuration: type: 'asset/resource'.
+
+Concepts React Avancés
+React.StrictMode
+Mode de développement React qui active des vérifications et avertissements supplémentaires pour identifier les problèmes potentiels.
+
+Component Lifecycle
+Cycle de vie des composants React (montage, mise à jour, démontage). Géré via useEffect dans les composants fonctionnels.
+
+State Management
+Gestion de l'état de l'application. Le projet utilise Context API et useState pour gérer l'état global et local.
+
+Props
+Propriétés passées d'un composant parent à un composant enfant. Immuables et unidirectionnelles.
+
+Virtual DOM
+Représentation en mémoire du DOM réel. React compare le Virtual DOM avec le DOM réel et applique uniquement les changements nécessaires (reconciliation).
+
+Utilitaires & Helpers
+Validation
+Vérification des données entrantes. Laravel utilise des Form Requests (BuyCryptoRequest, SellCryptoRequest) pour valider les requêtes API.
+
+Exception Handling
+Gestion des erreurs via des exceptions personnalisées (InsufficientBalanceException, InvalidTransactionException) qui fournissent des messages d'erreur clairs.
+
+Notifications/Toasts
+Système de notifications utilisateur (messages de succès/erreur) affichés en haut à droite de l'interface. Implémenté dans le composant Notifications.
+
+Formatting
+Utilitaires pour formater les nombres, dates, et devises. Utilisés pour afficher les prix en euros avec 2 décimales, etc.
+
+Database Relations
+One-to-Many (Un-à-Plusieurs)
+Relation où une entité est liée à plusieurs autres. Exemple: Un utilisateur a plusieurs transactions (hasMany).
+
+One-to-One (Un-à-Un)
+Relation où une entité est liée à exactement une autre. Exemple: Un utilisateur a un compte client (hasOne).
+
+Belongs To
+Relation inverse de One-to-Many. Exemple: Une transaction appartient à un utilisateur (belongsTo).
+
+Commandes & Scripts
+Scripts npm
+npm run start / npm run dev: Lance le serveur de développement Webpack
+npm run build: Compile l'application pour la production
+npm run preview: Prévisualise le build de production
+Commandes Artisan
+php artisan serve: Lance le serveur de développement Laravel
+php artisan migrate: Exécute les migrations de base de données
+php artisan db:seed: Exécute les seeders
+php artisan reverb:start: Démarre le serveur WebSocket Reverb
+php artisan test: Exécute les tests PHPUnit
+Standards & Conventions
+Naming Conventions
+Controllers: NomController.php (PascalCase)
+Models: Nom.php (PascalCase, singulier)
+Migrations: YYYY_MM_DD_HHMMSS_create_table_name.php
+Components: ComponentName.tsx (PascalCase)
+Utilities: utilityName.ts (camelCase)
+Directory Structure
+Backend: Structure Laravel standard (app, config, database, routes, etc.)
+Frontend: React avec séparation components/pages/utils/state
+Code Style
+Backend: PSR-12 (PHP Standards Recommendations)
+Frontend: ESLint + Prettier (options TypeScript strictes activées)
+Performance & Optimization
+Lazy Loading
+Chargement différé des composants/modules uniquement quand nécessaire. Réduit le bundle initial.
+
+Memoization
+Mise en cache des résultats de calculs coûteux. Utilisable avec useMemo et useCallback en React.
+
+Debouncing/Throttling
+Techniques pour limiter la fréquence d'exécution de fonctions (ex: lors de la saisie dans un champ de recherche).
+
+Query Optimization
+Optimisation des requêtes de base de données via Eloquent (eager loading, select spécifique, indexes).
+
+Outils Type Checking
+TypeScript Compiler (tsc)
+Compilateur TypeScript qui transpile le code TypeScript en JavaScript et effectue la vérification des types.
+
+Type Definitions (@types/*)**
+Fichiers de définition TypeScript pour les bibliothèques JavaScript. Fournissent les types pour React, Node, etc.
+
+Interface
+Définition de la structure d'un objet en TypeScript. Utilisé pour typer les props, states, et objets métier.
+
+Type Inference
+Capacité de TypeScript à déduire automatiquement les types sans annotations explicites.
+
+Monitoring & Debugging
+Browser DevTools
+Outils de développement intégrés aux navigateurs pour inspecter le DOM, déboguer JavaScript, analyser les performances.
+
+React DevTools
+Extension de navigateur pour inspecter la hiérarchie des composants React, leur état et props.
+
+Network Tab
+Onglet des DevTools pour monitorer les requêtes HTTP, voir les réponses, et déboguer les appels API.
+
+Console Logging
+Utilisation de console.log(), console.error(), etc. pour le débogage et le monitoring.
+
+Gestion des Erreurs
+Try-Catch
+Bloc de gestion d'exceptions pour capturer et gérer les erreurs de manière contrôlée.
+
+Error Boundaries
+Composants React qui capturent les erreurs JavaScript dans leur arborescence enfant et affichent une UI de secours.
+
+HTTP Status Codes
+Codes standard pour les réponses HTTP (200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).
+
+Cette liste constitue un référentiel complet des technologies, concepts et outils utilisés dans le projet Bitchest. Elle peut servir de guide pour les nouveaux développeurs ou pour la documentation du projet.
