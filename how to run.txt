@@ -628,3 +628,169 @@ HTTP Status Codes
 Codes standard pour les réponses HTTP (200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).
 
 Cette liste constitue un référentiel complet des technologies, concepts et outils utilisés dans le projet Bitchest. Elle peut servir de guide pour les nouveaux développeurs ou pour la documentation du projet.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Euros disponibles
+
+Définition : Votre solde de trésorerie disponible.
+
+Calcul : Il s'agit simplement du solde en euros enregistré dans la base de données de votre compte.
+
+Mises à jour :
+
+Diminue lorsque vous achetez des cryptomonnaies (coût d'achat).
+
+Augmente lorsque vous vendez des cryptomonnaies (produit de la vente).
+
+2. Solde total
+
+Définition : La valeur nette totale de votre compte BitChest.
+
+Calcul : Euros disponibles + Valeur marchande des cryptomonnaies
+
+La valeur marchande des cryptomonnaies correspond à la somme de tous vos avoirs en cryptomonnaies multipliée par leur prix actuel en temps réel.
+
+3. Profit/Perte
+
+Définition : Le gain ou la perte latente sur vos avoirs actuels.
+
+Calcul : Valeur marchande actuelle - Coût total d'acquisition
+
+Valeur marchande actuelle : (Quantité × Prix actuel) pour toutes les cryptomonnaies.
+
+Coût total d'acquisition : Le montant total que vous avez dépensé pour acquérir les cryptomonnaies que vous détenez actuellement. Logique :
+
+Achat : Augmente votre prix de revient (par exemple, acheter 100 € de BTC ajoute 100 € à votre prix de revient).
+
+Vente : Réduit votre prix de revient proportionnellement. Le calcul utilise la méthode du coût moyen pondéré.
+
+Exemple : Si vous avez acheté 2 BTC pour 50 000 € (prix moyen : 25 000 €) et que vous vendez 1 BTC, votre prix de revient diminue de moitié (25 000 €), votre prix d’achat moyen restant inchangé.
+
+Formule récapitulative :
+
+Bénéfice/Perte = (Nombre de BTC détenus × Prix actuel) - (Nombre de BTC détenus × Prix d’achat moyen)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Authentification et sécurité des mots de passe :
+
+Mécanisme : Utilise l’authentification sécurisée par session de Laravel (auth:web).
+
+Hachage : Les mots de passe ne sont jamais stockés en clair. L’application utilise un hachage robuste (Bcrypt/Argon2) via Hash::make() et Hash::check().
+
+Protection : Le modèle User masque explicitement les champs password et remember_token dans les réponses JSON, empêchant ainsi toute fuite accidentelle.
+
+Validation des entrées :
+
+Règles strictes : Les contrôleurs appliquent des règles de validation strictes. Par exemple, ClientController vérifie la longueur des chaînes de caractères et valide les formats d’adresse e-mail à l’aide d’expressions régulières strictes.
+
+Assainissement : Grâce à l’ORM Eloquent de Laravel, l’application est protégée contre les attaques par injection SQL, car toutes les requêtes utilisent des requêtes préparées.
+
+Contrôle d’accès (autorisation) :
+
+Basé sur les rôles : Des vérifications manuelles sont implémentées dans les contrôleurs (par exemple, if (user->role !== 'admin')) afin de garantir que les clients ne puissent pas accéder aux fonctionnalités d’administration et inversement. Limitation du débit :
+
+Protection de la connexion : La route de connexion est soumise à une limitation de débit stricte (5 requêtes par minute) afin de prévenir les attaques par force brute.
+
+Protection de l’API : Les routes authentifiées sont limitées à 60 requêtes par minute afin de prévenir les abus.
+
+CORS (Partage de ressources entre origines) :
+
+Accès restreint : L’API est configurée pour n’accepter que les requêtes provenant d’origines de confiance spécifiques (par exemple, http://localhost:3000), empêchant ainsi les sites web non autorisés d’accéder à votre API.
