@@ -75,7 +75,7 @@ export function summarizeHoldings(transactions: WalletTransaction[]): Record<str
 
     summary.quantity = Number(summary.quantity.toFixed(8));
 
-    summary.costBasis = Number(Math.max(summary.costBasis, 0).toFixed(2));
+    summary.costBasis = Number(Math.max(summary.costBasis, 0).toFixed(8));
 
     summary.averagePrice = summary.quantity > 0 ? Number((summary.costBasis / summary.quantity).toFixed(8)) : 0;
 
