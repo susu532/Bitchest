@@ -200,7 +200,7 @@ export default function ClientWalletPanel({ account, cryptoAssets }: ClientWalle
                       </div>
                     </td>
                     <td>{holding.quantity.toFixed(8)}</td>
-                    <td>€{holding.averagePrice.toLocaleString()}</td>
+                    <td>€{holding.averagePrice.toLocaleString(undefined, { maximumFractionDigits: 8 })}</td>
                     <td>€{holding.currentPrice.toLocaleString()}</td>
                     <td>€{holding.currentValue.toLocaleString()}</td>
                     <td className={holding.profitLoss >= 0 ? 'positive' : 'negative'}>

@@ -75,10 +75,10 @@ export default function ClientOverviewPanel({ account, cryptoAssets, user }: Cli
                   </div>
                   <div className="position-card__details">
                     <h4>
-                      {asset.name} <span>{holding.quantity.toFixed(4)}</span>
+                      {asset.name} <span>{holding.quantity.toFixed(8)} {asset.symbol}</span>
                     </h4>
                     <p>
-                      Avg. price €{holding.averagePrice.toLocaleString()} · Current €{holding.currentPrice.toLocaleString()}
+                      Avg. price €{holding.averagePrice.toLocaleString(undefined, { maximumFractionDigits: 8 })} · Current €{holding.currentPrice.toLocaleString(undefined, { maximumFractionDigits: 8 })}
                     </p>
                   </div>
                   <div className={`position-card__pl ${holding.profitLoss >= 0 ? 'positive' : 'negative'}`}>

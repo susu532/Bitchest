@@ -376,7 +376,29 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 
     const interval = setInterval(pollPrices, 5000);
 
-    return () => clearInterval(interval);
+    // Subscribe to real-time updates
+    import('../utils/echo').then(({ echoService }) => {
+      // The backend event 'broadcastAs' returns 'price-updated', so we listen for that.
+      // Note: Laravel Echo sometimes requires a leading dot for client-side events if namespaces are involved,
+      // but since we use a custom broadcastAs name, it should be exact.
+      echoService.subscribeToprices((data: any) => {
+        console.log('Price update received:', data);
+        dispatch({
+          type: 'update-crypto-price',
+          payload: {
+            cryptoId: data.cryptoId,
+            price: data.price, // The event payload uses 'price', not 'newPrice'
+          },
+        });
+      });
+    });
+
+    return () => {
+      clearInterval(interval);
+      import('../utils/echo').then(({ echoService }) => {
+        echoService.unsubscribe('crypto-prices');
+      });
+    };
   }, [state.cryptoAssets]);
 
   const createClient = useCallback(
