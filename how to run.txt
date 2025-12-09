@@ -852,3 +852,46 @@ Protection de l’API : Les routes authentifiées sont limitées à 60 requêtes
 CORS (Partage de ressources entre origines) :
 
 Accès restreint : L’API est configurée pour n’accepter que les requêtes provenant d’origines de confiance spécifiques (par exemple, http://localhost:3000), empêchant ainsi les sites web non autorisés d’accéder à votre API.
+
+
+
+
+
+
+
+
+================================================================================
+STRUCTURE DÉTAILLÉE DU CODEBASE (FRONTEND & BACKEND)
+================================================================================
+
+Voici un tableau expliquant le rôle de chaque fichier clé, classé par importance.
+
+--------------------------------------------------------------------------------
+PARTIE 1 : BACKEND (Laravel API)
+--------------------------------------------------------------------------------
+| Importance | Fichier / Dossier | Rôle & Description |
+| :--- | :--- | :--- |
+| **CRITIQUE** | `routes/web.php` | **Point d'entrée de l'API**. Définit toutes les URLs accessibles (ex: `/login`, `/wallet/summary`). C'est ici qu'on associe une URL à un Contrôleur. |
+| **CRITIQUE** | `app/Http/Controllers/AuthController.php` | **Gestion de l'Authentification**. Gère la connexion (`login`), la déconnexion (`logout`), et la vérification de session (`me`). Sécurise l'accès à l'application. |
+| **CRITIQUE** | `app/Http/Controllers/WalletController.php` | **Contrôleur du Portefeuille**. Reçoit les demandes d'achat/vente du frontend, valide les données, et appelle le `WalletService`. Renvoie le résumé du portefeuille. |
+| **HAUTE** | `app/Services/WalletService.php` | **Logique Métier Pure**. Contient les règles complexes : calcul du solde, vérification des fonds, création des transactions en base de données. C'est le "cerveau" financier. |
+| **HAUTE** | `app/Models/User.php` | **Modèle Utilisateur**. Représente la table `users`. Définit les relations (un User a un ClientAccount) et sécurise les données (masque le mot de passe). |
+| **HAUTE** | `app/Console/Commands/UpdateCryptoPrices.php` | **Générateur de Prix**. Commande qui tourne en arrière-plan pour simuler la variation des prix des cryptos toutes les 5 secondes et envoyer les événements WebSocket. |
+| **MOYENNE** | `app/Models/WalletTransaction.php` | **Modèle Transaction**. Représente une ligne d'achat ou de vente dans la BDD. |
+| **MOYENNE** | `database/migrations/` | **Structure BDD**. Dossier contenant les fichiers de création des tables (users, transactions, cryptos). Permet de recréer la base de données partout. |
+| **MOYENNE** | `app/Http/Middleware/EnsureUserHasRole.php` | **Sécurité (Middleware)**. Vérifie si l'utilisateur a le bon rôle (admin ou client) avant de le laisser accéder à une page. |
+
+--------------------------------------------------------------------------------
+PARTIE 2 : FRONTEND (React + TypeScript)
+--------------------------------------------------------------------------------
+| Importance | Fichier / Dossier | Rôle & Description |
+| :--- | :--- | :--- |
+| **CRITIQUE** | `src/App.tsx` | **Racine de l'Application**. Définit la structure globale et le **Routing** (navigation entre Login, Admin, Client). Gère la protection des routes (RequireAuth). |
+| **CRITIQUE** | `src/state/AppStateProvider.tsx` | **Gestion d'État Global**. Le "cœur" des données du frontend. Stocke et met à jour les cryptos, les utilisateurs et les comptes pour toute l'application. |
+| **CRITIQUE** | `src/state/AuthContext.tsx` | **Contexte d'Authentification**. Gère l'utilisateur connecté. Sait si vous êtes "Admin" ou "Client" et stocke vos infos de session. |
+| **HAUTE** | `src/utils/api.ts` | **Communication Serveur**. Contient toutes les fonctions pour parler au Backend (fetch). C'est le pont entre React et Laravel. |
+| **HAUTE** | `src/components/client/ClientWalletPanel.tsx` | **Interface de Trading**. Le composant où le client achète et vend des cryptos. Gère les formulaires et les boutons d'action. |
+| **HAUTE** | `src/utils/wallet.ts` | **Calculs Financiers**. Fonctions utilitaires pour calculer le solde total, la moyenne des prix d'achat, et les profits/pertes côté frontend. |
+| **MOYENNE** | `src/pages/LoginPage.tsx` | **Page de Connexion**. Formulaire email/mot de passe. Gère les erreurs de connexion et la redirection après succès. |
+| **MOYENNE** | `src/components/layout/DashboardLayout.tsx` | **Mise en Page**. Définit la structure commune des tableaux de bord (Sidebar, Header, Contenu principal). |
+| **MOYENNE** | `src/styles/global.css` | **Styles CSS**. Contient toutes les règles de design (couleurs, polices, mise en page) pour rendre l'application belle. |
