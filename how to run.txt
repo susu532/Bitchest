@@ -853,6 +853,24 @@ CORS (Partage de ressources entre origines) :
 
 Accès restreint : L’API est configurée pour n’accepter que les requêtes provenant d’origines de confiance spécifiques (par exemple, http://localhost:3000), empêchant ainsi les sites web non autorisés d’accéder à votre API.
 
+Outil utilisé : L'API native du navigateur fetch.
+Implémentation : Vous avez créé votre propre wrapper (surcouche) personnalisé dans le fichier 
+src/utils/api.ts
+.
+Vous avez une classe 
+ApiService
+ qui simplifie les appels (ajout automatique des headers Content-Type, gestion des erreurs HTTP, etc.).
+
+pourquoi webpack?
+Contrôle avancé sur la configuration ,une customisation extrême
+optimisation poussée
+Webpack permet de modifier tous les détails 
+
+
+
+
+
+
 
 
 
