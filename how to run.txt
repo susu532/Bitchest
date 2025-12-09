@@ -866,6 +866,9 @@ Contrôle avancé sur la configuration ,une customisation extrême
 optimisation poussée
 Webpack permet de modifier tous les détails 
 
+MVC	Architecture	Organise l’application en Model / View / Controller
+Eloquent ORM	Outil de gestion BD	Sert à manipuler la DB dans la partie Model
+
 
 
 
