@@ -869,6 +869,60 @@ Webpack permet de modifier tous les détails
 MVC	Architecture	Organise l’application en Model / View / Controller
 Eloquent ORM	Outil de gestion BD	Sert à manipuler la DB dans la partie Model
 
+1. AuthSession (Le "Passeport" - Backend)
+C'est la base de tout. C'est le Cookie HttpOnly sécurisé géré par Laravel.
+
+Rôle : Il prouve au serveur que vous êtes connecté.
+Sans lui : Aucune requête API privée ( /api/user, /api/wallet) ne fonctionne. Le serveur répondrait 401 Unauthorized.
+2. AuthContext (L' "Identité" - Frontend)
+C'est le premier domino à tomber côté React.
+
+Action : Au chargement de la page (
+App.tsx
+), il appelle /api/auth/me.
+Si AuthSession est valide : Le backend répond avec les infos de l'utilisateur.
+Résultat : 
+AuthContext
+ remplit la variable user (id, email, role).
+Relation : Il transforme la Session technique (cookie) en Identité utilisable (objet JS).
+3. AppState (Le "Coffre-fort" - Frontend)
+C'est lui qui stocke vos sous et vos cryptos.
+
+Dépendance : Il attend que 
+AuthContext
+ ait fini son travail.
+Logique :
+Tant que AuthContext.user est null -> 
+AppState
+ ne charge rien (ou juste les prix publics).
+Dès que AuthContext.user existe -> 
+AppState
+ lance fetchClientAccount(user.id).
+Relation : Il a besoin de l'Identité pour savoir quel Coffre ouvrir.
+4. WebSocket (Le "Téléphone Rouge" - Temps Réel)
+C'est le dernier maillon pour la mise à jour instantanée.
+
+Dépendance : Il a besoin de l'ID utilisateur fourni par 
+AuthContext
+.
+Action : Il s'abonne au canal privé private-user.{id}.
+Boucle de retour :
+Le Backend envoie un événement "Solde mis à jour".
+Le WebSocket le reçoit.
+Il envoie un signal à 
+AppState
+ (dispatch).
+AppState
+ met à jour le solde à l'écran sans recharger la page.
+Résumé Visuel pour le Jury
+Imaginez une Maison Sécurisée :
+
+AuthSession : C'est la Clé physique dans votre poche.
+AuthContext : C'est le Portier qui vérifie la clé et vous laisse entrer dans le hall.
+AppState : C'est votre Chambre. Vous ne pouvez pas y aller tant que le portier ne vous a pas laissé entrer.
+WebSocket : C'est l'Interphone dans votre chambre. Il ne sonne que si vous êtes dans la chambre pour l'entendre.
+Flux Technique : Cookie (Session) ➡️ API /me ➡️ AuthContext (User) ➡️ AppState (Fetch Data) ➕ WebSocket (Subscribe)
+
 
 
 
