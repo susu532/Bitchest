@@ -895,3 +895,68 @@ PARTIE 2 : FRONTEND (React + TypeScript)
 | **MOYENNE** | `src/pages/LoginPage.tsx` | **Page de Connexion**. Formulaire email/mot de passe. Gère les erreurs de connexion et la redirection après succès. |
 | **MOYENNE** | `src/components/layout/DashboardLayout.tsx` | **Mise en Page**. Définit la structure commune des tableaux de bord (Sidebar, Header, Contenu principal). |
 | **MOYENNE** | `src/styles/global.css` | **Styles CSS**. Contient toutes les règles de design (couleurs, polices, mise en page) pour rendre l'application belle. |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Le Rôle de AuthContext (La "Carte d'Identité")
+AuthContext
+ est responsable de savoir QUI est connecté. Il fournit l'objet user qui contient l'ID unique de l'utilisateur (user.id).
+
+2. Le Rôle des WebSockets (Le "Facteur")
+Les WebSockets (via Laravel Reverb/Echo) servent à livrer des messages en temps réel. Mais pour les messages privés (comme "Votre solde a changé"), le facteur doit savoir À QUI livrer le message. Il ne peut pas le crier à tout le monde.
+
+3. La Relation (Le "Pont")
+C'est dans le fichier 
+src/App.tsx
+ que la connexion se fait.
+
+AuthContext fournit l'ID : Le composant 
+App
+ utilise 
+useAuth()
+ pour récupérer l'utilisateur connecté.
+Connexion Sécurisée : Dès que user.id est disponible, 
+App.tsx
+ demande à echoService de s'abonner au canal privé de cet utilisateur spécifique (private-App.Models.User.{id}).
+Réception des Événements : Quand le backend envoie un événement (ex: achat crypto), le WebSocket le reçoit car il écoute sur le canal de cet ID précis.
+Schéma Simplifié pour le Jury :
+mermaid
+graph TD
+    A[AuthContext] -->|Fournit user.id| B(App.tsx)
+    B -->|Subscribe private-user.{id}| C[WebSocket Service]
+    D[Backend Laravel] -->|Envoie Event sur user.{id}| C
+    C -->|Notifie| B
+    B -->|Affiche| E[Toast Notification]
+En résumé :
+
+"Sans 
+AuthContext
+, le service WebSocket ne saurait pas quel canal privé écouter. 
+AuthContext
+ fournit la clé (l'ID utilisateur) qui permet d'ouvrir la boîte aux lettres sécurisée (le canal WebSocket privé)."
