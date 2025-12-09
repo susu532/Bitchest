@@ -727,7 +727,65 @@ Bénéfice/Perte = (Nombre de BTC détenus × Prix actuel) - (Nombre de BTC dét
 
 
 
+1. Algorithme de Génération Aléatoire des Prix (Le "Moteur de Marché")
+Le code se trouve dans 
+app/Console/Commands/UpdateCryptoPrices.php
+. C'est une commande Artisan qui tourne en boucle infinie (while(true)).
 
+La Logique Mathématique : Pour chaque crypto, à chaque cycle (toutes les 5 secondes par défaut), le système calcule un nouveau prix selon cette formule :
+
+php
+// 1. Génération d'un facteur de variation aléatoire
+// rand(-20, 20) génère un entier entre -20 et +20
+// Divisé par 1000, cela donne un flottant entre -0.02 et +0.02
+$variation = (rand(-20, 20) / 1000); 
+
+// 2. Application au prix actuel
+// Cela signifie que le prix peut varier de -2% à +2% à chaque cycle
+$newPrice = $currentPrice * (1 + $variation);
+
+// 3. Sécurité (Floor)
+// Pour éviter que le prix ne tombe à 0 ou devienne négatif
+if ($newPrice < 5) { $newPrice = 5.00; }
+Pourquoi cette approche ?
+
+Volatilité Réaliste : Une variation de +/- 2% crée des graphiques "vivants" sans être trop chaotiques.
+Marche Aléatoire (Random Walk) : Le nouveau prix dépend du précédent, créant des tendances naturelles (haussières ou baissières) sur le court terme, simulant un vrai marché boursier.
+2. Pourquoi l'Architecture MVC (Modèle-Vue-Contrôleur) ?
+Bien que nous utilisions une architecture "Headless" (API Backend + Frontend séparé), le pattern MVC reste le cœur de Laravel.
+
+A. Modèle (Model) - Le "Cerveau" (Données)
+
+Rôle : Représente la structure des données et les règles métier.
+Dans Bitchest : 
+User
+, 
+Cryptocurrency
+, 
+WalletTransaction
+.
+Pourquoi ? Eloquent ORM nous permet de manipuler la base de données comme des objets PHP ($user->transactions) sans écrire de SQL complexe. Cela garantit l'intégrité des données.
+B. Vue (View) - Le "Visage" (Interface)
+
+Rôle : Ce que l'utilisateur voit.
+Dans Bitchest : Ici, c'est particulier. Laravel ne renvoie pas de HTML (Blade), mais du JSON. La véritable "Vue" est votre application React.
+Pourquoi ? Découplage total. On pourrait changer tout le frontend (passer à Vue.js ou une app mobile) sans toucher une seule ligne du backend.
+C. Contrôleur (Controller) - Le "Chef d'Orchestre"
+
+Rôle : Reçoit la requête, demande les données au Modèle, et renvoie la réponse.
+Dans Bitchest : 
+WalletController
+, AuthController.
+Pourquoi ? Organisation. Le contrôleur ne contient pas de logique métier complexe (déplacée dans 
+WalletService
+) ni de code SQL. Il ne fait que coordonner.
+Résumé pour le Jury :
+
+"J'ai choisi MVC pour la Séparation des Préoccupations (Separation of Concerns). Cela rend le code :
+
+Maintenable : Si je veux changer le calcul du solde, je vais dans le Service/Modèle, pas dans l'interface.
+Testable : Je peux tester mes Modèles indépendamment de l'interface.
+Collaboratif : Un développeur peut travailler sur le Frontend (Vue) pendant qu'un autre travaille sur le Backend (API)."
 
 
 
