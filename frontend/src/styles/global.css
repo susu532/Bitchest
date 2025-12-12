@@ -1,35 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
 :root {
   color-scheme: light dark;
-  font-family: "Celias", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Source Sans 3', "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  --color-primary: #01ff19;
-  --color-accent: #ff5964;
+  
+  /* Modern 2025 Color Palette - Tech Blue & Dark Cyan */
+  --color-primary: #0070FF;
+  --color-primary-dark: #1560BD;
+  --color-accent: #008B8B;
+  --color-accent-light: #00B8B8;
   --color-light: #ffffff;
-  --color-dark: #0a1826;
+  --color-dark: #011F5B;
+  --color-darker: #1B1B1B;
   --color-secondary: #38618c;
-  --color-info: #35a7ff;
+  --color-info: #0070FF;
   --color-muted: rgba(255, 255, 255, 0.6);
-  --color-surface: rgba(8, 20, 33, 0.85);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --shadow-lg: 0 24px 80px rgba(3, 15, 25, 0.45);
-  --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.25);
+  --color-surface: rgba(1, 31, 91, 0.4);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.3);
 
-  /* Enhanced 3D & Glow Effects */
-  --glow-primary:
-    0 0 20px rgba(1, 255, 25, 0.4), 0 0 40px rgba(1, 255, 25, 0.2);
-  --glow-primary-strong:
-    0 0 30px rgba(1, 255, 25, 0.6), 0 0 60px rgba(1, 255, 25, 0.3),
-    0 0 90px rgba(1, 255, 25, 0.1);
-  --glow-info:
-    0 0 20px rgba(53, 167, 255, 0.4), 0 0 40px rgba(53, 167, 255, 0.2);
-  --glow-info-strong:
-    0 0 30px rgba(53, 167, 255, 0.6), 0 0 60px rgba(53, 167, 255, 0.3);
-  --shadow-3d: 0 20px 60px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.2);
-  --shadow-3d-hover:
-    0 30px 80px rgba(0, 0, 0, 0.4), 0 15px 40px rgba(0, 0, 0, 0.3);
+  /* Modern Glow Effects */
+  --glow-primary: 0 0 30px rgba(0, 112, 255, 0.3), 0 0 60px rgba(0, 112, 255, 0.15);
+  --glow-primary-strong: 0 0 40px rgba(0, 112, 255, 0.5), 0 0 80px rgba(0, 112, 255, 0.25);
+  --glow-accent: 0 0 30px rgba(0, 139, 139, 0.3), 0 0 60px rgba(0, 139, 139, 0.15);
+  --shadow-3d: 0 20px 60px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.25);
+  --shadow-3d-hover: 0 30px 80px rgba(0, 0, 0, 0.5), 0 15px 40px rgba(0, 0, 0, 0.3);
 
-  background-color: #03101c;
+  background-color: #0a0e1a;
   color: var(--color-light);
 }
 
@@ -212,6 +212,448 @@ img {
   position: relative;
 }
 
+/* ===================================
+   MODERN LOGIN PAGE 2025
+   =================================== */
+
+.modern-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0e1a 0%, #011F5B 50%, #0a0e1a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Left Visual Panel */
+.modern-login__visual {
+  position: relative;
+  background-image: url('https://pixabay.com/get/g7a8ac0dd9b4d0a4975ad017b31332cda90c058f998300319aad47344cc79d0962646944c2489d39fd9390f93e138e0f7.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+}
+
+.modern-login__visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(1, 31, 91, 0.95) 0%,
+    rgba(0, 112, 255, 0.85) 50%,
+    rgba(0, 139, 139, 0.9) 100%
+  );
+  backdrop-filter: blur(8px);
+}
+
+.modern-login__visual-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.modern-login__brand {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.modern-login__brand-logo {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 0 20px rgba(0, 112, 255, 0.6));
+}
+
+.modern-login__brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.modern-login__hero-text {
+  margin-bottom: 4rem;
+}
+
+.modern-login__headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 1.5rem;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+}
+
+.modern-login__headline-accent {
+  display: block;
+  background: linear-gradient(135deg, #0070FF 0%, #008B8B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modern-login__tagline {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  font-weight: 300;
+}
+
+.modern-login__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-item__value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item__label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+/* Right Form Panel */
+.modern-login__form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  background: #0a0e1a;
+  position: relative;
+}
+
+.modern-login__form-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 112, 255, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.modern-login__form-container {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.modern-login__form-header {
+  margin-bottom: 3rem;
+}
+
+.modern-login__form-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.modern-login__form-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  font-weight: 300;
+}
+
+.modern-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Modern Input Groups */
+.modern-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modern-input-group__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.3px;
+}
+
+.modern-input-wrapper {
+  position: relative;
+}
+
+.modern-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.modern-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.modern-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(0, 112, 255, 0.1), var(--glow-primary);
+}
+
+.modern-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.modern-input:focus ~ .modern-input-icon {
+  color: var(--color-primary);
+}
+
+.modern-input-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.modern-input-toggle:hover {
+  color: var(--color-primary);
+  background: rgba(0, 112, 255, 0.1);
+}
+
+/* Error Message */
+.modern-login__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 89, 100, 0.1);
+  border: 1px solid rgba(255, 89, 100, 0.3);
+  border-radius: 12px;
+  color: #ff9da6;
+  font-size: 0.875rem;
+  animation: shake 0.4s ease-out;
+}
+
+.modern-login__error svg {
+  flex-shrink: 0;
+  color: #ff5964;
+}
+
+/* Submit Button */
+.modern-login__submit {
+  width: 100%;
+  padding: 1.125rem 2rem;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 112, 255, 0.3);
+  margin-top: 0.5rem;
+}
+
+.modern-login__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 112, 255, 0.4), var(--glow-primary);
+}
+
+.modern-login__submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.modern-login__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modern-login__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Footer */
+.modern-login__footer {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modern-login__security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.modern-login__security svg {
+  color: var(--color-accent);
+  opacity: 0.7;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .modern-login {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-login__visual {
+    min-height: 40vh;
+    padding: 3rem 2rem;
+  }
+
+  .modern-login__headline {
+    font-size: 2.5rem;
+  }
+
+  .modern-login__stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat-item__value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .modern-login__visual {
+    padding: 2rem 1.5rem;
+  }
+
+  .modern-login__brand {
+    margin-bottom: 2rem;
+  }
+
+  .modern-login__brand-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .modern-login__brand-name {
+    font-size: 2rem;
+  }
+
+  .modern-login__headline {
+    font-size: 2rem;
+  }
+
+  .modern-login__tagline {
+    font-size: 1rem;
+  }
+
+  .modern-login__stats {
+    gap: 1rem;
+  }
+
+  .stat-item__value {
+    font-size: 1.25rem;
+  }
+
+  .stat-item__label {
+    font-size: 0.75rem;
+  }
+
+  .modern-login__form-panel {
+    padding: 2rem 1.5rem;
+  }
+
+  .modern-login__form-title {
+    font-size: 2rem;
+  }
+
+  .modern-login__submit {
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* Old login page styles (keeping for backwards compatibility) */
 .login-page {
   padding: 0;
   display: grid;
