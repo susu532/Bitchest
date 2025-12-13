@@ -75,20 +75,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="modern-login__stats">
-            <div className="stat-item">
-              <div className="stat-item__value">10K+</div>
-              <div className="stat-item__label">Active Users</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-item__value">$2.5B+</div>
-              <div className="stat-item__label">Assets Managed</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-item__value">99.9%</div>
-              <div className="stat-item__label">Uptime</div>
-            </div>
-          </div>
+        
         </div>
       </div>
 
@@ -204,10 +191,8 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="modern-login__footer">
             <div className="modern-login__security">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 1l6 2v5c0 3.5-2.5 6.5-6 7-3.5-.5-6-3.5-6-7V3l6-2z" fill="currentColor" opacity="0.3"/>
-              </svg>
-              <span>Secured with 256-bit encryption</span>
+             
+             
             </div>
           </div>
         </div>
