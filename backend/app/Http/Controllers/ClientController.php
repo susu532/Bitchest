@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 
 use App\Models\ClientAccount;
+use App\Models\Notification;
 
 use Illuminate\Http\Request;
 
@@ -61,6 +62,14 @@ class ClientController extends Controller
             'user_id' => $user->id,
 
             'balance_eur' => 500,
+        ]);
+        
+        // Create notification for new client account
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'info',
+            'message' => 'Welcome to BitChest',
+            'details' => 'Your account has been created successfully. Your initial balance is €500.00. Please change your password upon first login.',
         ]);
 
         return response()->json([
@@ -165,6 +174,14 @@ class ClientController extends Controller
         }
 
         $user->save();
+        
+        // Create notification for account update
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'info',
+            'message' => 'Account Updated',
+            'details' => 'Your account information has been updated by an administrator.',
+        ]);
 
         return response()->json([
 

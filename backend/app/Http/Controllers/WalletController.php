@@ -8,6 +8,8 @@ use App\Http\Requests\BuyCryptoRequest;
 use App\Http\Requests\SellCryptoRequest;
 
 use App\Models\ClientAccount;
+use App\Models\Notification;
+use App\Models\Cryptocurrency;
 
 use Illuminate\Http\Request;
 
@@ -32,6 +34,22 @@ class WalletController extends Controller
             $request->pricePerUnit
         );
         
+        // Create notification for successful purchase
+        $crypto = Cryptocurrency::find($request->cryptoId);
+        $totalCost = $request->quantity * $request->pricePerUnit;
+        
+        Notification::create([
+            'user_id' => auth()->id(),
+            'type' => 'success',
+            'message' => 'Purchase Successful',
+            'details' => sprintf(
+                'Bought %.4f %s for €%.2f',
+                $request->quantity,
+                $crypto->name ?? 'crypto',
+                $totalCost
+            ),
+        ]);
+        
         return response()->json([
             'success' => true,
             'message' => 'Purchase successful',
@@ -50,6 +68,22 @@ class WalletController extends Controller
             $request->quantity,
             $request->pricePerUnit
         );
+        
+        // Create notification for successful sale
+        $crypto = Cryptocurrency::find($request->cryptoId);
+        $totalEarned = $request->quantity * $request->pricePerUnit;
+        
+        Notification::create([
+            'user_id' => auth()->id(),
+            'type' => 'success',
+            'message' => 'Sale Successful',
+            'details' => sprintf(
+                'Sold %.4f %s for €%.2f',
+                $request->quantity,
+                $crypto->name ?? 'crypto',
+                $totalEarned
+            ),
+        ]);
         
         return response()->json([
             'success' => true,

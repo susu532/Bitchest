@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CryptocurrencyController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Broadcasting\BroadcastController;
 
 Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
@@ -45,4 +46,11 @@ Route::middleware(['auth:web', 'throttle:60,1'])->group(function () {
     Route::post('/wallet/sell', [WalletController::class, 'sellCryptocurrency']);
 
     Route::get('/wallet/summary', [WalletController::class, 'getWalletSummary']);
+
+    // Notification routes
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications', [NotificationController::class, 'store']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+    Route::delete('/notifications/read', [NotificationController::class, 'deleteRead']);
 });

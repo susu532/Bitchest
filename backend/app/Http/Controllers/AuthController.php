@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 
 use App\Models\ClientAccount;
+use App\Models\Notification;
 
 use Illuminate\Http\Request;
 
@@ -160,6 +161,14 @@ class AuthController extends Controller
         $user->password = Hash::make($request->newPassword);
 
         $user->save();
+        
+        // Create notification for password change
+        Notification::create([
+            'user_id' => $user->id,
+            'type' => 'info',
+            'message' => 'Password Changed',
+            'details' => 'Your password was successfully changed. If this wasn\'t you, please contact support immediately.',
+        ]);
 
         return response()->json([
 
