@@ -1,21 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap");
 
 :root {
   color-scheme: light dark;
-  font-family: 'Source Sans 3', "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  
+
   /* Modern 2025 Color Palette - Tech Blue & Dark Cyan */
-  --color-primary: #0070FF;
-  --color-primary-dark: #1560BD;
-  --color-accent: #008B8B;
-  --color-accent-light: #00B8B8;
+  --color-primary: #0070ff;
+  --color-primary-dark: #1560bd;
+  --color-accent: #008b8b;
+  --color-accent-light: #00b8b8;
   --color-light: #ffffff;
-  --color-dark: #011F5B;
-  --color-darker: #1B1B1B;
+  --color-dark: #011f5b;
+  --color-darker: #1b1b1b;
   --color-secondary: #38618c;
-  --color-info: #0070FF;
+  --color-info: #0070ff;
   --color-muted: rgba(255, 255, 255, 0.6);
   --color-surface: rgba(1, 31, 91, 0.4);
   --color-border: rgba(255, 255, 255, 0.1);
@@ -23,11 +23,15 @@
   --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.3);
 
   /* Modern Glow Effects */
-  --glow-primary: 0 0 30px rgba(0, 112, 255, 0.3), 0 0 60px rgba(0, 112, 255, 0.15);
-  --glow-primary-strong: 0 0 40px rgba(0, 112, 255, 0.5), 0 0 80px rgba(0, 112, 255, 0.25);
-  --glow-accent: 0 0 30px rgba(0, 139, 139, 0.3), 0 0 60px rgba(0, 139, 139, 0.15);
+  --glow-primary:
+    0 0 30px rgba(0, 112, 255, 0.3), 0 0 60px rgba(0, 112, 255, 0.15);
+  --glow-primary-strong:
+    0 0 40px rgba(0, 112, 255, 0.5), 0 0 80px rgba(0, 112, 255, 0.25);
+  --glow-accent:
+    0 0 30px rgba(0, 139, 139, 0.3), 0 0 60px rgba(0, 139, 139, 0.15);
   --shadow-3d: 0 20px 60px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.25);
-  --shadow-3d-hover: 0 30px 80px rgba(0, 0, 0, 0.5), 0 15px 40px rgba(0, 0, 0, 0.3);
+  --shadow-3d-hover:
+    0 30px 80px rgba(0, 0, 0, 0.5), 0 15px 40px rgba(0, 0, 0, 0.3);
 
   background-color: #0a0e1a;
   color: var(--color-light);
@@ -227,36 +231,48 @@ img {
 
 /* Premium Animated Background - Matched to Dashboard Theme */
 .modern-login::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: 
+  background:
     radial-gradient(circle at 20% 20%, rgba(1, 255, 25, 0.08), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(53, 167, 255, 0.08), transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(255, 89, 100, 0.05), transparent 60%);
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(53, 167, 255, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 89, 100, 0.05),
+      transparent 60%
+    );
   animation: rotate-bg 40s linear infinite;
   z-index: 0;
 }
 
 @keyframes rotate-bg {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Left Visual Panel */
+/* Left Visual Panel */
 .modern-login__visual {
   position: relative;
-  background-image: url('https://pixabay.com/get/g7a8ac0dd9b4d0a4975ad017b31332cda90c058f998300319aad47344cc79d0962646944c2489d39fd9390f93e138e0f7.jpg');
-  background-size: cover;
-  background-position: center;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4rem;
   z-index: 1;
+  overflow: hidden;
 }
 
 .modern-login__visual-overlay {
@@ -264,11 +280,11 @@ img {
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(10, 14, 26, 0.95) 0%,
-    rgba(1, 31, 91, 0.9) 50%,
-    rgba(10, 14, 26, 0.95) 100%
+    rgba(10, 14, 26, 0.2) 0%,
+    rgba(1, 31, 91, 0.2) 50%,
+    rgba(10, 14, 26, 0.2) 100%
   );
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(2px);
 }
 
 .modern-login__visual-content {
@@ -297,13 +313,13 @@ img {
 }
 
 .modern-login__brand-name {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 3rem;
   font-weight: 700;
   margin: 0;
   color: #ffffff;
   letter-spacing: -1px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .modern-login__hero-text {
@@ -311,7 +327,7 @@ img {
 }
 
 .modern-login__headline {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 4rem;
   font-weight: 800;
   line-height: 1.1;
@@ -389,7 +405,7 @@ img {
 }
 
 .modern-login__form-title {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 0.75rem;
@@ -512,13 +528,17 @@ img {
 .modern-login__submit {
   width: 100%;
   padding: 1.25rem 2rem;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 100%
+  );
   border: none;
   border-radius: 14px;
   color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -533,7 +553,7 @@ img {
 }
 
 .modern-login__submit::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -554,7 +574,9 @@ img {
 
 .modern-login__submit:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(0, 112, 255, 0.35), var(--glow-primary);
+  box-shadow:
+    0 15px 40px rgba(0, 112, 255, 0.35),
+    var(--glow-primary);
 }
 
 .modern-login__submit:active:not(:disabled) {
@@ -614,13 +636,22 @@ img {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  75% { transform: translateX(8px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -637,7 +668,7 @@ img {
   .modern-login__headline {
     font-size: 3rem;
   }
-  
+
   .modern-login__form-panel {
     min-height: 65vh;
   }
@@ -674,7 +705,7 @@ img {
   .modern-login__form-panel {
     padding: 2rem 1.5rem;
   }
-  
+
   .modern-login__form-container {
     padding: 2rem 1.5rem;
   }

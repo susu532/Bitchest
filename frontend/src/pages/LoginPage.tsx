@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { FormEvent } from 'react';
 import { useAuth } from '../state/AuthContext';
 import { useNotifications } from '../components/common/Notifications';
+import Globe from '../components/common/globe';
 
 type LocationState = {
   from?: { pathname: string };
@@ -54,6 +55,8 @@ export default function LoginPage() {
     <div className="modern-login">
       {/* Left Panel - Visual Hero */}
       <div className="modern-login__visual">
+        {/* 3D Globe Background */}
+        <Globe />
         <div className="modern-login__visual-overlay"></div>
         <div className="modern-login__visual-content">
           <div className="modern-login__brand">
