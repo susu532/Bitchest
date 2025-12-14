@@ -1,0 +1,477 @@
+{
+  "info": {
+    "_postman_id": "bitchest-collection-2024",
+    "name": "BitChest API - PFE Collection",
+    "description": "Collection complète pour tester l'API BitChest (Laravel + React)\nPour la soutenance PFE - Plateforme de trading de cryptomonnaies",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login (Client)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Sauvegarder le token automatiquement",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.token) {",
+                  "        pm.environment.set('auth_token', jsonData.data.token);",
+                  "        console.log('Token saved:', jsonData.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"client@bitchest.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login"]
+            },
+            "description": "Connexion d'un utilisateur client.\n\n**Credentials par défaut:**\n- Email: client@bitchest.com\n- Password: password123\n\n**Réponse attendue:**\n- Token d'authentification Sanctum\n- Informations utilisateur (rôle: client)"
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.token) {",
+                  "        pm.environment.set('auth_token', jsonData.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@bitchest.com\",\n    \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login"]
+            },
+            "description": "Connexion administrateur pour accéder aux fonctionnalités de gestion."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/user",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user"]
+            },
+            "description": "Récupère les informations de l'utilisateur connecté.\n\n**Nécessite:** Token d'authentification"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "logout"]
+            },
+            "description": "Déconnexion et révocation du token."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints pour l'authentification utilisateur avec Laravel Sanctum"
+    },
+    {
+      "name": "💰 Cryptocurrencies",
+      "item": [
+        {
+          "name": "Get All Cryptocurrencies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cryptocurrencies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cryptocurrencies"]
+            },
+            "description": "Liste complète des 15 cryptomonnaies disponibles avec:\n- Prix actuel\n- Évolution (trend)\n- Métadonnées (nom, symbole, icône)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Cryptocurrency",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/cryptocurrencies/BTC",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cryptocurrencies", "BTC"]
+            },
+            "description": "Détails d'une cryptomonnaie spécifique (ex: BTC, ETH, XRP...)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestion et consultation des cryptomonnaies"
+    },
+    {
+      "name": "👛 Wallet (Client)",
+      "item": [
+        {
+          "name": "Get Wallet Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wallet",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wallet"]
+            },
+            "description": "Récupère le portefeuille complet du client:\n- Solde EUR disponible\n- Holdings par crypto (quantité, prix moyen, valeur)\n- Historique des transactions"
+          },
+          "response": []
+        },
+        {
+          "name": "Buy Cryptocurrency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"crypto_id\": \"BTC\",\n    \"quantity\": 0.1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wallet/buy",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wallet", "buy"]
+            },
+            "description": "Acheter une cryptomonnaie.\n\n**Paramètres:**\n- crypto_id: Symbole de la crypto (BTC, ETH, XRP...)\n- quantity: Quantité à acheter (décimal)\n\n**Validations:**\n- Solde EUR suffisant\n- Quantité > 0"
+          },
+          "response": []
+        },
+        {
+          "name": "Sell Cryptocurrency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"crypto_id\": \"BTC\",\n    \"quantity\": 0.05\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/wallet/sell",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wallet", "sell"]
+            },
+            "description": "Vendre une cryptomonnaie possédée.\n\n**Validations:**\n- Possession suffisante de la crypto\n- Quantité > 0"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/wallet/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "wallet", "transactions"]
+            },
+            "description": "Historique complet des transactions (achats/ventes) de l'utilisateur."
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestion du portefeuille client (achats, ventes, consultation)"
+    },
+    {
+      "name": "👥 Admin - Client Management",
+      "item": [
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/clients",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "clients"]
+            },
+            "description": "Liste de tous les clients avec leurs informations.\n\n**Accès:** Admin seulement"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/clients/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "clients", "1"]
+            },
+            "description": "Détails complets d'un client spécifique.\n\n**Accès:** Admin seulement"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Nouveau Client\",\n    \"email\": \"nouveau@example.com\",\n    \"password\": \"password123\",\n    \"initial_balance\": 1000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/clients",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "clients"]
+            },
+            "description": "Créer un nouveau compte client.\n\n**Accès:** Admin seulement"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Client Modifié\",\n    \"email\": \"modifie@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/clients/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "clients", "1"]
+            },
+            "description": "Modifier les informations d'un client.\n\n**Accès:** Admin seulement"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/clients/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "clients", "1"]
+            },
+            "description": "Supprimer un compte client.\n\n**Accès:** Admin seulement\n\n**Attention:** Action irréversible!"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints d'administration pour gérer les comptes clients"
+    },
+    {
+      "name": "🔔 Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications"]
+            },
+            "description": "Récupère toutes les notifications non lues de l'utilisateur."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/1/read",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notifications", "1", "read"]
+            },
+            "description": "Marquer une notification comme lue."
+          },
+          "response": []
+        }
+      ],
+      "description": "Système de notifications persistantes"
+    },
+    {
+      "name": "📊 Statistics (Admin)",
+      "item": [
+        {
+          "name": "Get Platform Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "stats"]
+            },
+            "description": "Statistiques globales de la plateforme:\n- Nombre total de clients\n- Volume total de transactions\n- Cryptos les plus tradées\n\n**Accès:** Admin seulement"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
