@@ -224,7 +224,7 @@ img {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
-  background: #0a0e1a; /* Dashboard background color */
+  background: transparent;
   position: relative;
   overflow: hidden;
 }
@@ -360,7 +360,7 @@ img {
   align-items: center;
   justify-content: center;
   padding: 4rem 3rem;
-  background: rgba(6, 18, 29, 0.4); /* Dashboard panel background */
+  background: transparent;
   backdrop-filter: blur(20px);
   position: relative;
   z-index: 1;
