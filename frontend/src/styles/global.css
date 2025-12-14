@@ -373,7 +373,11 @@ img {
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.8s ease-out 0.2s both;
-  background: transparent;
+   background: radial-gradient(
+    circle,
+    rgba(42, 238, 101, 0.05)
+    
+  );
   box-shadow: none;
   padding: 3rem;
   border-radius: 32px;

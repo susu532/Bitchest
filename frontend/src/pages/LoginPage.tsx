@@ -84,7 +84,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Login Form */}
-      <div className="modern-login__form-panel">
+      
         <div className="modern-login__form-container">
           <div className="modern-login__form-header">
             <h2 className="modern-login__form-title">Welcome back</h2>
@@ -200,7 +200,7 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
-      </div>
+      
     </div>
   );
 }
