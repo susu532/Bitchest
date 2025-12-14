@@ -33,7 +33,7 @@
   --shadow-3d-hover:
     0 30px 80px rgba(0, 0, 0, 0.5), 0 15px 40px rgba(0, 0, 0, 0.3);
 
-  background-color: #0a0e1a;
+  background-color: transparent;
   color: var(--color-light);
 }
 
@@ -373,9 +373,10 @@ img {
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.8s ease-out 0.2s both;
-  background: rgba(6, 18, 29, 0.6); /* Dashboard panel style */
+  background: transparent;
+  box-shadow: none;
   padding: 3rem;
-  border-radius: 32px; /* Dashboard border radius */
+  border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.4),

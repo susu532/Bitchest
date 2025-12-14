@@ -71,6 +71,7 @@ const Globe: React.FC<GlobeProps> = ({
           scaleMobile,
           color,
           backgroundColor,
+          backgroundAlpha: 0.0, // Make background transparent
           points,
           spacing
         });

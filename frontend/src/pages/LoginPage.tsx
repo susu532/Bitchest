@@ -53,10 +53,11 @@ export default function LoginPage() {
 
   return (
     <div className="modern-login">
+      <Globe />
       {/* Left Panel - Visual Hero */}
       <div className="modern-login__visual">
         {/* 3D Globe Background */}
-        <Globe />
+
         <div className="modern-login__visual-overlay"></div>
         <div className="modern-login__visual-content">
           <div className="modern-login__brand">
