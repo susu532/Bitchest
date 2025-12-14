@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "bitchest-collection-2024",
+    "_postman_id": "bitchest-collection-2026",
     "name": "BitChest API - PFE Collection",
     "description": "Collection complète pour tester l'API BitChest (Laravel + React)\nPour la soutenance PFE - Plateforme de trading de cryptomonnaies",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
