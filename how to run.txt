@@ -1036,3 +1036,111 @@ AuthContext
 , le service WebSocket ne saurait pas quel canal privé écouter. 
 AuthContext
  fournit la clé (l'ID utilisateur) qui permet d'ouvrir la boîte aux lettres sécurisée (le canal WebSocket privé)."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ## ⚡ Installation Express (5 minutes) ### 1. Vérifier PHPUnit
+bash
+cd backend
+composer show phpunit/phpunit
+### 2. Si PHPUnit n'est pas installé
+bash
+composer require --dev phpunit/phpunit
+### 3. Créer la configuration phpunit.xml (si absente) Créez backend/phpunit.xml :
+xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+    <testsuites>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+    </php>
+</phpunit>
+### 4. Exécuter les tests **Option A : Avec Laravel 8+**
+bash
+php artisan test
+**Option B : Avec PHPUnit directement**
+bash
+./vendor/bin/phpunit
+**Option C : Windows PowerShell**
+powershell
+.\vendor\bin\phpunit.bat
+--- ## ✅ Résultat Attendu
+PASS  Tests\Feature\AuthenticationTest
+✓ 6 tests passed
+
+PASS  Tests\Feature\WalletTest
+✓ 7 tests passed
+
+PASS  Tests\Feature\CryptocurrencyTest
+✓ 4 tests passed
+
+Tests:  17 passed
+Time:   2.47s
+--- ## 🐛 Si ça ne marche pas ### Erreur : Class 'Tests\TestCase' not found **Solution :** Vérifiez que tests/TestCase.php existe :
+php
+<?php
+
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
+{
+    use CreatesApplication;
+}
+### Erreur : Trait 'Tests\CreatesApplication' not found **Solution :** Créez tests/CreatesApplication.php :
+php
+<?php
+
+namespace Tests;
+
+use Illuminate\Contracts\Console\Kernel;
+
+trait CreatesApplication
+{
+    public function createApplication()
+    {
+        $app = require __DIR__.'/../bootstrap/app.php';
+        $app->make(Kernel::class)->bootstrap();
+        return $app;
+    }
+}
+### Erreur : Database errors **Solution :** Vérifiez que phpunit.xml a bien :
+xml
+<env name="DB_CONNECTION" value="sqlite"/>
+<env name="DB_DATABASE" value=":memory:"/>
+--- ## 🎯 Pour la Soutenance (Plan B) Si les tests ne fonctionnent toujours pas avant la soutenance : ### Option 1 : Montrez le code des tests > "J'ai implémenté des tests automatisés avec PHPUnit. > Voici un exemple de test qui vérifie l'achat de cryptomonnaies..." **Puis montrez le fichier** WalletTest.php ### Option 2 : Expliquez la méthodologie > "Pour ce projet, j'ai structuré les tests selon la méthodologie AAA : > Arrange (préparer), Act (exécuter), Assert (vérifier)." ### Option 3 : Alternative Postman > "Les tests Postman que nous avons préparés couvrent les mêmes > fonctionnalités que ces tests automatisés PHPUnit."
