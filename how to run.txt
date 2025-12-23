@@ -266,6 +266,12 @@ Framework PHP moderne et élégant pour le développement web. Laravel fournit u
 PHP 8.2+
 Langage de programmation côté serveur utilisé pour le backend. La version 8.2+ apporte des améliorations de performance, de nouvelles fonctionnalités comme les enums, readonly properties, et un système de types plus strict.
 
+props:
+les props sont des données passées d'un composant parent à un composant enfant, sous forme d'un objet
+
+Objet:
+un objet est une structure de données qui stocke des informations sous forme de paires clé-valeur
+
 Composer
 Gestionnaire de dépendances pour PHP. Il permet de gérer les packages et bibliothèques nécessaires au projet backend. Le fichier 
 composer.json
@@ -629,7 +635,11 @@ Codes standard pour les réponses HTTP (200 OK, 201 Created, 400 Bad Request, 40
 
 Cette liste constitue un référentiel complet des technologies, concepts et outils utilisés dans le projet Bitchest. Elle peut servir de guide pour les nouveaux développeurs ou pour la documentation du projet.
 
+Sur le Prop Drilling : "Pour éviter le Prop Drilling, j'ai utilisé le Context API de React avec un hook personnalisé 
+useAuth()
+. Ainsi, n'importe quel composant peut accéder à l'utilisateur connecté sans passer les props à travers toute l'arborescence."
 
+Sur l'API Throttling : "J'ai implémenté le Rate Limiting avec le middleware throttle de Laravel. La route de login est limitée à 5 tentatives par minute pour bloquer les attaques par force brute, et les routes authentifiées à 60 requêtes par minute pour un usage normal."
 
 
 
@@ -788,7 +798,66 @@ Testable : Je peux tester mes Modèles indépendamment de l'interface.
 Collaboratif : Un développeur peut travailler sur le Frontend (Vue) pendant qu'un autre travaille sur le Backend (API)."
 
 
+1. Différence de Rôle
+Ces deux fichiers gèrent des aspects différents de l'état de votre application : l'Identité vs les Données.
 
+AuthContext.tsx
+ (L'Identité / Le Videur)
+Rôle principal : Gérer la session de l'utilisateur courant. Il sait qui est connecté.
+Ce qu'il contient :
+L'objet user actuel (celui qui est connecté).
+Le booléen isAuthenticated (est-ce qu'on est connecté ?).
+Les fonctions de sécurité : login, logout, changePassword.
+Analogie : C'est votre carte d'identité et vos clés de maison. Il permet d'entrer dans l'application.
+AppStateProvider.tsx
+ (Le Cerveau / La Base de Données)
+Rôle principal : Gérer les données métier de l'application. Il contient ce que l'utilisateur voit et manipule.
+Ce qu'il contient :
+La liste des cryptomonnaies et leurs prix (cryptoAssets).
+Les comptes clients, soldes et transactions (clientAccounts).
+La liste de tous les utilisateurs (pour l'admin) (users).
+Les services métier : createClient, recordTransaction, fetchCryptoAssets.
+Analogie : C'est le contenu de la maison (les meubles, l'argent dans le coffre, les dossiers).
+2. Comment communiquent-ils ?
+Techniquement, ils sont indépendants et ne s'importent pas l'un l'autre directement. Ils communiquent de manière indirecte grâce à l'architecture de votre application (dans 
+App.tsx
+).
+
+A. La Hiérarchie (Nesting)
+Dans 
+App.tsx
+, ils sont imbriqués comme ceci :
+
+tsx
+<AppStateProvider>      {/* Fournit les outils de données (API, Store) */}
+  <AuthProvider>        {/* Utilise l'API pour gérer la session */}
+    <AppRoutes />       {/* Les pages utilisent les DEUX contextes */}
+  </AuthProvider>
+</AppStateProvider>
+Cela signifie que n'importe quel composant dans 
+AppRoutes
+ peut accéder aux deux contextes simultanément.
+
+B. Le "Pont" par les Composants
+Ce sont vos pages (Composants) qui font le lien entre les deux.
+
+Exemple lors du Login :
+L'utilisateur clique sur "Se connecter".
+Le composant appelle login() du AuthContext.
+Une fois connecté, le composant (ou le Dashboard) appelle fetchClientAccount() du AppStateProvider pour charger le solde de cet utilisateur.
+C. Synchronisation des données
+Un point de contact important est la mise à jour du profil.
+
+Action : Vous modifiez votre nom dans le profil.
+AppStateProvider : Appelle l'API (updateCurrentUserProfile) pour sauvegarder en base de données.
+AuthContext : Doit être informé pour mettre à jour l'objet user en mémoire (via sa fonction updateUser), sinon l'affichage du nom en haut à droite ne changera pas, même si la base de données est à jour.
+En résumé
+Caractéristique	AuthContext.tsx	AppStateProvider.tsx
+Sujet	L'Utilisateur (Moi)	L'Application (Le Monde)
+Données	Mon ID, mon email, mon rôle.	Prix du Bitcoin, soldes des clients, liste des users.
+Actions	Se connecter, Se déconnecter.	Acheter, Vendre, Créer un client.
+Persistance	Session (Cookie/Token).	LocalStorage (Cache des données).
+Ils travaillent main dans la main : AuthContext ouvre la porte, et AppStateProvider meuble la pièce.
 
 
 
@@ -1000,6 +1069,24 @@ PARTIE 2 : FRONTEND (React + TypeScript)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 1. Le Rôle de AuthContext (La "Carte d'Identité")
 AuthContext
  est responsable de savoir QUI est connecté. Il fournit l'objet user qui contient l'ID unique de l'utilisateur (user.id).
@@ -1144,3 +1231,271 @@ xml
 <env name="DB_CONNECTION" value="sqlite"/>
 <env name="DB_DATABASE" value=":memory:"/>
 --- ## 🎯 Pour la Soutenance (Plan B) Si les tests ne fonctionnent toujours pas avant la soutenance : ### Option 1 : Montrez le code des tests > "J'ai implémenté des tests automatisés avec PHPUnit. > Voici un exemple de test qui vérifie l'achat de cryptomonnaies..." **Puis montrez le fichier** WalletTest.php ### Option 2 : Expliquez la méthodologie > "Pour ce projet, j'ai structuré les tests selon la méthodologie AAA : > Arrange (préparer), Act (exécuter), Assert (vérifier)." ### Option 3 : Alternative Postman > "Les tests Postman que nous avons préparés couvrent les mêmes > fonctionnalités que ces tests automatisés PHPUnit."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"React est le framework le plus populaire actuellement,
+avec un écosystème riche et une grande communauté.
+Les hooks (useState, useEffect, useContext) permettent
+une gestion d'état élégante sans classes. De plus,
+mon expérience préalable avec React m'a permis de
+développer plus rapidement."
+
+
+"AppStateProvider est un Context Provider React qui
+gère l'état global de l'application :
+- Centralise users, cryptoAssets, clientAccounts
+- Utilise useReducer pour mutations complexes
+- Expose useAppState() et useAppServices()
+- Persiste l'état dans localStorage
+- Optimise avec useMemo/useCallback
+Alternative envisagée : Redux, mais trop heavy pour ce projet."
+
+
+
+"Communication via API RESTful :
+1. Frontend : classe ApiService dans api.ts
+   - Méthode request<T>() générique
+   - Headers JSON + credentials: 'include'
+   - Gestion erreurs centralisée
+2. Backend : Routes Laravel dans web.php
+   - Controllers pour chaque ressource
+   - Middleware auth + role checks
+   - Responses JSON standardisées
+3. Authentification : Session cookies
+   - Plus sécurisé que JWT localStorage
+   - Cookie httpOnly (protection XSS)
+   - CSRF token Laravel"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hooks React et Identifiants Associés
+createContext : La fonction createContext en React est utilisée pour créer un contexte qui permet de passer des données à travers l'arbre des composants sans avoir à les propager manuellement via les props à chaque niveau. Son rôle principal est de faciliter la gestion d'états globaux ou de thèmes dans une application React, en rendant les données accessibles à n'importe quel composant enfant via un Provider et un Consumer, ce qui améliore la modularité et réduit la complexité du code.
+payload : Le terme payload désigne généralement la charge utile ou les données transportées dans une requête ou une réponse, comme dans les actions Redux ou les appels API. Dans un contexte React, son rôle est de représenter les informations spécifiques envoyées ou reçues lors d'événements, de mises à jour d'état ou de communications asynchrones, permettant ainsi une transmission efficace et structurée des données sans inclure les métadonnées superflues.
+filter : Filter fait référence à la méthode filter() des tableaux en JavaScript, souvent utilisée dans React pour manipuler des listes de données. Son rôle est de créer un nouveau tableau contenant uniquement les éléments qui satisfont une condition donnée dans une fonction de rappel, ce qui est essentiel pour filtrer dynamiquement des éléments dans les interfaces utilisateur, comme afficher des résultats de recherche ou des éléments conditionnels dans un composant.
+useCallback : Le hook useCallback en React est conçu pour mémoriser une fonction de rappel et la retourner uniquement si ses dépendances changent. Son rôle est d'optimiser les performances en évitant la recréation inutile de fonctions lors des re-rendus, particulièrement utile pour passer des callbacks à des composants enfants optimisés avec React.memo, afin de prévenir des rendus inutiles et d'améliorer l'efficacité des applications complexes.
+useContext : Le hook useContext permet d'accéder à la valeur d'un contexte créé avec createContext sans avoir à utiliser un Consumer. Son rôle est de simplifier la consommation de données globales dans les composants fonctionnels, en rendant le code plus propre et en évitant la prop drilling, ce qui est idéal pour gérer des thèmes, des authentifications ou des états partagés à travers l'application.
+useEffect : Le hook useEffect exécute des effets secondaires dans les composants fonctionnels après le rendu, comme des fetches de données ou des abonnements. Son rôle est de gérer le cycle de vie des composants en synchronisant l'état avec des systèmes externes, en nettoyant les ressources si nécessaire via une fonction de retour, ce qui assure une gestion propre des opérations asynchrones et des mises à jour dépendantes.
+useMemo : Le hook useMemo mémorise le résultat d'un calcul coûteux et le recalcule uniquement si ses dépendances changent. Son rôle est d'optimiser les performances en évitant des recalculs inutiles lors des re-rendus, particulièrement utile pour des opérations complexes comme le tri de listes ou la génération de dérivés d'état, contribuant ainsi à une meilleure fluidité de l'interface utilisateur.
+useReducer : Le hook useReducer gère des états complexes en utilisant un réducteur similaire à Redux, en dispatchant des actions pour mettre à jour l'état. Son rôle est de centraliser la logique de mise à jour d'état dans une fonction pure, idéal pour des états imbriqués ou des transitions multiples, offrant une alternative scalable à useState pour des composants avec une logique d'état avancée.
+useRef : Le hook useRef crée une référence mutable qui persiste entre les rendus sans causer de re-rendu lors de sa modification. Son rôle est de stocker des valeurs comme des éléments DOM, des timers ou des états non réactifs, permettant un accès direct et imperatif, ce qui est crucial pour des interactions comme la focalisation d'inputs ou la mesure de dimensions d'éléments.
+useState : Le hook useState déclare une variable d'état et une fonction pour la mettre à jour dans un composant fonctionnel. Son rôle est de préserver les valeurs entre les rendus et de déclencher des re-rendus lors des mises à jour, formant la base de la gestion d'état locale en React, essentiel pour des interfaces interactives comme des formulaires ou des compteurs.
+Méthodes Array
+at() : La méthode at() des tableaux retourne l'élément à un index donné, supportant les indices négatifs pour compter depuis la fin. Son rôle est de simplifier l'accès aux éléments, rendant le code plus lisible et expressif, particulièrement utile pour des opérations sur des listes dynamiques sans avoir à calculer manuellement les indices.
+concat() : La méthode concat() fusionne deux ou plusieurs tableaux en un nouveau sans modifier les originaux. Son rôle est de combiner des collections de données de manière immutable, idéal pour des opérations comme l'ajout d'éléments à des listes existantes dans des applications qui gèrent des états ou des résultats de requêtes.
+every() : La méthode every() teste si tous les éléments d'un tableau satisfont une condition fournie par une fonction. Son rôle est de valider l'intégralité d'une collection, utile pour des vérifications comme s'assurer que tous les éléments sont positifs ou conformes à un critère avant de procéder à une action.
+filter() : La méthode filter() crée un nouveau tableau avec les éléments qui passent un test implémenté par une fonction fournie. Son rôle est de sélectionner des sous-ensembles de données basés sur des conditions, essentiel pour des fonctionnalités comme le filtrage de résultats de recherche ou l'exclusion d'éléments invalides dans des interfaces utilisateur.
+find() : La méthode find() retourne le premier élément d'un tableau qui satisfait une condition de test fournie. Son rôle est de localiser rapidement un élément spécifique sans parcourir tout le tableau manuellement, pratique pour des recherches comme trouver un utilisateur par ID dans une liste.
+forEach() : La méthode forEach() exécute une fonction fournie pour chaque élément d'un tableau. Son rôle est d'itérer sur les éléments pour effectuer des opérations side-effects comme des logs ou des modifications externes, sans créer un nouveau tableau, ce qui est utile pour des boucles simples et déclaratives.
+includes() : La méthode includes() détermine si un tableau contient une valeur spécifique et retourne un booléen. Son rôle est de vérifier l'existence d'un élément de manière concise, améliorant la lisibilité par rapport à indexOf, idéal pour des conditions dans des algorithmes ou des validations.
+join() : La méthode join() concatène tous les éléments d'un tableau en une chaîne de caractères, avec un séparateur optionnel. Son rôle est de convertir des listes en strings formatées, comme pour générer des CSV ou des URLs, facilitant l'interopérabilité avec d'autres formats de données.
+map() : La méthode map() crée un nouveau tableau en appliquant une fonction à chaque élément de l'original. Son rôle est de transformer des données de manière immutable, crucial pour des rendus React où l'on génère des composants à partir de listes ou des dérivations de données.
+push() : La méthode push() ajoute un ou plusieurs éléments à la fin d'un tableau et retourne la nouvelle longueur. Son rôle est de muter le tableau pour étendre des collections dynamiquement, souvent utilisé dans des boucles ou des accumulations, bien que l'on préfère des approches immutables dans des contextes fonctionnels.
+reduce() : La méthode reduce() applique une fonction accumulatrice à chaque élément pour réduire le tableau à une valeur unique. Son rôle est de performer des agrégations comme des sommes, des produits ou des objets complexes, essentiel pour des calculs analytiques ou des transformations de données avancées.
+slice() : La méthode slice() retourne une copie superficielle d'une portion d'un tableau sans modifier l'original. Son rôle est d'extraire des sous-tableaux, utile pour la pagination, le clonage partiel ou des opérations non destructives sur des listes.
+some() : La méthode some() teste si au moins un élément du tableau satisfait une condition fournie. Son rôle est de vérifier l'existence partielle, comme détecter si un tableau contient un élément invalide, optimisant les vérifications en s'arrêtant dès la première occurrence.
+sort() : La méthode sort() trie les éléments d'un tableau en place selon une fonction de comparaison optionnelle. Son rôle est d'ordonner des données pour des affichages organisés ou des algorithmes, bien que l'on doive être prudent avec les tris par défaut qui sont lexicographiques.
+Méthodes String
+charAt() : La méthode charAt() retourne le caractère à un index spécifié dans une chaîne. Son rôle est d'accéder à des caractères individuels pour des manipulations comme l'extraction ou la vérification, bien que les accès par bracket [] soient souvent préférés pour leur concision.
+charCodeAt() : La méthode charCodeAt() retourne le code Unicode du caractère à un index donné. Son rôle est de travailler avec des représentations numériques pour des opérations comme des conversions ASCII ou des validations de caractères spéciaux.
+toLowerCase() : La méthode toLowerCase() convertit une chaîne en minuscules sans modifier l'originale. Son rôle est de normaliser les chaînes pour des comparaisons insensibles à la casse, essentiel pour des recherches ou des validations d'entrées utilisateur.
+toUpperCase() : La méthode toUpperCase() convertit une chaîne en majuscules sans altérer l'originale. Son rôle est similaire à toLowerCase, mais pour des formats en majuscules, utile dans des affichages ou des transformations stylistiques.
+trim() : La méthode trim() supprime les espaces blancs au début et à la fin d'une chaîne. Son rôle est de nettoyer les entrées utilisateur pour éviter des erreurs dues à des espaces inutiles, améliorant la robustesse des traitements de strings.
+split() : La méthode split() divise une chaîne en un tableau de sous-chaînes basé sur un séparateur. Son rôle est de parser des données structurées comme des CSV ou des URLs, facilitant l'extraction d'informations segmentées.
+toFixed() : La méthode toFixed() formate un nombre en chaîne avec un nombre fixe de décimales. Son rôle est de représenter des valeurs numériques de manière lisible, comme pour des prix ou des mesures, en arrondissant si nécessaire.
+toLocaleString() : La méthode toLocaleString() convertit un nombre ou une date en chaîne formatée selon la locale. Son rôle est d'adapter les affichages à des contextes culturels, comme des séparateurs de milliers ou des formats de date.
+toISOString() : La méthode toISOString() convertit une date en chaîne au format ISO 8601. Son rôle est de standardiser les représentations de dates pour des échanges API ou des stockages, assurant une compatibilité cross-plateforme.
+test() : La méthode test() d'une expression régulière vérifie si une chaîne correspond au pattern et retourne un booléen. Son rôle est de valider des formats comme des emails ou des numéros, essentiel pour des vérifications rapides sans extraction.
+toString() : La méthode toString() convertit un objet en sa représentation chaîne. Son rôle est de transformer des types non-strings pour des concaténations ou des logs, souvent surchargée pour des objets personnalisés.
+Méthodes Object/Utilitaires
+Object.values() : La méthode Object.values() retourne un tableau des valeurs propres énumérables d'un objet. Son rôle est d'extraire les valeurs pour des itérations ou des transformations, utile pour travailler avec des objets comme des maps.
+Object.keys() : La méthode Object.keys() retourne un tableau des clés propres énumérables d'un objet. Son rôle est de lister les propriétés pour des boucles ou des vérifications, facilitant la manipulation dynamique d'objets.
+Object.entries() : La méthode Object.entries() retourne un tableau de paires [clé, valeur] d'un objet. Son rôle est de permettre des itérations complètes sur les objets, idéal pour des conversions en maps ou des transformations.
+Math.floor() : La méthode Math.floor() arrondit un nombre vers le bas à l'entier le plus proche. Son rôle est de gérer des arrondis pour des calculs comme des indices ou des divisions entières.
+Math.max() : La méthode Math.max() retourne la plus grande valeur parmi une liste de nombres. Son rôle est de trouver des maximums dans des ensembles, utile pour des statistiques ou des comparaisons.
+Math.abs() : La méthode Math.abs() retourne la valeur absolue d'un nombre. Son rôle est de gérer des distances ou des magnitudes sans signe, essentiel en mathématiques et physique.
+Math.random() : La méthode Math.random() génère un nombre pseudo-aléatoire entre 0 et 1. Son rôle est de simuler du hasard pour des jeux, des sélections ou des tests.
+JSON.parse() : La méthode JSON.parse() convertit une chaîne JSON en objet JavaScript. Son rôle est de désérialiser des données reçues d'API, permettant leur manipulation native.
+JSON.stringify() : La méthode JSON.stringify() convertit un objet en chaîne JSON. Son rôle est de sérialiser des données pour des envois ou stockages, assurant une compatibilité.
+parseInt() : La méthode parseInt() convertit une chaîne en entier avec une base optionnelle. Son rôle est d'extraire des nombres d'entrées strings, avec gestion des préfixes.
+Number() : La fonction Number() convertit une valeur en nombre. Son rôle est de caster des types pour des opérations arithmétiques, gérant des conversions simples.
+String() : La fonction String() convertit une valeur en chaîne. Son rôle est de forcer des concaténations ou des affichages textuels.
+Date.UTC() : La méthode Date.UTC() crée un timestamp UTC à partir de composants de date. Son rôle est de gérer des dates universelles sans biais de fuseau horaire.
+console.error() : La méthode console.error() logue un message d'erreur dans la console. Son rôle est de déboguer en signalant des problèmes, avec un style distinct pour les erreurs.
+Méthodes Laravel
+authorize() : La méthode authorize() dans Laravel vérifie si l'utilisateur actuel a la permission pour une action via une policy. Son rôle est de sécuriser les routes et contrôleurs en appliquant des règles d'autorisation, empêchant les accès non autorisés.
+belongsTo() : La méthode belongsTo() définit une relation Eloquent de type "appartient à" pour des modèles. Son rôle est de lier un enfant à un parent, comme un commentaire à un post, facilitant les requêtes relationnelles.
+boot() : La méthode boot() dans un modèle ou trait initialise des comportements globaux comme des scopes ou des événements. Son rôle est de configurer le modèle au démarrage, assurant une cohérence dans les opérations Eloquent.
+broadcast() : La méthode broadcast() envoie un événement via Laravel Echo pour la diffusion en temps réel. Son rôle est de notifier les clients connectés d'événements comme des mises à jour, utilisant des channels.
+broadcastAs() : La méthode broadcastAs() spécifie le nom de l'événement diffusé. Son rôle est de personnaliser le nom pour une meilleure organisation dans les listeners clients.
+broadcastOn() : La méthode broadcastOn() définit les channels sur lesquels l'événement est diffusé. Son rôle est de cibler des audiences spécifiques, comme des users ou des rooms.
+broadcastWith() : La méthode broadcastWith() fournit des données supplémentaires pour l'événement diffusé. Son rôle est d'enrichir les payloads pour des notifications détaillées.
+check() : La méthode check() dans l'authentification vérifie si un mot de passe correspond à un hash. Son rôle est de valider les credentials lors des logins sécurisés.
+create() : La méthode create() sur un builder Eloquent insère un nouveau modèle en base. Son rôle est de simplifier les insertions avec mass assignment, en utilisant fillable.
+find() : La méthode find() récupère un modèle par sa clé primaire. Son rôle est de charger rapidement un enregistrement spécifique pour des éditions ou affichages.
+first() : La méthode first() retourne le premier résultat d'une requête Eloquent. Son rôle est d'obtenir un seul modèle quand on s'attend à un unique match.
+get() : La méthode get() exécute une requête et retourne une collection de modèles. Son rôle est de fetcher des listes pour des itérations ou paginations.
+hasMany() : La méthode hasMany() définit une relation one-to-many, comme un user ayant plusieurs posts. Son rôle est de charger des collections liées automatiquement.
+hasOne() : La méthode hasOne() définit une relation one-to-one, comme un user ayant un profil. Son rôle est de lier des entités uniques pour des accès relationnels.
+invalidate() : La méthode invalidate() marque une entrée de cache comme invalide. Son rôle est de rafraîchir les données cachées lors de mises à jour.
+json() : La méthode json() dans les responses retourne une réponse JSON. Son rôle est de formater des API responses avec des headers appropriés.
+make() : La méthode make() dans les factories crée un modèle sans le sauvegarder. Son rôle est de générer des instances pour des tests ou des seeds.
+messages() : La méthode messages() dans les validateurs personnalise les messages d'erreur. Son rôle est de fournir des feedbacks user-friendly pour les validations.
+now() : La méthode now() retourne la date et heure actuelle via Carbon. Son rôle est de gérer des timestamps consistants dans les apps.
+regenerateToken() : La méthode regenerateToken() régénère un token CSRF. Son rôle est de renforcer la sécurité après des actions sensibles.
+register() : La méthode register() enregistre un nouveau user dans l'auth system. Son rôle est de gérer les inscriptions avec hashing et événements.
+rules() : La méthode rules() définit les règles de validation pour un request. Son rôle est de spécifier les contraintes pour les inputs.
+save() : La méthode save() persiste un modèle en base, insérant ou updatant. Son rôle est de gérer les CRUD basiques pour les entités.
+session() : La méthode session() accède ou stocke des données en session. Son rôle est de maintenir des états temporaires entre requests.
+updateOrCreate() : La méthode updateOrCreate() met à jour un modèle existant ou en crée un nouveau basé sur des critères. Son rôle est d'éviter des duplications lors d'upserts.
+validate() : La méthode validate() valide un request contre des règles et throw une exception si échec. Son rôle est de protéger les contrôleurs des données invalides.
+validated() : La méthode validated() retourne les données validées d'un request. Son rôle est de fournir des inputs sûrs après validation.
+where() : La méthode where() ajoute une clause WHERE à une requête Eloquent. Son rôle est de filtrer les résultats basés sur des conditions.
+Eloquent Scopes
+scopeOfType() : Le scope scopeOfType() est un scope local Eloquent personnalisé qui filtre les modèles par un type spécifique. Son rôle est de réutiliser une logique de filtrage commune, comme restreindre à un certain catégorie, en l'appliquant via une méthode chainable sur les queries.
+scopeRead() : Le scope scopeRead() filtre les modèles marqués comme lus, souvent dans des systèmes de notifications. Son rôle est de sélectionner uniquement les entrées déjà consultées, facilitant la gestion d'états lus/non lus dans les requêtes.
+scopeUnread() : Le scope scopeUnread() filtre les modèles non lus. Son rôle est complémentaire à scopeRead, en isolant les nouvelles entrées pour des affichages prioritaires comme des badges de notifications.
+Méthodes Axios
+axios.delete() : La méthode axios.delete() envoie une requête HTTP DELETE à une URL. Son rôle est de supprimer des ressources sur un serveur, comme effacer un enregistrement via API.
+axios.get() : La méthode axios.get() envoie une requête HTTP GET pour fetcher des données. Son rôle est de récupérer des ressources sans effet side, idéal pour des lectures.
+axios.patch() : La méthode axios.patch() envoie une requête HTTP PATCH pour des mises à jour partielles. Son rôle est d'appliquer des changements incrémentaux, optimisant la bande passante.
+axios.post() : La méthode axios.post() envoie une requête HTTP POST pour créer des ressources. Son rôle est de soumettre des données comme des formulaires ou des créations.
+axios.put() : La méthode axios.put() envoie une requête HTTP PUT pour des mises à jour complètes. Son rôle est de remplacer des ressources existantes.
+Méthodes DOM
+addEventListener() : La méthode addEventListener() attache un handler à un événement sur un élément DOM. Son rôle est de gérer les interactions utilisateur comme les clics ou keydowns.
+appendChild() : La méthode appendChild() ajoute un nœud enfant à un élément parent. Son rôle est de construire dynamiquement l'arbre DOM.
+createElement() : La méthode createElement() crée un nouvel élément DOM. Son rôle est de générer des tags HTML programmatiquement.
+getElementById() : La méthode getElementById() sélectionne un élément par son ID. Son rôle est d'accéder rapidement à des éléments spécifiques.
+preventDefault() : La méthode preventDefault() empêche le comportement par défaut d'un événement. Son rôle est de customiser des actions comme des submits de forms.
+setTimeout() : La méthode setTimeout() exécute une fonction après un délai. Son rôle est de gérer des temporisations asynchrones.
+Propriétés Eloquent
+$casts : La propriété $casts dans un modèle Eloquent définit comment caster les attributs, comme en date ou boolean. Son rôle est d'automatiser les conversions pour une cohérence des types.
+$fillable : La propriété $fillable liste les attributs assignables en masse. Son rôle est de protéger contre les injections en limitant les champs modifiables.
+$hidden : La propriété $hidden masque des attributs lors de la sérialisation, comme les passwords. Son rôle est de sécuriser les données sensibles dans les responses.
+$signature : La propriété $signature stocke une signature pour des routes signées. Son rôle est de valider l'intégrité des URLs temporaires.
+$table : La propriété $table spécifie le nom de la table associée au modèle. Son rôle est de customiser le mapping si différent du pluriel du modèle.
+OBJETS Singletons/Services
+api : L'objet api est souvent un singleton pour gérer les appels API, comme une instance Axios configurée. Son rôle est de centraliser les configurations et intercepteurs pour des requêtes consistantes.
+echoService : L'objet echoService est un service singleton pour Laravel Echo, gérant les abonnements en temps réel. Son rôle est de faciliter les écoutes d'événements broadcastés.
+notificationService : L'objet notificationService gère l'envoi et la réception de notifications. Son rôle est d'abstraire la logique pour des pushs ou in-app alerts.
+window.Echo : L'objet window.Echo est l'instance globale de Laravel Echo pour le broadcasting client-side. Son rôle est de connecter aux channels et écouter les événements en temps réel.
+window.Pusher : L'objet window.Pusher est l'instance globale de Pusher JS pour le real-time messaging. Son rôle est de gérer les connexions WebSocket pour des updates live.
+window.THREE : L'objet window.THREE est l'instance globale de Three.js pour le rendu 3D. Son rôle est de fournir des outils pour créer des scènes, caméras et meshes dans le navigateur.
+window.VANTA : L'objet window.VANTA est l'instance globale de Vanta.js pour des backgrounds animés. Son rôle est d'ajouter des effets visuels interactifs comme des nuages ou des vagues.
+Validation
+emailValidation : L'objet ou fonction emailValidation définit les règles pour valider un email, comme required|email. Son rôle est de s'assurer que les inputs sont des adresses valides pour des enregistrements ou logins.
+nameValidation : L'objet nameValidation spécifie des règles pour les noms, comme required|string|max:255. Son rôle est de valider les champs nom pour éviter des entrées invalides.
+passwordValidation : L'objet passwordValidation impose des règles comme required|min:8|confirmed. Son rôle est de renforcer la sécurité des mots de passe lors des créations ou resets.
+Constantes
+API_BASE_URL : La constante API_BASE_URL stocke l'URL de base pour les appels API. Son rôle est de centraliser la configuration pour une maintenance facile et des environnements variables.
+CRYPTOCURRENCIES : La constante CRYPTOCURRENCIES est un tableau ou objet listant des cryptomonnaies supportées. Son rôle est de fournir une référence statique pour des sélections ou affichages.
+INITIAL_STATE : La constante INITIAL_STATE définit l'état initial pour un reducer ou useState. Son rôle est de réinitialiser les états à des valeurs par défaut.
+MODULUS : La constante MODULUS est utilisée dans des calculs mathématiques, comme en cryptographie. Son rôle est de fournir une valeur fixe pour des opérations modulo.
+MULTIPLIER : La constante MULTIPLIER est un facteur fixe pour des multiplications, comme en scaling. Son rôle est d'appliquer des ajustements consistants dans des algorithmes.
+Charts
+chartData : L'objet chartData contient les données pour un graphique, comme labels et datasets. Son rôle est de structurer les infos pour des libs comme Chart.js.
+chartOptions : L'objet chartOptions configure les options d'un graphique, comme axes ou tooltips. Son rôle est de customiser l'apparence et le comportement des visualisations.
+Génériques
+ChartOptions<T> : Le type générique ChartOptions<T> étend les options de chart avec un type T pour des datasets spécifiques. Son rôle est de typer fortement les configs pour des graphs typés en TypeScript.
+FormEvent : Le type FormEvent représente un événement de formulaire en React. Son rôle est de typer les handlers pour des submits, avec accès à target et preventDefault.
+Omit<T,K> : Le type Omit<T,K> crée un type en omettant les propriétés K de T. Son rôle est de raffiner des interfaces en excluant des champs, utile pour des props partielles.
+Partial<T> : Le type Partial<T> rend toutes les propriétés de T optionnelles. Son rôle est de permettre des objets incomplets pour des updates ou configs flexibles.
+Promise<T> : Le type Promise<T> représente une promesse résolvant en T. Son rôle est de typer les async operations pour une gestion des erreurs et valeurs typées.
+React.FC : Le type React.FC définit un composant fonctionnel avec props P. Son rôle est de typer les composants pour une inférence des children et props.
+React.ReactNode : Le type React.ReactNode représente tout ce qui peut être rendu en React, comme elements ou strings. Son rôle est de typer les children ou returns flexibles.
+Record<K,V> : Le type Record<K,V> est un objet avec clés de type K et valeurs V. Son rôle est de typer des maps ou dictionnaires pour une structure dynamique mais typée.
