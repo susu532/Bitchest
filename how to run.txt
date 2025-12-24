@@ -1321,6 +1321,14 @@ Alternative envisagée : Redux, mais trop heavy pour ce projet."
    - CSRF token Laravel"
 
 
+"C'est un mythe tenace.
+PHP propulse encore 75% du web (WordPress, etc.).
+Avec Laravel 11 et PHP 8.2+ :
+- Typage fort
+- JIT Compiler (Performance)
+- Asynchrone (Swoole/Reverb)
+- Écosystème mature et stable
+Pour un projet type 'CRUD + Business Logic', c'est souvent plus productif que Node.js ou Java."
 
 
 
