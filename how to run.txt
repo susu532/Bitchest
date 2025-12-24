@@ -1334,6 +1334,122 @@ Pour un projet type 'CRUD + Business Logic', c'est souvent plus productif que No
 
 
 
+"Oui, elle respecte la 3ème Forme Normale (3NF) :
+1. 1NF : Pas de groupes répétitifs (chaque colonne est atomique).
+2. 2NF : Toutes les colonnes dépendent de la clé primaire.
+3. 3NF : Pas de dépendances transitives.
+Exemple : Le prix d'une crypto n'est pas stocké dans `wallet_transactions` (ce qui serait de la duplication), mais référencé via `crypto_id` ou historisé dans `crypto_prices`."
+
+
+
+
+
+
+
+"Un Middleware est un filtre qui s'exécute AVANT ou APRÈS une requête HTTP.
+C'est comme un douanier à l'entrée de l'application.
+Dans Bitchest, j'utilise le middleware `auth` :
+1. La requête arrive.
+2. Le middleware vérifie : 'L'utilisateur a-t-il une session active ?'
+3. Si OUI : La requête passe au Contrôleur.
+4. Si NON : Le middleware redirige vers `/login` ou renvoie une 401.
+Cela évite de répéter `if (!logged_in)` dans chaque fonction du contrôleur."
+
+
+
+
+
+✅ Réponse :
+"C'est une question de direction de la relation (Clé Étrangère).
+Exemple : User et ClientAccount.
+- `User` a la méthode `clientAccount()` avec `hasOne`.
+- `ClientAccount` a la méthode `user()` avec `belongsTo`.
+La règle : Le modèle qui possède la colonne `user_id` (la clé étrangère) utilise `belongsTo`.
+Ici, c'est la table `client_accounts` qui a `user_id`, donc `ClientAccount belongsTo User`."
+
+
+
+
+
+✅ Réponse :
+"Les migrations sont le 'Version Control' de la base de données.
+Avantages :
+1. **Portabilité** : Je peux partager mon code avec un autre dév, il lance `php artisan migrate` et a la même structure.
+2. **Historique** : On sait quand et comment la BDD a évolué.
+3. **Rollback** : Je peux annuler la dernière modification (`migrate:rollback`) si je fais une erreur.
+C'est beaucoup plus sûr que de s'envoyer des fichiers `.sql` par email."
+
+
+
+
+✅ Réponse :
+"Le Prop Drilling, c'est quand on doit passer une donnée d'un parent à un arrière-arrière-petit-enfant via des props, alors que les composants intermédiaires n'en ont pas besoin.
+Exemple : Passer `user` de `App` -> `Dashboard` -> `Header` -> `Avatar`.
+Solution : J'ai utilisé **Context API** (`AppStateProvider`).
+
+
+
+
+
+"C'est une nuance importante :
+- **401 (Unauthorized)** : 'Je ne sais pas qui vous êtes'. (Vous n'êtes pas connecté).
+- **403 (Forbidden)** : 'Je sais qui vous êtes, mais vous n'avez pas le droit'. (Vous êtes connecté comme Client, mais vous essayez d'accéder à une page Admin).
+Mon middleware gère ces deux cas distinctement."
+
+
+
+
+
+✅ Réponse :
+"En React, à chaque rendu, les fonctions sont recréées.
+Si je passe une fonction `handleClick` à un composant enfant optimisé (`React.memo`), le fait que la fonction soit 'nouvelle' va forcer l'enfant à se re-rendre inutilement.
+`useCallback` mémorise la fonction. Tant que ses dépendances ne changent pas, React renvoie exactement la même instance de la fonction, ce qui évite les rendus inutiles des enfants."
+
+
+
+"Le Lazy Loading consiste à ne charger que le code nécessaire à l'instant T.
+Actuellement, tout mon JS est dans un gros fichier `bundle.js`.
+
+
+
+
+"La synchronisation de l'état entre le Backend et le Frontend via WebSockets.
+Comprendre que :
+1. Le Backend envoie un événement (Pusher).
+2. Le Frontend l'écoute (Echo).
+3. Mais React ne se met pas à jour tout seul !
+Il a fallu connecter l'événement WebSocket au `dispatch` de mon `AuthContext` pour que l'interface se rafraîchisse instantanément sans recharger la page. C'était un vrai défi de comprendre ce flux complet."
+
+
+
+
+
+"C'est une question excellente car c'est un calcul financier critique.
+Dans `WalletService::getWalletSummary()` :
+1. Pour chaque achat (BUY), j'ajoute la quantité et le coût total.
+2. Prix moyen = Coût Total / Quantité Totale
+3. Lors d'une vente (SELL), je déduis la quantité et le coût (quantité * prix moyen).
+
+
+
+
+
+"Cette ligne simule la volatilité du marché crypto.
+Décomposition :
+- `rand(-20, 20)` génère un nombre entre -20 et +20
+- Division par 1000 donne une variation entre -0.02 et +0.02
+- Soit -2% à +2% de variation par update
+Exemple :
+- Prix actuel BTC = 40,000€
+- Variation = 0.015 (1.5%)
+- Nouveau prix = 40,000 * (1 + 0.015) = 40,600€
+C'est un algorithme simple mais efficace pour le MVP.
+En production, j'utiliserais une vraie API (CoinGecko, Binance)."
+
+
+
+
+
 
 
 
