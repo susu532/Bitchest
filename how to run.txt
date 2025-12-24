@@ -1449,6 +1449,22 @@ En production, j'utiliserais une vraie API (CoinGecko, Binance)."
 
 
 
+200	OK	Standard : Utilisé pour login, logout, lecture de données (profil, wallet) et mises à jour.
+201	Created	Création : Utilisé lors d'un achat/vente de crypto (transaction créée), création d'un client ou d'une notification.
+❌ Codes d'Erreur Client
+Code	Signification	Rôle dans Bitchest
+400	Bad Request	Logique : Erreur métier, ex: essayer d'accéder au wallet client avec un compte admin ("User is not a client").
+401	Unauthorized	Auth : Utilisateur non connecté ou mot de passe incorrect (changement mdp).
+403	Forbidden	Droits : Connecté mais mauvais rôle (ex: client essayant de créer un utilisateur).
+404	Not Found	Introuvable : Ressource inexistante (ex: compte client introuvable, crypto inconnue).
+422	Unprocessable	Validation : Erreur de formulaire (email invalide, mdp trop court, solde insuffisant).
+⚠️ Codes d'Erreur Serveur
+Code	Signification	Rôle dans Bitchest
+500	Server Error	Crash : Bug inattendu ou erreur de base de données non gérée.
+
+
+
+
 
 
 
