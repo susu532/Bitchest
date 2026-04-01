@@ -19,11 +19,11 @@ class WalletApiTest extends TestCase
         $client = User::factory()->create(['role' => 'client']);
         $account = ClientAccount::factory()->create([
             'user_id' => $client->id,
-            'balance_eur' => 1000,
+            'balance_eur' => 50000,
         ]);
         $crypto = Cryptocurrency::factory()->create();
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->postJson('/wallet/buy', [
             'cryptoId' => $crypto->id,
@@ -36,11 +36,11 @@ class WalletApiTest extends TestCase
             ->assertJsonStructure([
                 'transaction' => [
                     'id',
-                    'cryptoId',
+                    'crypto_id',
                     'quantity',
-                    'pricePerUnit',
+                    'price_per_unit',
                     'type',
-                    'timestamp',
+                    'transaction_date',
                 ],
                 'newBalance',
             ]);
@@ -53,7 +53,7 @@ class WalletApiTest extends TestCase
         ]);
 
         $updatedAccount = ClientAccount::find($account->id);
-        $this->assertEquals(990, $updatedAccount->balance_eur);
+        $this->assertEquals(40000, $updatedAccount->balance_eur);
     }
 
     
@@ -66,7 +66,7 @@ class WalletApiTest extends TestCase
         ]);
         $crypto = Cryptocurrency::factory()->create();
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->postJson('/wallet/buy', [
             'cryptoId' => $crypto->id,
@@ -74,7 +74,7 @@ class WalletApiTest extends TestCase
             'pricePerUnit' => 20000,
         ]);
 
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJson(['success' => false]);
     }
 
@@ -84,7 +84,7 @@ class WalletApiTest extends TestCase
         $client = User::factory()->create(['role' => 'client']);
         $account = ClientAccount::factory()->create([
             'user_id' => $client->id,
-            'balance_eur' => 1000,
+            'balance_eur' => 50000,
         ]);
         $crypto = Cryptocurrency::factory()->create();
 
@@ -97,7 +97,7 @@ class WalletApiTest extends TestCase
             'transaction_date' => now(),
         ]);
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->postJson('/wallet/sell', [
             'cryptoId' => $crypto->id,
@@ -109,7 +109,7 @@ class WalletApiTest extends TestCase
             ->assertJson(['success' => true]);
 
         $updatedAccount = ClientAccount::find($account->id);
-        $this->assertEquals(1012.5, $updatedAccount->balance_eur);
+        $this->assertEquals(62500, $updatedAccount->balance_eur);
     }
 
     
@@ -131,7 +131,7 @@ class WalletApiTest extends TestCase
             'transaction_date' => now(),
         ]);
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->postJson('/wallet/sell', [
             'cryptoId' => $crypto->id,
@@ -139,8 +139,11 @@ class WalletApiTest extends TestCase
             'pricePerUnit' => 25000,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson(['success' => false]);
+        // Assert: Vérification de l'échec (Holdings insuffisants)
+        $response->assertStatus(422)
+            ->assertJson([
+                'success' => false,
+            ]);
     }
 
     
@@ -154,7 +157,7 @@ class WalletApiTest extends TestCase
             'pricePerUnit' => 20000,
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
     }
 
     
@@ -163,7 +166,7 @@ class WalletApiTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $crypto = Cryptocurrency::factory()->create();
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->postJson('/wallet/buy', [
             'cryptoId' => $crypto->id,
@@ -193,7 +196,7 @@ class WalletApiTest extends TestCase
             'transaction_date' => now(),
         ]);
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->getJson('/wallet/summary');
 

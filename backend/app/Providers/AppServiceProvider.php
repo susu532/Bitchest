@@ -16,6 +16,8 @@ class AppServiceProvider extends ServiceProvider
     
     public function boot(): void
     {
+        require base_path('routes/channels.php');
+
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
             

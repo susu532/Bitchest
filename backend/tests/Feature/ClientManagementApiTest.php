@@ -17,7 +17,7 @@ class ClientManagementApiTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->postJson('/clients', [
             'firstName' => 'John',
@@ -49,7 +49,7 @@ class ClientManagementApiTest extends TestCase
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->postJson('/clients', [
             'firstName' => 'Jane',
@@ -68,9 +68,9 @@ class ClientManagementApiTest extends TestCase
     
     public function test_temporary_password_returned_on_creation()
     {
-        $admin = User::factory()->create(['role' => admin']);
+        $admin = User::factory()->create(['role' => 'admin']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->postJson('/clients', [
             'firstName' => 'Bob',
@@ -92,7 +92,7 @@ class ClientManagementApiTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         User::factory()->create(['email' => 'existing@example.com']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->postJson('/clients', [
             'firstName' => 'New',
@@ -109,7 +109,7 @@ class ClientManagementApiTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $client = User::factory()->create(['role' => 'client', 'email' => 'client@example.com']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->putJson("/clients/{$client->id}", [
             'firstName' => 'UpdatedFirst',
@@ -134,7 +134,7 @@ class ClientManagementApiTest extends TestCase
         $client = User::factory()->create(['role' => 'client']);
         ClientAccount::factory()->create(['user_id' => $client->id]);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->deleteJson("/clients/{$client->id}");
 
@@ -150,7 +150,7 @@ class ClientManagementApiTest extends TestCase
     {
         $client = User::factory()->create(['role' => 'client']);
 
-        $this->actingAs($client);
+        $this->actingAs($client, 'web');
 
         $response = $this->postJson('/clients', [
             'firstName' => 'New',
@@ -170,7 +170,7 @@ class ClientManagementApiTest extends TestCase
             'email' => 'new@example.com',
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
     }
 
     
@@ -179,7 +179,7 @@ class ClientManagementApiTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         User::factory(3)->create(['role' => 'client']);
 
-        $this->actingAs($admin);
+        $this->actingAs($admin, 'web');
 
         $response = $this->getJson('/users');
 

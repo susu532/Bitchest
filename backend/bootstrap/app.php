@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
 
         $middleware->use([
-            \App\Http\Middleware\CorsMiddleware::class,
+            // \App\Http\Middleware\CorsMiddleware::class, // Removed to use default Laravel CORS
         ]);
         
         $middleware->trustProxies(at: '*');

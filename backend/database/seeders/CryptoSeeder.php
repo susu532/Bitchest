@@ -84,7 +84,10 @@ class CryptoSeeder extends Seeder
         ];
 
         foreach ($cryptocurrencies as $crypto) {
-            Cryptocurrency::create($crypto);
+            Cryptocurrency::firstOrCreate(
+                ['id' => $crypto['id']],
+                $crypto
+            );
         }
 
         $baseSeed = Carbon::now()->startOfYear()->timestamp;
@@ -128,7 +131,7 @@ class CryptoSeeder extends Seeder
             ];
         }
 
-        CryptoPrice::insert($prices);
+        CryptoPrice::upsert($prices, ['crypto_id', 'price_date'], ['price']);
     }
 
     private function stringToSeed($input)

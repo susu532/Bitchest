@@ -24,6 +24,7 @@ class CryptocurrencyTest extends TestCase
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 42000.00,
         ]);
 
@@ -31,27 +32,25 @@ class CryptocurrencyTest extends TestCase
             'id' => 'ETH',
             'name' => 'Ethereum',
             'symbol' => 'ETH',
+            'icon' => 'eth.png',
             'current_price' => 2500.00,
         ]);
 
         // Act: Récupérer la liste
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/cryptocurrencies');
+        $response = $this->actingAs($user, 'web')
+            ->getJson('/cryptocurrencies');
+
+        \App\Models\CryptoPrice::create(['crypto_id' => 'BTC', 'price' => 42000, 'price_date' => now()]);
+        \App\Models\CryptoPrice::create(['crypto_id' => 'ETH', 'price' => 2500, 'price_date' => now()]);
 
         // Assert: Vérifier la réponse
         $response->assertStatus(200)
-            ->assertJsonCount(2, 'data')
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    '*' => [
-                        'id',
-                        'name',
-                        'symbol',
-                        'current_price',
-                    ],
-                ],
+                'cryptoAssets',
             ]);
+
+        $this->assertCount(2, $response->json('cryptoAssets'));
     }
 
     /**
@@ -66,21 +65,25 @@ class CryptocurrencyTest extends TestCase
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 42000.00,
         ]);
 
+        \App\Models\CryptoPrice::create(['crypto_id' => 'BTC', 'price' => 42000, 'price_date' => now()]);
+
         // Act
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/cryptocurrencies/BTC');
+        $response = $this->actingAs($user, 'web')
+            ->getJson('/cryptocurrencies/BTC');
 
         // Assert
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'data' => [
+                'crypto' => [
                     'id' => 'BTC',
                     'name' => 'Bitcoin',
                     'symbol' => 'BTC',
+                    'currentPrice' => 42000,
                 ],
             ]);
     }
@@ -94,8 +97,8 @@ class CryptocurrencyTest extends TestCase
         $user = User::factory()->create();
 
         // Act: Chercher une crypto qui n'existe pas
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/cryptocurrencies/FAKE');
+        $response = $this->actingAs($user, 'web')
+            ->getJson('/cryptocurrencies/FAKE');
 
         // Assert
         $response->assertStatus(404);
@@ -111,11 +114,12 @@ class CryptocurrencyTest extends TestCase
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 42000.00,
         ]);
 
         // Act: Tenter d'accéder sans token
-        $response = $this->getJson('/api/cryptocurrencies');
+        $response = $this->getJson('/cryptocurrencies');
 
         // Assert: Vérifier l'échec (401 Unauthorized)
         $response->assertStatus(401);

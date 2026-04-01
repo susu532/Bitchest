@@ -12,7 +12,7 @@ return [
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['*', 'x-xsrf-token', 'X-XSRF-TOKEN'],
 
     'exposed_headers' => ['Content-Length', 'X-JSON-Response'],
 

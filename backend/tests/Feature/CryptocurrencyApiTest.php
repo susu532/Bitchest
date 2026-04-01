@@ -19,7 +19,13 @@ class CryptocurrencyApiTest extends TestCase
         $cryptos = Cryptocurrency::factory(5)->create();
 
         foreach ($cryptos as $crypto) {
-            CryptoPrice::factory(30)->create(['crypto_id' => $crypto->id]);
+            for ($i = 0; $i < 30; $i++) {
+                CryptoPrice::create([
+                    'crypto_id' => $crypto->id,
+                    'price' => fake()->randomFloat(2, 100, 50000),
+                    'price_date' => now()->subDays($i)->toDateString(),
+                ]);
+            }
         }
 
         $this->actingAs($user);
@@ -51,7 +57,13 @@ class CryptocurrencyApiTest extends TestCase
         $crypto = Cryptocurrency::factory()->create();
         
 
-        CryptoPrice::factory(30)->create(['crypto_id' => $crypto->id]);
+        for ($i = 0; $i < 30; $i++) {
+            CryptoPrice::create([
+                'crypto_id' => $crypto->id,
+                'price' => fake()->randomFloat(2, 100, 50000),
+                'price_date' => now()->subDays($i)->toDateString(),
+            ]);
+        }
 
         $this->actingAs($user);
 

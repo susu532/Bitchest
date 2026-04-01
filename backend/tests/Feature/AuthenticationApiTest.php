@@ -91,8 +91,8 @@ class AuthenticationApiTest extends TestCase
     
     public function test_authenticated_user_can_change_password()
     {
-        $oldPassword = 'OldPassword123';
-        $newPassword = 'NewPassword456';
+        $oldPassword = 'OldStrongPass123!';
+        $newPassword = 'NewStrongPass456!';
 
         $user = User::create([
             'first_name' => 'Test',
@@ -131,7 +131,7 @@ class AuthenticationApiTest extends TestCase
 
         $response = $this->postJson('/auth/change-password', [
             'currentPassword' => 'WrongPassword123',
-            'newPassword' => 'NewPassword456',
+            'newPassword' => 'CorrectComplexPass123!',
         ]);
 
         $response->assertStatus(401)

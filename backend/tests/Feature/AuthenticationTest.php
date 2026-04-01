@@ -22,7 +22,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         // Act: Envoyer la requête de login
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/auth/login', [
             'email' => 'test@bitchest.com',
             'password' => 'password123',
         ]);
@@ -31,24 +31,17 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    'token',
-                    'user' => [
-                        'id',
-                        'name',
-                        'email',
-                        'role',
-                    ],
+                'user' => [
+                    'id',
+                    'email',
                 ],
             ])
             ->assertJson([
                 'success' => true,
+                'user' => [
+                    'email' => 'test@bitchest.com',
+                ],
             ]);
-
-        // Vérifier que le token a été créé
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-        ]);
     }
 
     /**
@@ -57,7 +50,7 @@ class AuthenticationTest extends TestCase
     public function test_login_fails_with_invalid_email()
     {
         // Act: Tenter de se connecter avec un email inexistant
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/auth/login', [
             'email' => 'nonexistent@bitchest.com',
             'password' => 'password123',
         ]);
@@ -81,7 +74,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         // Act: Tenter de se connecter avec un mauvais mot de passe
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/auth/login', [
             'email' => 'test@bitchest.com',
             'password' => 'wrongpassword',
         ]);
@@ -99,15 +92,17 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         // Act: Récupérer le profil
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/user');
+        $response = $this->actingAs($user, 'web')
+            ->getJson('/auth/me');
 
         // Assert: Vérifier la réponse
         $response->assertStatus(200)
             ->assertJson([
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
+                'success' => true,
+                'user' => [
+                    'id' => (string) $user->id,
+                    'email' => $user->email,
+                ],
             ]);
     }
 
@@ -117,7 +112,7 @@ class AuthenticationTest extends TestCase
     public function test_unauthenticated_user_cannot_access_profile()
     {
         // Act: Tenter d'accéder au profil sans authentification
-        $response = $this->getJson('/api/user');
+        $response = $this->getJson('/auth/me');
 
         // Assert: Vérifier l'échec (401 Unauthorized)
         $response->assertStatus(401);
@@ -132,8 +127,8 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         // Act: Se déconnecter
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/logout');
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/auth/logout');
 
         // Assert: Vérifier le succès
         $response->assertStatus(200)

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cryptocurrency extends Model
 {
+    use HasFactory;
 
     protected $keyType = 'string';
     
@@ -24,7 +26,7 @@ class Cryptocurrency extends Model
     public function prices()
     {
 
-        return $this->hasMany(CryptoPrice::class, 'crypto_id', 'id');
+        return $this->hasMany(CryptoPrice::class, 'crypto_id', 'id')->orderBy('price_date', 'asc');
     }
 
     

@@ -15,6 +15,14 @@ class InsufficientBalanceException extends Exception
             $required,
             $available
         );
-        parent::__construct($message, 400);
+        parent::__construct($message, 422);
+    }
+
+    public function render($request)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $this->getMessage(),
+        ], 422);
     }
 }

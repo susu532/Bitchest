@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\ClientAccount;
 use App\Models\Cryptocurrency;
+use App\Models\WalletTransaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WalletTest extends TestCase
@@ -21,7 +22,7 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 10000.00, // 10,000 EUR
+            'balance_eur' => 10000.00, // 10,000 EUR
         ]);
 
         // Créer une crypto avec un prix
@@ -29,21 +30,23 @@ class WalletTest extends TestCase
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 40000.00,
         ]);
 
         // Act: Acheter 0.1 BTC
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/wallet/buy', [
-                'crypto_id' => 'BTC',
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/wallet/buy', [
+                'cryptoId' => 'BTC',
                 'quantity' => 0.1,
+                'pricePerUnit' => 40000.00,
             ]);
 
         // Assert: Vérifier le succès
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson([
                 'success' => true,
-                'message' => 'Cryptocurrency purchased successfully',
+                'message' => 'Purchase successful',
             ]);
 
         // Vérifier que la transaction a été créée
@@ -57,7 +60,7 @@ class WalletTest extends TestCase
         // Vérifier que le solde a diminué (10000 - 4000 = 6000)
         $this->assertDatabaseHas('client_accounts', [
             'user_id' => $user->id,
-            'balance' => 6000.00,
+            'balance_eur' => 6000.00,
         ]);
     }
 
@@ -70,25 +73,27 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 1000.00, // Seulement 1,000 EUR
+            'balance_eur' => 1000.00, // Seulement 1,000 EUR
         ]);
 
         Cryptocurrency::create([
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 40000.00,
         ]);
 
         // Act: Tenter d'acheter 0.1 BTC (coûte 4,000 EUR)
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/wallet/buy', [
-                'crypto_id' => 'BTC',
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/wallet/buy', [
+                'cryptoId' => 'BTC',
                 'quantity' => 0.1,
+                'pricePerUnit' => 40000.00,
             ]);
 
         // Assert: Vérifier l'échec
-        $response->assertStatus(400)
+        $response->assertStatus(422)
             ->assertJson([
                 'success' => false,
             ]);
@@ -109,39 +114,40 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         $account = ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 5000.00,
+            'balance_eur' => 5000.00,
         ]);
 
         $crypto = Cryptocurrency::create([
             'id' => 'ETH',
             'name' => 'Ethereum',
             'symbol' => 'ETH',
+            'icon' => 'eth.png',
             'current_price' => 2000.00,
         ]);
 
         // Créer une transaction d'achat préalable (possède 1 ETH)
-        \DB::table('wallet_transactions')->insert([
+        WalletTransaction::create([
             'user_id' => $user->id,
             'crypto_id' => 'ETH',
             'type' => 'buy',
             'quantity' => 1.0,
-            'price_at_transaction' => 2000.00,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'price_per_unit' => 2000.00,
+            'transaction_date' => now(),
         ]);
 
         // Act: Vendre 0.5 ETH
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/wallet/sell', [
-                'crypto_id' => 'ETH',
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/wallet/sell', [
+                'cryptoId' => 'ETH',
                 'quantity' => 0.5,
+                'pricePerUnit' => 2000.00,
             ]);
 
         // Assert: Vérifier le succès
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson([
                 'success' => true,
-                'message' => 'Cryptocurrency sold successfully',
+                'message' => 'Sale successful',
             ]);
 
         // Vérifier que la transaction de vente a été créée
@@ -155,7 +161,7 @@ class WalletTest extends TestCase
         // Vérifier que le solde a augmenté (5000 + 1000 = 6000)
         $this->assertDatabaseHas('client_accounts', [
             'user_id' => $user->id,
-            'balance' => 6000.00,
+            'balance_eur' => 6000.00,
         ]);
     }
 
@@ -168,13 +174,14 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 5000.00,
+            'balance_eur' => 5000.00,
         ]);
 
         Cryptocurrency::create([
             'id' => 'ETH',
             'name' => 'Ethereum',
             'symbol' => 'ETH',
+            'icon' => 'eth.png',
             'current_price' => 2000.00,
         ]);
 
@@ -183,22 +190,25 @@ class WalletTest extends TestCase
             'crypto_id' => 'ETH',
             'type' => 'buy',
             'quantity' => 1.0,
-            'price_at_transaction' => 2000.00,
+            'price_per_unit' => 2000.00,
+            'transaction_date' => now(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
         // Act: Tenter de vendre 2 ETH (ne possède que 1)
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/wallet/sell', [
-                'crypto_id' => 'ETH',
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/wallet/sell', [
+                'cryptoId' => 'ETH',
                 'quantity' => 2.0,
+                'pricePerUnit' => 2000.00,
             ]);
 
         // Assert: Vérifier l'échec
-        $response->assertStatus(400)
-            ->assertJson([
+        $response->assertStatus(422);
+        $response->assertJson([
                 'success' => false,
+                'message' => 'Insufficient ETH holdings. Requested: 2.00000000, Available: 1.00000000',
             ]);
     }
 
@@ -211,27 +221,26 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 7500.00,
+            'balance_eur' => 7500.00,
         ]);
 
         // Act: Récupérer le wallet
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/wallet');
+        $response = $this->actingAs($user, 'web')
+            ->getJson('/wallet/summary');
 
         // Assert: Vérifier la structure
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    'balance',
+                'wallet' => [
+                    'balanceEUR',
                     'holdings',
-                    'total_portfolio_value',
                 ],
             ])
             ->assertJson([
                 'success' => true,
-                'data' => [
-                    'balance' => 7500.00,
+                'wallet' => [
+                    'balanceEUR' => 7500.00,
                 ],
             ]);
     }
@@ -245,21 +254,23 @@ class WalletTest extends TestCase
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance' => 10000.00,
+            'balance_eur' => 10000.00,
         ]);
 
         Cryptocurrency::create([
             'id' => 'BTC',
             'name' => 'Bitcoin',
             'symbol' => 'BTC',
+            'icon' => 'btc.png',
             'current_price' => 40000.00,
         ]);
 
         // Act: Tenter d'acheter une quantité négative
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/wallet/buy', [
-                'crypto_id' => 'BTC',
+        $response = $this->actingAs($user, 'web')
+            ->postJson('/wallet/buy', [
+                'cryptoId' => 'BTC',
                 'quantity' => -0.1, // Négatif !
+                'pricePerUnit' => 40000.00,
             ]);
 
         // Assert: Vérifier l'échec de validation

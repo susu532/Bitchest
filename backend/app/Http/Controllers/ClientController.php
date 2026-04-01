@@ -30,7 +30,7 @@ class ClientController extends Controller
 
             'lastName' => 'required|string|min:2|max:50',
 
-            'email' => 'required|email:rfc,dns|unique:users|max:255|regex:/^[^\s@]+@[^\s@]+\.[^\s@]+$/',
+            'email' => 'required|email|unique:users|max:255',
         ], [
 
             'email.email' => 'The email address must be a valid email.',

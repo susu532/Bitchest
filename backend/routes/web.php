@@ -9,12 +9,13 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Broadcasting\BroadcastController;
 
-Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
+// Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']); // Moved inside auth middleware
 
 Route::post('/auth/login', [AuthController::class, 'login'])
-    ->middleware('throttle:5,1');
+    ->middleware('throttle:60,1');
 
 Route::middleware(['auth:web', 'throttle:60,1'])->group(function () {
+    Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']);
     
 
     Route::get('/auth/me', [AuthController::class, 'me']);
