@@ -1,5 +1,5 @@
 <?php
-
+// Hedha el controller eli ygérer les notifications mta3 el user: affichage, création, marquage lu, w suppression
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
@@ -8,20 +8,16 @@ use Illuminate\Http\JsonResponse;
 
 class NotificationController extends Controller
 {
-    /**
-     * Get all notifications for the authenticated user.
-     */
+    // Njibou les notifications lel user connecté, m3a filtrage par type w statut lecture
     public function index(Request $request): JsonResponse
     {
         $query = Notification::where('user_id', $request->user()->id)
             ->orderBy('created_at', 'desc');
 
-        // Filter by type if provided
         if ($request->has('type')) {
             $query->ofType($request->type);
         }
 
-        // Filter by read status if provided
         if ($request->has('is_read')) {
             $isRead = filter_var($request->is_read, FILTER_VALIDATE_BOOLEAN);
             if ($isRead) {
@@ -36,9 +32,6 @@ class NotificationController extends Controller
         return response()->json($notifications);
     }
 
-    /**
-     * Create a new notification.
-     */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -58,9 +51,7 @@ class NotificationController extends Controller
         return response()->json($notification, 201);
     }
 
-    /**
-     * Mark a notification as read.
-     */
+    // Na3mlou mark as read walla n7ayou notification wahda walla ga3 eli maqrouyin
     public function markAsRead(Request $request, int $id): JsonResponse
     {
         $notification = Notification::where('user_id', $request->user()->id)
@@ -71,9 +62,6 @@ class NotificationController extends Controller
         return response()->json($notification);
     }
 
-    /**
-     * Delete a specific notification.
-     */
     public function destroy(Request $request, int $id): JsonResponse
     {
         $notification = Notification::where('user_id', $request->user()->id)
@@ -84,9 +72,6 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Notification deleted successfully']);
     }
 
-    /**
-     * Delete all read notifications for the authenticated user.
-     */
     public function deleteRead(Request $request): JsonResponse
     {
         $deletedCount = Notification::where('user_id', $request->user()->id)

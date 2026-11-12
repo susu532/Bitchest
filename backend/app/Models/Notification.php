@@ -1,5 +1,5 @@
 <?php
-
+// Hedha el model mta3 les notifications: fih les scopes bech nfiltriwou par type, maqri walla le
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,11 +10,6 @@ class Notification extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'user_id',
         'type',
@@ -23,42 +18,26 @@ class Notification extends Model
         'is_read',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'is_read' => 'boolean',
     ];
 
-    /**
-     * Get the user that owns the notification.
-     */
+    // Relation m3a el user eli 3andou hedhi el notification
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Scope a query to only include unread notifications.
-     */
     public function scopeUnread($query)
     {
         return $query->where('is_read', false);
     }
 
-    /**
-     * Scope a query to only include read notifications.
-     */
     public function scopeRead($query)
     {
         return $query->where('is_read', true);
     }
 
-    /**
-     * Scope a query to filter by type.
-     */
     public function scopeOfType($query, string $type)
     {
         return $query->where('type', $type);

@@ -1,3 +1,4 @@
+// Hedhi el configuration mta3 les routes API mta3 l'application BitChest
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -9,7 +10,6 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Broadcasting\BroadcastController;
 
-// Route::post('/broadcasting/auth', [BroadcastController::class, 'authenticate']); // Moved inside auth middleware
 
 Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware('throttle:60,1');
@@ -48,7 +48,7 @@ Route::middleware(['auth:web', 'throttle:60,1'])->group(function () {
 
     Route::get('/wallet/summary', [WalletController::class, 'getWalletSummary']);
 
-    // Notification routes
+    // Les routes mta3 les notifications
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications', [NotificationController::class, 'store']);
     Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);

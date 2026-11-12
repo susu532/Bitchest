@@ -1,5 +1,6 @@
 <?php
 
+// Hne nconfiguriw el middleware w routes mta3 el application Laravel
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,9 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-        $middleware->use([
-            // \App\Http\Middleware\CorsMiddleware::class, // Removed to use default Laravel CORS
-        ]);
+        $middleware->use([]);
         
         $middleware->trustProxies(at: '*');
         $middleware->statefulApi();

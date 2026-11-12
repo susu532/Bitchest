@@ -1,3 +1,4 @@
+/* Hedha el fichier CSS principal, fih el styles lkol: login, dashboard, forms, tables, w notifications */
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap");
 
 :root {
@@ -6,7 +7,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Modern 2025 Color Palette - Tech Blue & Dark Cyan */
+  /* El palette mta3 el alwen w el variables CSS globals */
   --color-primary: #0070ff;
   --color-primary-dark: #1560bd;
   --color-accent: #008b8b;
@@ -22,7 +23,6 @@
   --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.5);
   --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.3);
 
-  /* Modern Glow Effects */
   --glow-primary:
     0 0 30px rgba(0, 112, 255, 0.3), 0 0 60px rgba(0, 112, 255, 0.15);
   --glow-primary-strong:
@@ -37,7 +37,7 @@
   color: var(--color-light);
 }
 
-/* Keyframe Animations */
+/* El animations: float, glow, shimmer, slide-in, w particles */
 @keyframes float {
   0%,
   100% {
@@ -157,7 +157,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated Particles Background */
 body::before,
 body::after {
   content: "";
@@ -216,10 +215,6 @@ img {
   position: relative;
 }
 
-/* ===================================
-   MODERN LOGIN PAGE 2025
-   =================================== */
-
 .modern-login {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -229,7 +224,6 @@ img {
   overflow: hidden;
 }
 
-/* Premium Animated Background - Matched to Dashboard Theme */
 .modern-login::before {
   content: "";
   position: absolute;
@@ -262,8 +256,6 @@ img {
   }
 }
 
-/* Left Visual Panel */
-/* Left Visual Panel */
 .modern-login__visual {
   position: relative;
   background: transparent;
@@ -302,7 +294,7 @@ img {
 }
 
 .modern-login__brand-logo {
-  width: 120px; /* Wider logo as requested */
+  width: 120px;
   height: auto;
   filter: drop-shadow(0 0 30px rgba(53, 167, 255, 0.6));
   transition: transform 0.5s ease;
@@ -354,7 +346,6 @@ img {
   max-width: 90%;
 }
 
-/* Right Form Panel */
 .modern-login__form-panel {
   display: flex;
   align-items: center;
@@ -436,7 +427,6 @@ img {
   z-index: 1;
 }
 
-/* Modern Input Groups */
 .modern-input-group {
   display: flex;
   flex-direction: column;
@@ -515,7 +505,6 @@ img {
   background: rgba(53, 167, 255, 0.1);
 }
 
-/* Error Message */
 .modern-login__error {
   display: flex;
   align-items: center;
@@ -529,7 +518,6 @@ img {
   animation: shake 0.4s ease-out;
 }
 
-/* Submit Button */
 .modern-login__submit {
   width: 100%;
   padding: 1.25rem 2rem;
@@ -603,7 +591,6 @@ img {
   animation: spin 0.8s linear infinite;
 }
 
-/* Footer */
 .modern-login__footer {
   margin-top: 2.5rem;
   padding-top: 2rem;
@@ -628,7 +615,6 @@ img {
   opacity: 0.8;
 }
 
-/* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -659,7 +645,6 @@ img {
   }
 }
 
-/* Responsive Design */
 @media (max-width: 1024px) {
   .modern-login {
     grid-template-columns: 1fr;
@@ -724,7 +709,6 @@ img {
   }
 }
 
-/* Old login page styles (keeping for backwards compatibility) */
 .login-page {
   padding: 0;
   display: grid;
@@ -736,7 +720,6 @@ img {
   overflow: hidden;
 }
 
-/* Animated background particles for login page */
 .login-page::before,
 .login-page::after {
   content: "";
@@ -769,7 +752,6 @@ img {
   animation: particle-float 35s ease-in-out infinite reverse;
 }
 
-/* Left side - Branding section */
 .login-page__branding {
   display: flex;
   align-items: center;
@@ -878,7 +860,6 @@ img {
   font-weight: 500;
 }
 
-/* Right side - Form container */
 .login-page__form-container {
   display: flex;
   align-items: center;
@@ -957,7 +938,6 @@ img {
   font-size: 0.95rem;
 }
 
-/* Floating label form groups */
 .form__group {
   position: relative;
   margin-bottom: 1.75rem;
@@ -1016,7 +996,6 @@ img {
   text-transform: uppercase;
 }
 
-/* Input icons */
 .form__input-icon {
   position: absolute;
   left: 1.25rem;
@@ -1031,7 +1010,6 @@ img {
   color: var(--color-info);
 }
 
-/* Password toggle button */
 .form__toggle-password {
   position: absolute;
   right: 1.25rem;
@@ -1059,7 +1037,6 @@ img {
   outline-offset: 2px;
 }
 
-/* Full width button */
 .button--full-width {
   width: 100%;
   margin-top: 0.5rem;
@@ -1069,7 +1046,6 @@ img {
   letter-spacing: 0.5px;
 }
 
-/* Button spinner */
 .button__spinner {
   display: inline-block;
   width: 16px;
@@ -1090,7 +1066,6 @@ img {
   }
 }
 
-/* Login card footer */
 .login-card__footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -1113,7 +1088,6 @@ img {
   flex-shrink: 0;
 }
 
-/* Responsive design */
 @media (max-width: 1024px) {
   .login-page {
     grid-template-columns: 1fr;
@@ -1404,6 +1378,7 @@ img {
   box-shadow: 0 15px 40px rgba(255, 89, 100, 0.4);
 }
 
+/* El dashboard layout: sidebar, navigation, w content area */
 .dashboard {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
@@ -2138,7 +2113,7 @@ img {
   overflow: hidden;
 }
 
-/* Responsive Design */
+/* El responsive design: media queries lel mobile w tablet */
 @media (max-width: 1120px) {
   .dashboard {
     grid-template-columns: 280px 1fr;
@@ -2340,7 +2315,6 @@ img {
   }
 }
 
-/* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2351,7 +2325,6 @@ img {
   }
 }
 
-/* Notification Toast Styles */
 .notification-container {
   position: fixed;
   top: 1.5rem;
@@ -2440,7 +2413,6 @@ img {
   color: var(--color-light);
 }
 
-/* Notification Variants */
 .notification--success {
   border-color: rgba(1, 255, 25, 0.3);
 }

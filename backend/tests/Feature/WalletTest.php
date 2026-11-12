@@ -1,5 +1,5 @@
 <?php
-
+// Hedhi les tests mta3 el wallet: chira, bey3, solde insuffisant, w validation mta3 les données
 namespace Tests\Feature;
 
 use Tests\TestCase;
@@ -13,19 +13,15 @@ class WalletTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Test: Un client peut acheter une cryptomonnaie
-     */
+    // Test chira crypto: nvérifiw el transaction tetkhla9 w el solde yen9es kima lazem
     public function test_client_can_buy_cryptocurrency()
     {
-        // Arrange: Créer un client avec un solde
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance_eur' => 10000.00, // 10,000 EUR
+            'balance_eur' => 10000.00,
         ]);
 
-        // Créer une crypto avec un prix
         $crypto = Cryptocurrency::create([
             'id' => 'BTC',
             'name' => 'Bitcoin',
@@ -34,7 +30,6 @@ class WalletTest extends TestCase
             'current_price' => 40000.00,
         ]);
 
-        // Act: Acheter 0.1 BTC
         $response = $this->actingAs($user, 'web')
             ->postJson('/wallet/buy', [
                 'cryptoId' => 'BTC',
@@ -42,14 +37,12 @@ class WalletTest extends TestCase
                 'pricePerUnit' => 40000.00,
             ]);
 
-        // Assert: Vérifier le succès
         $response->assertStatus(201)
             ->assertJson([
                 'success' => true,
                 'message' => 'Purchase successful',
             ]);
 
-        // Vérifier que la transaction a été créée
         $this->assertDatabaseHas('wallet_transactions', [
             'user_id' => $user->id,
             'crypto_id' => 'BTC',
@@ -57,23 +50,19 @@ class WalletTest extends TestCase
             'quantity' => 0.1,
         ]);
 
-        // Vérifier que le solde a diminué (10000 - 4000 = 6000)
         $this->assertDatabaseHas('client_accounts', [
             'user_id' => $user->id,
             'balance_eur' => 6000.00,
         ]);
     }
 
-    /**
-     * Test: Un client ne peut pas acheter si le solde est insuffisant
-     */
+    // Test bey3 w edge cases: solde ma yekfich, quantité akther mel mawjouda, w quantité négative
     public function test_cannot_buy_with_insufficient_balance()
     {
-        // Arrange: Créer un client avec un petit solde
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
-            'balance_eur' => 1000.00, // Seulement 1,000 EUR
+            'balance_eur' => 1000.00,
         ]);
 
         Cryptocurrency::create([
@@ -84,7 +73,6 @@ class WalletTest extends TestCase
             'current_price' => 40000.00,
         ]);
 
-        // Act: Tenter d'acheter 0.1 BTC (coûte 4,000 EUR)
         $response = $this->actingAs($user, 'web')
             ->postJson('/wallet/buy', [
                 'cryptoId' => 'BTC',
@@ -92,25 +80,19 @@ class WalletTest extends TestCase
                 'pricePerUnit' => 40000.00,
             ]);
 
-        // Assert: Vérifier l'échec
         $response->assertStatus(422)
             ->assertJson([
                 'success' => false,
             ]);
 
-        // Vérifier qu'aucune transaction n'a été créée
         $this->assertDatabaseMissing('wallet_transactions', [
             'user_id' => $user->id,
             'type' => 'buy',
         ]);
     }
 
-    /**
-     * Test: Un client peut vendre une cryptomonnaie possédée
-     */
     public function test_client_can_sell_cryptocurrency()
     {
-        // Arrange: Créer un client avec des holdings
         $user = User::factory()->create(['role' => 'client']);
         $account = ClientAccount::create([
             'user_id' => $user->id,
@@ -125,7 +107,6 @@ class WalletTest extends TestCase
             'current_price' => 2000.00,
         ]);
 
-        // Créer une transaction d'achat préalable (possède 1 ETH)
         WalletTransaction::create([
             'user_id' => $user->id,
             'crypto_id' => 'ETH',
@@ -135,7 +116,6 @@ class WalletTest extends TestCase
             'transaction_date' => now(),
         ]);
 
-        // Act: Vendre 0.5 ETH
         $response = $this->actingAs($user, 'web')
             ->postJson('/wallet/sell', [
                 'cryptoId' => 'ETH',
@@ -143,14 +123,12 @@ class WalletTest extends TestCase
                 'pricePerUnit' => 2000.00,
             ]);
 
-        // Assert: Vérifier le succès
         $response->assertStatus(201)
             ->assertJson([
                 'success' => true,
                 'message' => 'Sale successful',
             ]);
 
-        // Vérifier que la transaction de vente a été créée
         $this->assertDatabaseHas('wallet_transactions', [
             'user_id' => $user->id,
             'crypto_id' => 'ETH',
@@ -158,19 +136,14 @@ class WalletTest extends TestCase
             'quantity' => 0.5,
         ]);
 
-        // Vérifier que le solde a augmenté (5000 + 1000 = 6000)
         $this->assertDatabaseHas('client_accounts', [
             'user_id' => $user->id,
             'balance_eur' => 6000.00,
         ]);
     }
 
-    /**
-     * Test: Un client ne peut pas vendre plus qu'il ne possède
-     */
     public function test_cannot_sell_more_than_owned()
     {
-        // Arrange: Créer un client qui possède 1 ETH
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
@@ -196,7 +169,6 @@ class WalletTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        // Act: Tenter de vendre 2 ETH (ne possède que 1)
         $response = $this->actingAs($user, 'web')
             ->postJson('/wallet/sell', [
                 'cryptoId' => 'ETH',
@@ -204,7 +176,6 @@ class WalletTest extends TestCase
                 'pricePerUnit' => 2000.00,
             ]);
 
-        // Assert: Vérifier l'échec
         $response->assertStatus(422);
         $response->assertJson([
                 'success' => false,
@@ -212,23 +183,17 @@ class WalletTest extends TestCase
             ]);
     }
 
-    /**
-     * Test: Un client peut récupérer son portefeuille
-     */
     public function test_client_can_get_wallet_summary()
     {
-        // Arrange: Créer un client
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
             'balance_eur' => 7500.00,
         ]);
 
-        // Act: Récupérer le wallet
         $response = $this->actingAs($user, 'web')
             ->getJson('/wallet/summary');
 
-        // Assert: Vérifier la structure
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'success',
@@ -245,12 +210,8 @@ class WalletTest extends TestCase
             ]);
     }
 
-    /**
-     * Test: Validation - Quantité négative refusée
-     */
     public function test_negative_quantity_is_rejected()
     {
-        // Arrange
         $user = User::factory()->create(['role' => 'client']);
         ClientAccount::create([
             'user_id' => $user->id,
@@ -265,15 +226,13 @@ class WalletTest extends TestCase
             'current_price' => 40000.00,
         ]);
 
-        // Act: Tenter d'acheter une quantité négative
         $response = $this->actingAs($user, 'web')
             ->postJson('/wallet/buy', [
                 'cryptoId' => 'BTC',
-                'quantity' => -0.1, // Négatif !
+                'quantity' => -0.1,
                 'pricePerUnit' => 40000.00,
             ]);
 
-        // Assert: Vérifier l'échec de validation
-        $response->assertStatus(422); // Unprocessable Entity
+        $response->assertStatus(422);
     }
 }

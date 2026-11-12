@@ -643,7 +643,7 @@ Sur l'API Throttling : "J'ai implémenté le Rate Limiting avec le middleware th
 
 
 
-
+***J’ai également utilisé l’intelligence artificielle comme outil d’apprentissage et d’assistance, notamment pour comprendre certains concepts, résoudre des problèmes techniques et améliorer mon code.
 
 
 

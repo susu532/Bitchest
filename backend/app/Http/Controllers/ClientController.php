@@ -64,7 +64,7 @@ class ClientController extends Controller
             'balance_eur' => 500,
         ]);
         
-        // Create notification for new client account
+        // Na3mlou notification lel client jdid eli 7all compte
         Notification::create([
             'user_id' => $user->id,
             'type' => 'info',
@@ -175,7 +175,7 @@ class ClientController extends Controller
 
         $user->save();
         
-        // Create notification for account update
+        // Na3mlou notification ki yetbaddel el compte mta3 el client
         Notification::create([
             'user_id' => $user->id,
             'type' => 'info',

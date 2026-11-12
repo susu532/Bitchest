@@ -1,0 +1,38 @@
+# BitChest - Quick Start Guide
+
+## Prerequisites
+- PHP 8.2+, Composer, Node.js 18+, npm, Git
+
+## One-Time Setup
+```bash
+# Backend
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate:fresh --seed
+
+# Frontend
+cd ../frontend
+npm install
+```
+
+## Run (4 Terminal Windows)
+
+| Terminal | Command | Purpose |
+|----------|---------|---------|
+| 1 | `cd backend && php artisan serve` | API at http://localhost:8000 |
+| 2 | `cd backend && php artisan reverb:start` | WebSocket at ws://localhost:8080 |
+| 3 | `cd backend && php artisan crypto:update-prices --interval=5` | Price simulator (5s intervals) |
+| 4 | `cd frontend && npm run dev` | Frontend at http://localhost:3000 |
+
+## Demo Login
+- **Admin**: admin@bitchest.example / admin123
+- **Client**: bruno@bitchest.example / bruno123
+
+## Troubleshooting
+- **Port busy?** Change ports in commands above
+- **DB issues?** Run `php artisan migrate:fresh --seed` in backend
+- **Frontend errors?** Delete `node_modules` and run `npm install` again
+- **No price updates?** Ensure Terminal 3 is running
