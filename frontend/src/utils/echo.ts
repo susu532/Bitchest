@@ -12,6 +12,13 @@ declare global {
 
 window.Pusher = Pusher;
 
+const API_BASE_URL = (process.env.API_BASE_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const wsHost = process.env.REVERB_HOST || (isLocal ? 'localhost' : '');
+const wsPort = Number(process.env.REVERB_PORT || (isLocal ? 8080 : 443));
+const reverbKey = process.env.REVERB_KEY || '7kfpzm9vblwo9jdjebla';
+const forceTLS = !isLocal;
+
 export const echoService = {
   echo: null as any,
 
@@ -20,30 +27,34 @@ export const echoService = {
       return this.echo;
     }
 
+    if (!wsHost) {
+      return null;
+    }
+
     this.echo = new Echo({
       broadcaster: 'pusher' as const,
-      key: '7kfpzm9vblwo9jdjebla',
-      wsHost: 'localhost',
-      wsPort: 8080,
-      wssPort: 8080,
+      key: reverbKey,
+      wsHost,
+      wsPort,
+      wssPort: wsPort,
       cluster: 'mt1',
-      forceTLS: false,
-      encrypted: false,
+      forceTLS,
+      encrypted: forceTLS,
       disableStats: true,
       enabledTransports: ['ws', 'wss'],
-      authEndpoint: 'http://localhost:8000/broadcasting/auth',
-      authorizer: (channel: any, _options: any) => {
+      authEndpoint: `${API_BASE_URL}/broadcasting/auth`,
+      authorizer: (channel: any) => {
         return {
           authorize: (socketId: any, callback: any) => {
-            axios.post('http://localhost:8000/broadcasting/auth', {
+            axios.post(`${API_BASE_URL}/broadcasting/auth`, {
               socket_id: socketId,
-              channel_name: channel.name
+              channel_name: channel.name,
             }, {
               withCredentials: true,
               headers: {
                 'X-XSRF-TOKEN': decodeURIComponent(document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] || ''),
-                'Accept': 'application/json'
-              }
+                'Accept': 'application/json',
+              },
             })
             .then((response) => {
               callback(false, response.data);
@@ -51,32 +62,18 @@ export const echoService = {
             .catch((error) => {
               callback(true, error);
             });
-          }
+          },
         };
       },
     } as any);
 
     console.log('[Echo] Initialized with config:', this.echo.options);
-
     return this.echo;
-  },
-
-  subscribeToprices(callback: (data: any) => void) {
-    const echo = this.initialize();
-    echo.channel('crypto-prices').listen('price-updated', (data: any) => {
-      callback(data);
-    });
-  },
-
-  subscribeToSpecificPrice(cryptoId: string, callback: (data: any) => void) {
-    const echo = this.initialize();
-    echo.channel(`crypto-price.${cryptoId}`).listen('price-updated', (data: any) => {
-      callback(data);
-    });
   },
 
   subscribeToUserEvents(userId: number | string, balanceCallback?: (data: any) => void, transactionCallback?: (data: any) => void) {
     const echo = this.initialize();
+    if (!echo) return;
 
     echo.private(`user.${userId}`).listen('balance-changed', (data: any) => {
       if (balanceCallback) {
@@ -92,8 +89,8 @@ export const echoService = {
   },
 
   unsubscribe(channelName: string) {
-    const echo = this.initialize();
-    echo.leave(channelName);
+    if (!this.echo) return;
+    this.echo.leave(channelName);
   },
 
   getEcho(): any {

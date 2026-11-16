@@ -1,7 +1,7 @@
 // Hedha el service mta3 les notifications, yesta3mel axios bech yab3ath requêtes lel backend
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = (process.env.API_BASE_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 // El interfaces eli ya3rfou el structure mta3 el notification w el réponse paginée
 export interface NotificationData {

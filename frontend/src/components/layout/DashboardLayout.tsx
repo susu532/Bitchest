@@ -31,7 +31,7 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <div className="dashboard">
-      // El sidebar fiha el logo, navigation bel NavLink, w section user bel avatar w bouton logout
+      
       <aside className="dashboard__sidebar">
         <div className="dashboard__brand">
           <img src="/assets/bitchest_logo.png" alt="BitChest logo" />
@@ -71,7 +71,7 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      // El contenu principal - header bel titre w sous-titre, w el body eli yaffichi el children
+      
       <main className="dashboard__content">
         <header className="dashboard__header">
           <h1>{title}</h1>

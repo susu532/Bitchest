@@ -1,5 +1,5 @@
-// Hedhi el configuration mta3 les routes API mta3 l'application BitChest
 <?php
+// Hedhi el configuration mta3 les routes API mta3 l'application BitChest
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -10,6 +10,15 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Broadcasting\BroadcastController;
 
+
+Route::get('/', function () {
+    return response()->json([
+        'name' => 'BitChest API',
+        'status' => 'online',
+        'message' => 'BitChest API is live and operational',
+        'timestamp' => now()->toIso8601String(),
+    ]);
+});
 
 Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware('throttle:60,1');

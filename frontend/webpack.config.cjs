@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -41,6 +42,13 @@ module.exports = {
       patterns: [{ from: path.resolve(__dirname, 'public'), to: '.' }],
     }),
     new MiniCssExtractPlugin({ filename: isProd ? '[name].[contenthash].css' : '[name].css' }),
+    new webpack.DefinePlugin({
+      'process.env.API_BASE_URL': JSON.stringify(process.env.API_BASE_URL || process.env.REACT_APP_API_URL || ''),
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.API_BASE_URL || process.env.REACT_APP_API_URL || ''),
+      'process.env.REVERB_HOST': JSON.stringify(process.env.REVERB_HOST || ''),
+      'process.env.REVERB_PORT': JSON.stringify(process.env.REVERB_PORT || ''),
+      'process.env.REVERB_KEY': JSON.stringify(process.env.REVERB_KEY || ''),
+    }),
   ],
   devtool: isProd ? 'source-map' : 'eval-source-map',
   devServer: {

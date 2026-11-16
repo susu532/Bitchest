@@ -6,10 +6,13 @@ use Laravel\Sanctum\Sanctum;
 return [
 
     // Les domaines stateful eli ya9blou les cookies mta3 session
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        Sanctum::currentApplicationUrlWithPort(),
+    'stateful' => array_values(array_filter(array_merge(
+        explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+            '%s%s',
+            'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+            Sanctum::currentApplicationUrlWithPort(),
+        ))),
+        [parse_url(env('FRONTEND_URL', ''), PHP_URL_HOST)]
     ))),
 
     // Guards w expiration mta3 les tokens

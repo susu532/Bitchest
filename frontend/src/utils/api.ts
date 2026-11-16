@@ -1,5 +1,5 @@
 // Hedha el service ApiService eli ya3mel kol les requetes HTTP lel backend Laravel: login, logout, CRUD users w crypto
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = (process.env.API_BASE_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 export type ApiResponse<T> = {
   success: boolean;

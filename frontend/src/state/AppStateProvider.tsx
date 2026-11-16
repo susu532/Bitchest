@@ -147,50 +147,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     persistState(state);
   }, [state]);
 
-  useEffect(() => {
-    const pollPrices = async () => {
-      try {
-        const response: any = await api.getCryptocurrencies();
-        if (response.success) {
-          Object.entries(response.cryptoAssets).forEach(([cryptoId, asset]: [string, any]) => {
-            const currentStateAsset = state.cryptoAssets[cryptoId];
-            if (currentStateAsset && currentStateAsset.currentPrice !== asset.currentPrice) {
-              dispatch({ type: 'update-crypto-price', payload: { cryptoId, price: asset.currentPrice } });
-            }
-          });
-        }
-      } catch (error) {
-        console.warn('[Price Poll] Failed to fetch prices:', error);
-      }
-    };
-    
-    const interval = setInterval(pollPrices, 5000);
-    return () => clearInterval(interval);
-  }, [state.cryptoAssets]);
-
-  // WebSocket subscription bech nrecevew les prix en temps réel
-  useEffect(() => {
-    let cleanupFn: (() => void) | undefined;
-
-    console.log('[WebSocket] Initializing subscription...');
-
-    import('../utils/echo').then(({ echoService }) => {
-      echoService.subscribeToprices((data: any) => {
-        console.log('[WebSocket] Price update received:', data);
-        dispatch({ type: 'update-crypto-price', payload: { cryptoId: data.cryptoId, price: data.price } });
-      });
-      
-      cleanupFn = () => {
-        console.log('[WebSocket] Unsubscribing from crypto-prices');
-        echoService.unsubscribe('crypto-prices');
-      };
-    });
-
-    return () => {
-      if (cleanupFn) cleanupFn();
-    };
-  }, []);
-
   const createClient = useCallback(async (payload: CreateClientPayload) => {
     const response: any = await api.createClient(payload.firstName, payload.lastName, payload.email);
     if (!response.success) throw new Error(response.message || 'Failed to create client');

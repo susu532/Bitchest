@@ -12,30 +12,32 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    
     public function run(): void
     {
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@bitchest.example'],
+            [
+                'first_name' => 'Alicia',
+                'last_name' => 'Stone',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
 
-        $admin = User::create([
-            'first_name' => 'Alicia',
-            'last_name' => 'Stone',
-            'email' => 'admin@bitchest.example',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        $client = User::firstOrCreate(
+            ['email' => 'bruno@bitchest.example'],
+            [
+                'first_name' => 'Bruno',
+                'last_name' => 'Martin',
+                'password' => Hash::make('bruno123'),
+                'role' => 'client',
+            ]
+        );
 
-        $client = User::create([
-            'first_name' => 'Bruno',
-            'last_name' => 'Martin',
-            'email' => 'bruno@bitchest.example',
-            'password' => Hash::make('bruno123'),
-            'role' => 'client',
-        ]);
-
-        ClientAccount::create([
-            'user_id' => $client->id,
-            'balance_eur' => 500,
-        ]);
+        ClientAccount::firstOrCreate(
+            ['user_id' => $client->id],
+            ['balance_eur' => 500]
+        );
 
         $this->call(CryptoSeeder::class);
     }
