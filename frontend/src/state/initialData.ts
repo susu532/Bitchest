@@ -2,6 +2,7 @@
 import { nanoid } from 'nanoid';
 
 import { CRYPTOCURRENCIES } from '../constants/cryptocurrencies';
+import { generate30DayHistory } from '../utils/priceHistory';
 
 import type { AppState, ClientAccount, User, WalletTransaction, CryptoAsset } from './types';
 
@@ -102,7 +103,7 @@ const cryptoAssets: Record<string, CryptoAsset> = CRYPTOCURRENCIES.reduce((acc, 
     symbol: crypto.symbol,
     icon: crypto.icon,
     currentPrice,
-    history: [],
+    history: generate30DayHistory(crypto.id, currentPrice),
   };
   return acc;
 }, {} as Record<string, CryptoAsset>);
